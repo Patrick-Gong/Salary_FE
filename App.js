@@ -26,7 +26,7 @@ function BottomTabNavigator() {
         options={{
           title: '홈',
           headerShown: false,
-          BottomTabIcon: ({ color, size }) => (
+          tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" color={color} size={size} />
           ),
         }}
@@ -37,7 +37,7 @@ function BottomTabNavigator() {
         options={{
           title: '단어 검색',
           headerShown: false,
-          BottomTabIcon: ({ color, size }) => (
+          tabBarIcon: ({ color, size }) => (
             <Ionicons name="search" color={color} size={size} />
           ),
         }}
@@ -48,8 +48,8 @@ function BottomTabNavigator() {
         options={{
           title: '단어장',
           headerShown: false,
-          BottomTabIcon: ({ color, size }) => (
-            <Ionicons name="bookmarks" color={color} size={size} />
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="bookmark" color={color} size={size} />
           ),
         }}
       />
@@ -59,7 +59,7 @@ function BottomTabNavigator() {
         options={{
           title: '마이페이지',
           headerShown: false,
-          BottomTabIcon: ({ color, size }) => (
+          tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />
           ),
         }}
