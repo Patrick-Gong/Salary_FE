@@ -78,11 +78,15 @@ export default function App() {
 
   return (
     <>
-      <StatusBar style='auto'/>
+      <StatusBar style="light" />
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator
+        // screenOptions={{
+        //   headerShown: false,
+        // }}
+        >
           {!isLoggedIn ? (
-            <Stack.Screen name="SignIn">
+            <Stack.Screen name="SignIn" options={{ headerShown: false }}>
               {() => <SignInScreen onEnter={handleLogIn} />}
             </Stack.Screen>
           ) : (
