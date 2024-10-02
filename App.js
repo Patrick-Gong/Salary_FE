@@ -3,9 +3,10 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 
+import SplashScreen from './screens/SplashScreen';
 import SignInScreen from './screens/SignInScreen';
 import HomeScreen from './screens/HomeScreen';
 import VocaSearchScreen from './screens/VocaSearchScreen';
@@ -70,17 +71,28 @@ function BottomTabNavigator() {
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   function handleLogIn() {
     setIsLoggedIn(true);
     console.log('버튼은 눌리고 있어요');
   }
 
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+  }, []);
+
+  if (isLoading) {
+    return <SplashScreen />;
+  }
+
   return (
     <>
-      <StatusBar style='auto'/>
+      <StatusBar style="auto" />
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator>      
           {!isLoggedIn ? (
             <Stack.Screen name="SignIn">
               {() => <SignInScreen onEnter={handleLogIn} />}

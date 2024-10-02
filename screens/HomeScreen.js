@@ -5,7 +5,7 @@ const ViewContainer = styled.View`
   flex: 1;
   align-items: center;
   justify-content: center;
-`
+`;
 
 function HomeScreen() {
   return (
@@ -16,5 +16,3 @@ function HomeScreen() {
 }
 
 export default HomeScreen;
-
-
