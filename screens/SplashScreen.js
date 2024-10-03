@@ -1,7 +1,7 @@
-import { Text, View } from 'react-native';
-import styled from 'styled-components/native';
-import SplashCharacter from '../assets/SplashCharacter.png';
-import SplashShadow from '../assets/SplashShadow.png';
+import { Text, View } from "react-native";
+import styled from "styled-components/native";
+import SplashCharacter from "../assets/SplashCharacter.png";
+import SplashShadow from "../assets/SplashShadow.png";
 
 const ViewContainer = styled.View`
   flex: 1;

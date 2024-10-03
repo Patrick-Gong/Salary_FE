@@ -1,8 +1,8 @@
-import styled from 'styled-components/native';
-import SignInCharacter from '../assets/SignInCharacter.png';
-import SignInText_SALARY from '../assets/SignInText_SALARY.png';
-import KakaoLoginBtn from '../assets/KakaoLoginBtn.png';
-import NaverLoginBtn from '../assets/NaverLoginBtn.png';
+import styled from "styled-components/native";
+import SignInCharacter from "../assets/SignInCharacter.png";
+import SignInText_SALARY from "../assets/SignInText_SALARY.png";
+import KakaoLoginBtn from "../assets/KakaoLoginBtn.png";
+import NaverLoginBtn from "../assets/NaverLoginBtn.png";
 
 const ViewContainer = styled.View`
   flex: 1;
@@ -100,7 +100,6 @@ function SignInScreen({ onEnter }) {
 }
 
 export default SignInScreen;
-
 
 // const styles = StyleSheet.create({
 //   container: {
