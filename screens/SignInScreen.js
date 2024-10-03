@@ -26,7 +26,6 @@ const SubTitle = styled.Text`
   font-size: 20px;
   font-style: normal;
   font-weight: 500;
-  line-height: normal;
 `;
 
 const BottomTitleContainer = styled.View`
@@ -41,7 +40,6 @@ const MainTitle = styled.Text`
   font-size: 34px;
   font-style: normal;
   font-weight: 700;
-  line-height: normal;
   position: absolute;
   z-index: 20;
 `;
