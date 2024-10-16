@@ -1,70 +1,79 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useEffect, useState } from 'react';
-import { Ionicons } from '@expo/vector-icons';
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useEffect, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 
-import SplashScreen from './screens/SplashScreen';
-import SignInScreen from './screens/SignInScreen';
-import HomeScreen from './screens/HomeScreen';
-import VocaSearchScreen from './screens/VocaSearchScreen';
-import VocaListScreen from './screens/VocaListScreen';
-import MyPageScreen from './screens/MyPageScreen';
-import TodaySalaryScreen from './screens/TodaySalaryScreen';
-import TodayTrendQuizScreen from './screens/TodayTrendQuizScreen';
+import SplashScreen from "./screens/SplashScreen";
+import SignInScreen from "./screens/SignInScreen";
+import HomeScreen from "./screens/HomeScreen";
+import VocaSearchScreen from "./screens/VocaSearchScreen";
+import VocaListScreen from "./screens/VocaListScreen";
+import MyPageScreen from "./screens/MyPageScreen";
+import TodaySalaryScreen from "./screens/TodaySalaryScreen";
+import TodayTrendQuizScreen from "./screens/TodayTrendQuizScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 
+const tabScreensProps = [
+  {
+    screenName: "Home",
+    title: "홈",
+    iconTitle: "home",
+    screen: HomeScreen,
+  },
+  {
+    screenName: "VocabularySearch",
+    title: "단어 검색",
+    iconTitle: "search",
+    screen: VocaSearchScreen,
+  },
+  {
+    screenName: "VocabularyList",
+    title: "단어장",
+    iconTitle: "bookmark",
+    screen: VocaListScreen,
+  },
+  {
+    screenName: "MyPage",
+    title: "마이페이지",
+    iconTitle: "person",
+    screen: MyPageScreen,
+  },
+];
+
 function BottomTabNavigator() {
   return (
     <BottomTab.Navigator>
-      <BottomTab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          title: '홈',
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" color={color} size={size} />
-          ),
-        }}
-      />
-      <BottomTab.Screen
-        name="VocabularySearch"
-        component={VocaSearchScreen}
-        options={{
-          title: '단어 검색',
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="search" color={color} size={size} />
-          ),
-        }}
-      />
-      <BottomTab.Screen
-        name="VocabularyList"
-        component={VocaListScreen}
-        options={{
-          title: '단어장',
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="bookmark" color={color} size={size} />
-          ),
-        }}
-      />
-      <BottomTab.Screen
-        name="MyPage"
-        component={MyPageScreen}
-        options={{
-          title: '마이페이지',
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" color={color} size={size} />
-          ),
-        }}
-      />
+      {tabScreensProps.map((item) => (
+        <BottomTab.Screen
+          key={item.screenName}
+          name={item.screenName}
+          component={item.screen}
+          options={{
+            title: item.title,
+            headerShown: false,
+            tabBarLabelStyle: {
+              fontSize: 12,
+              fontWeight: "400",
+            },
+            tabBarIcon: ({ focused, color, size }) =>
+              focused ? (
+                <Ionicons name={item.iconTitle} color={color} size={size} />
+              ) : (
+                <Ionicons
+                  name={`${item.iconTitle}-outline`}
+                  color={color}
+                  size={size}
+                ></Ionicons>
+              ),
+            tabBarActiveTintColor: "#313131",
+          }}
+        />
+      ))}
     </BottomTab.Navigator>
   );
 }
@@ -75,7 +84,7 @@ export default function App() {
 
   function handleLogIn() {
     setIsLoggedIn(true);
-    console.log('버튼은 눌리고 있어요');
+    console.log("버튼은 눌리고 있어요");
   }
 
   useEffect(() => {
@@ -90,11 +99,15 @@ export default function App() {
 
   return (
     <>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
       <NavigationContainer>
-        <Stack.Navigator>      
+        <Stack.Navigator
+        // screenOptions={{
+        //   headerShown: false,
+        // }}
+        >
           {!isLoggedIn ? (
-            <Stack.Screen name="SignIn">
+            <Stack.Screen name="SignIn" options={{ headerShown: false }}>
               {() => <SignInScreen onEnter={handleLogIn} />}
             </Stack.Screen>
           ) : (
@@ -131,8 +144,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
