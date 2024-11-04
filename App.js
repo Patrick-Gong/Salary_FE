@@ -87,19 +87,19 @@ export default function App() {
     console.log("버튼은 눌리고 있어요");
   }
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 3000);
+  // }, []);
 
-  if (isLoading) {
-    return <SplashScreen />;
-  }
+  // if (isLoading) {
+  //   return <SplashScreen />;
+  // }
 
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar style="auto" />
       <NavigationContainer>
         <Stack.Navigator
         // screenOptions={{
@@ -123,7 +123,8 @@ export default function App() {
                 name="TodaySalary"
                 component={TodaySalaryScreen}
                 options={{
-                  headerShown: false,
+                  title: "오늘의 샐러리 한조각 QUIZ",
+                  headerShown: true,
                 }}
               />
               <Stack.Screen

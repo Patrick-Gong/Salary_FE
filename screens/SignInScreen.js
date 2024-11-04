@@ -1,8 +1,8 @@
 import styled from "styled-components/native";
-import SignInCharacter from "../assets/SignInCharacter.png";
-import SignInText_SALARY from "../assets/SignInText_SALARY.png";
-import KakaoLoginBtn from "../assets/KakaoLoginBtn.png";
-import NaverLoginBtn from "../assets/NaverLoginBtn.png";
+import SignInCharacter from "../assets/img/signInScreen/SignInCharacter.png";
+import SignInText_SALARY from "../assets/img/signInScreen/SignInText_SALARY.png";
+import KakaoLoginBtn from "../assets/img/signInScreen/KakaoLoginBtn.png";
+import NaverLoginBtn from "../assets/img/signInScreen/NaverLoginBtn.png";
 
 const ViewContainer = styled.View`
   flex: 1;

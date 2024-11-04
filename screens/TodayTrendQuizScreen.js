@@ -1,7 +1,10 @@
-import { Text } from 'react-native';
+import { useState } from "react";
+import { Image, Pressable, Text, View } from "react-native";
+import styled, { css } from "styled-components";
+import colors from "../assets/colors/colors";
 
 function TodayTrendQuizScreen() {
-  return <Text>This screen is TodayTrendQuizScreen</Text>;
+  return <Text>TodayTrendQuizScreen;</Text>;
 }
 
 export default TodayTrendQuizScreen;
