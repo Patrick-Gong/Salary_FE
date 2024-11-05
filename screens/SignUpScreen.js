@@ -1,10 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components/native';
 import { StatusBar } from 'expo-status-bar';
+import { Dimensions } from 'react-native';
 
 import TermsOfUseBtn from '../components/TermsOfUseBtn';
 import CheckBtn_Off from '../assets/CheckBtn_Off.png';
 import CheckBtn_On from '../assets/CheckBtn_On.png';
+import Salary_Character from '../assets/Salary_Character.png';
+import Fireworks from '../assets/Fireworks.png';
+
+
+const windowWidth = Dimensions.get('window').width;
 
 const ViewContainer = styled.SafeAreaView`
   flex: 1;
@@ -77,7 +83,104 @@ const SignUpView = styled.View`
   justify-content: center;
 `;
 
-function SignUpScreen() {
+const InputContainer = styled.View`
+  flex: 1;
+  align-items: flex-start;
+  margin-top: 180px;
+`;
+
+const NickNameLabel = styled.Text`
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 48px;
+`;
+
+const NickNameInput = styled.TextInput`
+  padding-left: 22px;
+  margin-top: 10px;
+  border-radius: 5px;
+  border: 2px solid ${(props) => (props.focused ? '#d7ff01' : '#e8e8e8')};
+  width: 320px;
+  height: 40px;
+`;
+
+const HeaderText = styled.Text`
+  font-size: 30px;
+  font-weight: 800;
+`;
+
+const SubmitInputBtn = styled.Pressable`
+  margin-top: 50px;
+  height: 45px;
+  width: 320px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  background-color: #d7ff01;
+`;
+
+const SubmitText = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
+`;
+
+const WelcomeContainer = styled.View`
+  margin-top: 270px;
+  align-items: center;
+`
+
+const ImgContainer = styled.View`
+  position: relative;
+  height: 106px;
+  width: 202px;
+  
+
+`
+
+const CharacterImg = styled.Image`
+resizemode: cover;
+width: 106px;
+height: 106px;
+position: absolute;
+left: 48px;
+`
+
+// const FireworksLeftImg = styled.Image`
+// resizemode: cover;
+// width: 78px;
+// height: 78px;
+// position: absolute;
+// top: 25%;
+// transform: scaleX(-1);
+// `;
+
+const FireworksRightImg = styled.Image`
+resizemode: cover;
+width: 78px;
+height: 78px;
+position: absolute;
+top: 25%;
+left: 124px;
+`;
+
+const CompleteText = styled.Text`
+color: #c7ec00;
+font-size: 20px;
+font-weight: 600;
+margin-top: 5px;
+`;
+
+const WelcomeText = styled.Text`
+margin-top: 12px;
+color: #121212;
+font-size: 26px;
+font-weight: 500;
+max-width: 300px;
+`;
+
+function SignUpScreen({ onEnter, navigation }) {
+
+
   const InitializedTermsOfUseList = [
     { id: '#1', approved: false, text: '(필수) 서비스 이용약관' },
     { id: '#2', approved: false, text: '(필수) 개인정보수집 및 이용 동의' },
@@ -90,7 +193,19 @@ function SignUpScreen() {
   );
   const [allApproved, setAllApproved] = useState(false);
   const [modalVisible, setModalVisible] = useState(true);
+  const [isFocused, setIsFocused] = useState(false);
+  const [nickname, setNickname] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const handleSubmit = () => {
+    // if (event.target.value.trim()) {
+    //   setNickname(event.target.value);
+    // } else {
+    //   alert('텍스트를 입력하지 않았습니다.');
+    // }
+    setIsSubmitted(true);
+    console.log(nickname);
+  };
 
   const handleSeparateCheck = (approvedId) => {
     const updatedList = termsOfUseList.map((item) =>
@@ -116,52 +231,86 @@ function SignUpScreen() {
     }
   }, [termsOfUseList]);
 
+  useEffect(() => {
+    if (isSubmitted)
+    setTimeout(() => {
+      onEnter();
+    }, 3000);
+  }, [isSubmitted]);
+
   return (
     <ViewContainer>
       <StatusBar style="dark" />
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        // onRequestClose={() => {
-        //   Alert.alert('Modal has been closed.');
-        //   setModalVisible(!modalVisible);
-        // }}
-      >
-        <ModalBackdrop>
-          <ModalView>
-            <BtnContainer>
-              <AllTermsOfUseBtn onPress={handleAllCheck}>
-                <CheckBtnImg
-                  source={!allApproved ? CheckBtn_Off : CheckBtn_On}
-                />
-                <BtnText>모든 약관에 동의할게요</BtnText>
-              </AllTermsOfUseBtn>
-              {termsOfUseList.map((item) => (
-                <TermsOfUseBtn
-                  btnText={item.text}
-                  key={item.id}
-                  approved={item.approved}
-                  onCheck={() => handleSeparateCheck(item.id)}
-                />
-              ))}
-              <GoToNextBtn
-                allApproved={allApproved}
-                onPress={
-                  allApproved ? () => setModalVisible(!modalVisible) : null
-                }
-              >
-                <GoToNextBtnText allApproved={allApproved}>
-                  다음 단계로 넘어갈게요
-                </GoToNextBtnText>
-              </GoToNextBtn>
-            </BtnContainer>
-          </ModalView>
-        </ModalBackdrop>
-      </Modal>
-      <SignUpView>
-        
-      </SignUpView>
+      {!isSubmitted ? (
+        <>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            // onRequestClose={() => {
+            //   Alert.alert('Modal has been closed.');
+            //   setModalVisible(!modalVisible);
+            // }}
+          >
+            <ModalBackdrop>
+              <ModalView>
+                <BtnContainer>
+                  <AllTermsOfUseBtn onPress={handleAllCheck}>
+                    <CheckBtnImg
+                      source={!allApproved ? CheckBtn_Off : CheckBtn_On}
+                    />
+                    <BtnText>모든 약관에 동의할게요</BtnText>
+                  </AllTermsOfUseBtn>
+                  {termsOfUseList.map((item) => (
+                    <TermsOfUseBtn
+                      btnText={item.text}
+                      key={item.id}
+                      approved={item.approved}
+                      onCheck={() => handleSeparateCheck(item.id)}
+                    />
+                  ))}
+                  <GoToNextBtn
+                    allApproved={allApproved}
+                    onPress={
+                      allApproved ? () => setModalVisible(!modalVisible) : null
+                    }
+                  >
+                    <GoToNextBtnText allApproved={allApproved}>
+                      다음 단계로 넘어갈게요
+                    </GoToNextBtnText>
+                  </GoToNextBtn>
+                </BtnContainer>
+              </ModalView>
+            </ModalBackdrop>
+          </Modal>
+          <SignUpView>
+            <InputContainer>
+              <HeaderText>회원가입</HeaderText>
+              <NickNameLabel>닉네임</NickNameLabel>
+              <NickNameInput
+                onFocus={() => setIsFocused(true)}
+                onSubmitEditing={() => setIsFocused(false)}
+                onChangeText={setNickname}
+                value={nickname}
+                focused={isFocused}
+                placeholder="서비스에서 사용할 닉네임을 입력해주세요."
+              />
+              <SubmitInputBtn onPress={handleSubmit}>
+                <SubmitText>샐러리 시작하기</SubmitText>
+              </SubmitInputBtn>
+            </InputContainer>
+          </SignUpView>
+        </>
+      ) : (
+        <WelcomeContainer>
+          <ImgContainer>
+            <CharacterImg source={Salary_Character} />
+            <FireworksRightImg source={Fireworks} />
+          </ImgContainer>
+          <CompleteText>가입 완료!</CompleteText>
+          <WelcomeText>{nickname}님, 환영해요</WelcomeText>
+        </WelcomeContainer>
+      )}
     </ViewContainer>
   );
 }
