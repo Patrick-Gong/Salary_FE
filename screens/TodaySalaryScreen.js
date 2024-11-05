@@ -8,7 +8,8 @@ import {
   StyleSheet,
 } from "react-native";
 import styled, { css } from "styled-components";
-import colors from "../assets/colors/colors";
+import colors from "../styles/colors";
+import fonts from "../styles/fonts";
 import Constants from "expo-constants";
 
 function TodaySalaryScreen() {

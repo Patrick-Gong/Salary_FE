@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import styled, { css } from "styled-components";
-import colors from "../../assets/colors/colors";
+import colors from "../../styles/colors";
+import fonts from "../../styles/fonts";
 import { useNavigation } from "@react-navigation/native";
+
+const Title = styled(fonts.H4)`
+  color: ${colors.Grayscale_white};
+`;
 
 const TemporaryText = styled.Text`
   text-align: center;
@@ -62,9 +67,7 @@ function Home_TodaySalary() {
   return (
     <Container doneTodaySalary={doneTodaySalary}>
       <View>
-        <Text style={{ color: colors.Grayscale_white, fontSize: 20 }}>
-          오늘의 샐러리 한조각
-        </Text>
+        <Title>오늘의 샐러리 한조각</Title>
         <Text>
           {doneTodaySalary
             ? "오늘의 단어학습을 완료했어요."

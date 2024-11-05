@@ -15,6 +15,8 @@ import MyPageScreen from "./screens/MyPageScreen";
 import TodaySalaryScreen from "./screens/TodaySalaryScreen";
 import TodayTrendQuizScreen from "./screens/TodayTrendQuizScreen";
 
+import { useFonts } from "expo-font";
+
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 
@@ -82,20 +84,28 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // 폰트 불러오는 로직 추가
+  // 폰트 안 불러와졌으면 loading을 해야되는데 Splash랑 충돌날까봐 일단 뺌
+  const [fontsLoaded] = useFonts({
+    "Pretendard-Bold": require("./assets/font/fonts/Pretendard-Bold.ttf"),
+    "Pretendard-SemiBold": require("./assets/font/fonts/Pretendard-SemiBold.ttf"),
+    "Pretendard-Medium": require("./assets/font/fonts/Pretendard-Medium.ttf"),
+  });
+
   function handleLogIn() {
     setIsLoggedIn(true);
     console.log("버튼은 눌리고 있어요");
   }
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setIsLoading(false);
-  //   }, 3000);
-  // }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+  }, []);
 
-  // if (isLoading) {
-  //   return <SplashScreen />;
-  // }
+  if (isLoading) {
+    return <SplashScreen />;
+  }
 
   return (
     <>
@@ -131,7 +141,8 @@ export default function App() {
                 name="TodayTrendQuiz"
                 component={TodayTrendQuizScreen}
                 options={{
-                  headerShown: false,
+                  title: "트렌즈 퀴즈",
+                  headerShown: true,
                 }}
               />
             </>

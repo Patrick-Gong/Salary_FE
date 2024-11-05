@@ -5,7 +5,7 @@ import Home_TodaySalary from "../components/homeScreen/Home_TodaySalary";
 import Home_WeekStrip from "../components/homeScreen/Home_WeekStrip";
 import Home_AttendanceRing from "../components/homeScreen/Home_AttendanceRing";
 import Home_Article from "../components/homeScreen/Home_Article";
-import colors from "../assets/colors/colors";
+import colors from "../styles/colors";
 import { StatusBar } from "expo-status-bar";
 import Constants from "expo-constants";
 import { Shadow } from "react-native-shadow-2";

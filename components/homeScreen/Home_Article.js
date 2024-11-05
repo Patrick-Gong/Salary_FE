@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import styled, { css } from "styled-components";
-import colors from "../../assets/colors/colors";
+import colors from "../../styles/colors";
+import fonts from "../../styles/fonts";
 import ellipse_done from "../../common/homeScreen/ellipse_done.png";
 import ellipse_yet from "../../common/homeScreen/ellipse_yet.png";
 import Home_Article_List from "./Home_Article_List";
