@@ -7,10 +7,6 @@ import ellipse_done from "../../common/homeScreen/ellipse_done.png";
 import ellipse_yet from "../../common/homeScreen/ellipse_yet.png";
 import Home_Article_List from "./Home_Article_List";
 
-const TemporaryBlackText = styled.Text`
-  text-align: center;
-`;
-
 const Container = styled.View`
   flex: 1;
   flex-direction: column;
@@ -35,6 +31,14 @@ const TitleContainer = styled.View`
   align-items: center;
 `;
 
+const Title = styled(fonts.H5)`
+  color: ${colors.Grayscale_100};
+`;
+
+const TitleDescript = styled(fonts.Caption2)`
+  color: ${colors.Grayscale_80};
+`;
+
 const DoneMarker = styled.Image`
   width: 13px;
   height: 13px;
@@ -51,15 +55,13 @@ function Home_TrendQuiz() {
           <DoneMarker
             source={doneArticle ? ellipse_done : ellipse_yet}
           ></DoneMarker>
-          <Text style={{ color: colors.Grayscale_100, fontSize: 20 }}>
-            아티클
-          </Text>
+          <Title>아티클</Title>
         </TitleContainer>
-        <Text>
+        <TitleDescript>
           {doneArticle
-            ? "오늘의 퀴즈를 이미 풀었어요. \n 내일 새로운 퀴즈가 업데이트 될 예정이에요!"
-            : "요즘 경제 상황에 기반한 퀴즈를 준비했어요"}
-        </Text>
+            ? "내일 새로운 아티클이 업데이트 될 예정이에요!"
+            : "오늘 핫한 아티클 읽고 추가 시드 받아가기"}
+        </TitleDescript>
       </DesriptContainer>
       <Home_Article_List />
     </Container>

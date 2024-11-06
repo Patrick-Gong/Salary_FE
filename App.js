@@ -12,10 +12,13 @@ import HomeScreen from "./screens/HomeScreen";
 import VocaSearchScreen from "./screens/VocaSearchScreen";
 import VocaListScreen from "./screens/VocaListScreen";
 import MyPageScreen from "./screens/MyPageScreen";
-import TodaySalaryScreen from "./screens/TodaySalaryScreen";
+import TodaySalaryEduScreen from "./screens/TodaySalaryEduScreen";
+import TodaySalaryQuizScreen from "./screens/TodaySalaryQuizScreen";
 import TodayTrendQuizScreen from "./screens/TodayTrendQuizScreen";
 
 import { useFonts } from "expo-font";
+import colors from "./styles/colors";
+import fonts from "./styles/fonts";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -130,11 +133,36 @@ export default function App() {
                 }}
               />
               <Stack.Screen
-                name="TodaySalary"
-                component={TodaySalaryScreen}
+                name="TodaySalaryQuiz"
+                component={TodaySalaryQuizScreen}
                 options={{
                   title: "오늘의 샐러리 한조각 QUIZ",
+                  headerStyle: {
+                    backgroundColor: colors.bg,
+                  },
+                  headerTintColor: colors.Grayscale_100,
+                  headerTitleStyle: {
+                    fontFamily: "Pretendard-Medium",
+                  },
                   headerShown: true,
+                  headerBackgroundColor: colors.bg,
+                  headerBackTitleVisible: false,
+                }}
+              />
+              <Stack.Screen
+                name="TodaySalaryEdu"
+                component={TodaySalaryEduScreen}
+                options={{
+                  headerStyle: {
+                    backgroundColor: colors.bg,
+                  },
+                  headerTintColor: colors.Grayscale_100,
+                  headerTitleStyle: {
+                    fontFamily: "Pretendard-Medium",
+                  },
+                  headerShown: true,
+                  headerBackgroundColor: colors.bg,
+                  headerBackTitleVisible: true,
                 }}
               />
               <Stack.Screen

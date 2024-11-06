@@ -9,6 +9,8 @@ import colors from "../styles/colors";
 import { StatusBar } from "expo-status-bar";
 import Constants from "expo-constants";
 import { Shadow } from "react-native-shadow-2";
+import { useIsFocused } from "@react-navigation/native";
+import { useEffect } from "react";
 
 /// 임시 박스
 const TemporaryBox = styled.Text`
@@ -33,6 +35,23 @@ const Horizon = styled.View`
 `;
 
 function HomeScreen() {
+  // stack에 쌓여있던 HomeScreen이 focus되면 리렌더링되어 데이터를 알맞게 띄우도록 함
+  const isFocused = useIsFocused();
+
+  // 더미 데이터
+  // 이건 전역으로 처리하는 게 좋을듯한? 나중에 API 완성되면 리팩토링 ㄱ
+  var word = false;
+  var trend = false;
+  var article = false;
+
+  useEffect(() => {
+    //오늘 학습 과목 조회 API 받아오기
+    // "word": true,
+    // "trend": true,
+    // "article": false
+
+    console.log("알맞은 데이터로 리렌더링되고 있는지 확인");
+  }, [isFocused]);
   // api
   return (
     <SafeAreaView style={styles.rootScreen}>
@@ -50,12 +69,12 @@ function HomeScreen() {
           endColor="rgba(0, 0, 0, 0.0)" // 그림자의 끝 색상 (투명)
         >
           <ContentsContainer>
-            <Home_TodaySalary />
-            <Home_TrendQuiz />
+            <Home_TodaySalary word={word} />
+            <Home_TrendQuiz trend={trend} />
             {/* horizon */}
             <Horizon />
             {/* 아티클 */}
-            <Home_Article></Home_Article>
+            <Home_Article article={article}></Home_Article>
           </ContentsContainer>
         </Shadow>
       </ScrollView>

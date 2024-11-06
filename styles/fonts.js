@@ -1,5 +1,4 @@
 import styled from "styled-components/native";
-import { Text } from "react-native-svg";
 
 const fonts = {
   H1: styled.Text`
@@ -50,11 +49,11 @@ const fonts = {
 
   // Button 스타일
   Button1: styled.Text`
-    font-family: "Pretendard-Semibold";
+    font-family: "Pretendard-SemiBold";
     font-size: 16px;
   `,
   Button2: styled.Text`
-    font-family: "Pretendard-Semibold";
+    font-family: "Pretendard-SemiBold";
     font-size: 14px;
   `,
 };

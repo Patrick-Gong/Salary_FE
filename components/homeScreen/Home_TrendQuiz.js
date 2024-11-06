@@ -1,15 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import styled, { css } from "styled-components";
 import colors from "../../styles/colors";
-import fonts from "../../styles/fonts";
 import ellipse_done from "../../common/homeScreen/ellipse_done.png";
 import ellipse_yet from "../../common/homeScreen/ellipse_yet.png";
 import { useNavigation } from "@react-navigation/native";
-
-const TemporaryBlackText = styled.Text`
-  text-align: center;
-`;
+import PrimaryBtn from "../../common/PrimaryBtn";
+import fonts from "../../styles/fonts";
 
 const Container = styled.View`
   flex: 1;
@@ -35,50 +32,52 @@ const TitleContainer = styled.View`
   align-items: center;
 `;
 
+const Title = styled(fonts.H5)`
+  color: ${colors.Grayscale_100};
+`;
+
+const TitleDescript = styled(fonts.Caption2)`
+  color: ${colors.Grayscale_80};
+`;
+
 const DoneMarker = styled.Image`
   width: 13px;
   height: 13px;
   object-fit: cover;
 `;
 
-const NavigateBtn = styled.Pressable`
-  text-align: center;
-  border-radius: 10px;
-  background-color: ${colors.Primary_100};
-  padding: 13px 87px;
-`;
-
-function Home_TrendQuiz() {
-  const [doneTrendQuiz, setDoneTrendQuiz] = useState(true);
+function Home_TrendQuiz({ trend }) {
+  const [doneTrendQuiz, setDoneTrendQuiz] = useState(false);
 
   const navigation = useNavigation();
 
+  useEffect(() => {
+    setDoneTrendQuiz(trend);
+  }, [trend]);
+
   return (
-    <Container doneTrendQuiz={doneTrendQuiz}>
+    <Container>
       <DesriptContainer>
         <TitleContainer>
           <DoneMarker
             source={doneTrendQuiz ? ellipse_done : ellipse_yet}
           ></DoneMarker>
-          <Text style={{ color: colors.Grayscale_100, fontSize: 20 }}>
-            뜨거운 감자가 도착했어요!
-          </Text>
+          <Title doneTrendQuiz={doneTrendQuiz}>뜨거운 감자가 도착했어요!</Title>
         </TitleContainer>
-        <Text>
+        <TitleDescript>
           {doneTrendQuiz
             ? "오늘의 퀴즈를 이미 풀었어요. \n 내일 새로운 퀴즈가 업데이트 될 예정이에요!"
             : "요즘 경제 상황에 기반한 퀴즈를 준비했어요"}
-        </Text>
+        </TitleDescript>
       </DesriptContainer>
-      <NavigateBtn
+
+      <PrimaryBtn
+        type="active"
+        text={doneTrendQuiz ? "트렌드 퀴즈 해설 보러가기" : "트렌드 퀴즈 풀기"}
         onPress={() => {
           navigation.push("TodayTrendQuiz");
         }}
-      >
-        <TemporaryBlackText>
-          {doneTrendQuiz ? "트렌드 퀴즈 풀기" : "트렌드 퀴즈 해설 보러가기"}
-        </TemporaryBlackText>
-      </NavigateBtn>
+      ></PrimaryBtn>
     </Container>
   );
 }
