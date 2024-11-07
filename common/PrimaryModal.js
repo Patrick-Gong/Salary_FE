@@ -108,59 +108,53 @@ function PrimaryModal({
   }, [screenName]);
 
   return (
-    <TouchableWithoutFeedback onPress={closeModal}>
-      <ModalOverlay>
-        <TouchableWithoutFeedback>
-          <ModalContent>
-            {/* 세가지 요소를 담는 컨테이너 */}
-            <TextContainer>
-              <ResultText>
-                {result ? "정답이에요! 🎉" : "정답은 ...🧐"}
-              </ResultText>
-              <HighlightText
-                isFixed
-                underlineSize={10}
-                underlineColor={colors.Primary_100}
-                textStyle={{
-                  color: "#121212",
-                  fontFamily: "Pretendard-Bold",
-                  fontSize: 23,
-                  lineHeight: 23,
-                }}
-                text={answer}
-              ></HighlightText>
+    <ModalOverlay>
+      <ModalContent>
+        {/* 세가지 요소를 담는 컨테이너 */}
+        <TextContainer>
+          <ResultText>{result ? "정답이에요! 🎉" : "정답은 ...🧐"}</ResultText>
+          <HighlightText
+            isFixed
+            underlineSize={10}
+            underlineColor={colors.Primary_100}
+            textStyle={{
+              color: "#121212",
+              fontFamily: "Pretendard-Bold",
+              fontSize: 23,
+              lineHeight: 23,
+            }}
+            text={answer}
+          ></HighlightText>
+          <GuideText>
+            {type === "todaySalary" ? (
               <GuideText>
-                {type === "todaySalary" ? (
-                  <GuideText>
-                    {" "}
-                    이어서 단어학습을 진행해보세요!{"\n"}단어학습을 모두
-                    완료하면 시드 5개를 받을 수 있어요.
-                  </GuideText>
-                ) : (
-                  <GuideText>
-                    트렌드 퀴즈에 참여해 시드 5개를 획득했어요. 축하해요.
-                  </GuideText>
-                )}
+                {" "}
+                이어서 단어학습을 진행해보세요!{"\n"}단어학습을 모두 완료하면
+                시드 5개를 받을 수 있어요.
               </GuideText>
-            </TextContainer>
-            <PrimaryBtn
-              type="active"
-              text={
-                type === "trendQuiz"
-                  ? "해설 보러가기"
-                  : result
-                  ? "단어 학습하러 가기"
-                  : "단어 이해하러 가기"
-              }
-              onPress={handleNavigateEdu}
-            ></PrimaryBtn>
-            <CloseButton onPress={handleNavigateHome}>
-              <ButtonText>홈 화면으로 이동</ButtonText>
-            </CloseButton>
-          </ModalContent>
-        </TouchableWithoutFeedback>
-      </ModalOverlay>
-    </TouchableWithoutFeedback>
+            ) : (
+              <GuideText>
+                트렌드 퀴즈에 참여해 시드 5개를 획득했어요. 축하해요.
+              </GuideText>
+            )}
+          </GuideText>
+        </TextContainer>
+        <PrimaryBtn
+          type="active"
+          text={
+            type === "trendQuiz"
+              ? "해설 보러가기"
+              : result
+              ? "단어 학습하러 가기"
+              : "단어 이해하러 가기"
+          }
+          onPress={handleNavigateEdu}
+        ></PrimaryBtn>
+        <CloseButton onPress={handleNavigateHome}>
+          <ButtonText>홈 화면으로 이동</ButtonText>
+        </CloseButton>
+      </ModalContent>
+    </ModalOverlay>
   );
 }
 
