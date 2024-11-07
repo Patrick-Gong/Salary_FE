@@ -1,7 +1,10 @@
 import { StatusBar } from "expo-status-bar";
 import styled from "styled-components/native";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import GreenCheckMark from "../assets/img/todayTrendQuizScreen/GreenCheckMark.png";
+import { Shadow } from "react-native-shadow-2";
+import { Modal } from "react-native";
+import PrimaryModal from "../common/PrimaryModal";
 
 const ViewContainer = styled.SafeAreaView`
   background-color: white;
@@ -30,8 +33,8 @@ const SubTitle = styled.Text`
 
 const QuizContainer = styled.View`
   width: 100%;
+  border-radius: 5px;
   background-color: #f3f4f6;
-  shadow: 4px 4px 20px 0px #000;
   align-items: center;
   margin-top: 13px;
 `;
@@ -148,54 +151,106 @@ function TodayTrendQuizScreen() {
     }
     setAnswersState(updatedAnswersState);
   };
+
+  const onSubmitHandler = () => {
+    // 무언가 데이터를 처리해서...
+    // 모달 띄우기
+    openModal();
+  };
+
+  // 모달 관리
+  // 모달 관리
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  function openModal() {
+    setIsModalVisible(true);
+  }
+
+  function closeModal() {
+    setIsModalVisible(false);
+  }
+
   useLayoutEffect(() => {
     if (answersState.find((item) => item.isSelected)) setIsAbleToSubmit(true);
     else setIsAbleToSubmit(false);
   }, [answersState]);
 
+  useEffect(() => {
+    setIsModalVisible(false); // 상태 초기화
+  }, []);
+
   return (
     <ViewContainer>
       <StatusBar style="dark" />
+      {/* 모달 컴포넌트 */}
+      <Modal
+        visible={isModalVisible}
+        transparent={true} // 배경 투명
+        animationType="slide" // 모달 등장 애니메이션
+        onRequestClose={closeModal} // 안드로이드에서 뒤로가기 버튼 처리
+      >
+        {/* Modal 태그 내부에 Modal View를 정의 */}
+
+        <PrimaryModal
+          type="trendQuiz"
+          // result={answersState.isCorrect}
+          result={true} // 테스트용
+          // answer={answersState.content}
+          answer={"테스트용입니다."}
+          closeModal={closeModal}
+          replaceScreenName="TodaySalaryEdu" // 여기에 새로운 트렌드 퀴즈 해설 스크린명을 전달해주세요
+        ></PrimaryModal>
+      </Modal>
       <QuizViewContainer>
         <MainTitle>오늘의 트렌드 퀴즈</MainTitle>
         <SubTitle>요즘 경제 상황에 맞는 퀴즈를 준비했어요</SubTitle>
-        <QuizContainer>
-          <QuestionText>
-            <QDot>Q. </QDot>
-            <QuestionContent>
-              2024년 8월 한국의 물가 상승률이 2.0%로 둔화된 가운데, 한국은행이
-              향후 취할 가능성이 높은 조치는 무엇일까요?
-            </QuestionContent>
-          </QuestionText>
-          <AnswerContainer>
-            {answersState.map((item, index) => (
-              <AnswerBox
-                key={index}
-                onPress={() => handleSelectAnswer(index)}
-                isSelected={answersState[index].isSelected}
-              >
-                <AnswerContentContainer>
-                  {!answersState[index].isSelected ? (
-                    <AnswerBox_Btn key={index}>
-                      <AnswerBox_BtnNumber>{index + 1}</AnswerBox_BtnNumber>
-                    </AnswerBox_Btn>
-                  ) : (
-                    <GreenCheckMarkImg source={GreenCheckMark} />
-                  )}
+        <Shadow
+          style={{ width: "100%" }}
+          distance={10}
+          startColor="rgba(0, 0, 0, 0.03)"
+          offset={[4, 4]}
+        >
+          <QuizContainer>
+            <QuestionText>
+              <QDot>Q. </QDot>
+              <QuestionContent>
+                2024년 8월 한국의 물가 상승률이 2.0%로 둔화된 가운데, 한국은행이
+                향후 취할 가능성이 높은 조치는 무엇일까요?
+              </QuestionContent>
+            </QuestionText>
+            <AnswerContainer>
+              {answersState.map((item, index) => (
+                <AnswerBox
+                  key={index}
+                  onPress={() => handleSelectAnswer(index)}
+                  isSelected={answersState[index].isSelected}
+                >
+                  <AnswerContentContainer>
+                    {!answersState[index].isSelected ? (
+                      <AnswerBox_Btn key={index}>
+                        <AnswerBox_BtnNumber>{index + 1}</AnswerBox_BtnNumber>
+                      </AnswerBox_Btn>
+                    ) : (
+                      <GreenCheckMarkImg source={GreenCheckMark} />
+                    )}
 
-                  <AnswerBox_Text isSelected={answersState[index].isSelected}>
-                    {item.content}
-                  </AnswerBox_Text>
-                </AnswerContentContainer>
-              </AnswerBox>
-            ))}
-          </AnswerContainer>
-          <SubmitBtn isAbleToSubmit={isAbleToSubmit}>
-            <SubmitBtn_Text isAbleToSubmit={isAbleToSubmit}>
-              제출하기
-            </SubmitBtn_Text>
-          </SubmitBtn>
-        </QuizContainer>
+                    <AnswerBox_Text isSelected={answersState[index].isSelected}>
+                      {item.content}
+                    </AnswerBox_Text>
+                  </AnswerContentContainer>
+                </AnswerBox>
+              ))}
+            </AnswerContainer>
+            <SubmitBtn
+              isAbleToSubmit={isAbleToSubmit}
+              onPress={onSubmitHandler}
+            >
+              <SubmitBtn_Text isAbleToSubmit={isAbleToSubmit}>
+                제출하기
+              </SubmitBtn_Text>
+            </SubmitBtn>
+          </QuizContainer>
+        </Shadow>
       </QuizViewContainer>
     </ViewContainer>
   );
