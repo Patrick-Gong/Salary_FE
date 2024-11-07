@@ -35,7 +35,7 @@ const MeanContainer = styled.View`
   background-color: ${colors.bg};
   position: relative;
   border-radius: 10px;
-  padding: 41px 137px;
+  padding: 41px 0px;
 
   justify-content: center;
   align-items: center;

@@ -11,6 +11,8 @@ import colors from "../../styles/colors";
 import fonts from "../../styles/fonts";
 import HighlightText from "react-native-highlight-underline-text";
 import { useEffect } from "react";
+import Salary_Character from "../../assets/img/signUpScreen/Salary_Character.png";
+import Fireworks from "../../assets/img/signUpScreen/Fireworks.png";
 
 const ModalOverlay = styled.View`
   flex: 1;
@@ -50,6 +52,33 @@ const ButtonText = styled(fonts.Caption2)`
   color: ${colors.Grayscale_80};
 `;
 
+const ImgContainer = styled.View`
+  position: relative;
+  height: 106px;
+  width: 100%;
+
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+`;
+
+const CharacterImg = styled.Image`
+  resizemode: cover;
+  width: 106px;
+  height: 106px;
+  position: absolute;
+  left: 48px;
+`;
+
+const FireworksRightImg = styled.Image`
+  resizemode: cover;
+  width: 78px;
+  height: 78px;
+  position: absolute;
+  top: 25%;
+  left: 124px;
+`;
+
 function TodaySalaryEdu_Modal({ closeModal }) {
   const handleNavigateBookmark = () => {
     closeModal();
@@ -81,11 +110,16 @@ function TodaySalaryEdu_Modal({ closeModal }) {
                 축하해요!
               </GuideText>
             </TextContainer>
+            <ImgContainer>
+              <CharacterImg source={Salary_Character} />
+              <FireworksRightImg source={Fireworks} />
+            </ImgContainer>
             <PrimaryBtn
               type="active"
               text="학습 완료하고 홈으로 돌아가기"
               onPress={handleNavigateHome}
             ></PrimaryBtn>
+
             <CloseButton onPress={handleNavigateBookmark}>
               <ButtonText>홈 화면으로 이동</ButtonText>
             </CloseButton>
