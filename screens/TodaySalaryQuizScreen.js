@@ -14,7 +14,7 @@ import styled, { css } from "styled-components";
 import colors from "../styles/colors";
 import fonts from "../styles/fonts";
 import Constants from "expo-constants";
-import Advertise from "../assets/img/todaySalaryScreen/avt.jpg";
+import Advertise from "../assets/img/todaySalaryQuizScreen/avt.jpg";
 import { Shadow } from "react-native-shadow-2";
 import PrimaryBtn from "../common/PrimaryBtn";
 import { useNavigation } from "@react-navigation/native";

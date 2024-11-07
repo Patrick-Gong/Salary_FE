@@ -153,16 +153,10 @@ export default function App() {
                 name="TodaySalaryEdu"
                 component={TodaySalaryEduScreen}
                 options={{
-                  headerStyle: {
-                    backgroundColor: colors.bg,
-                  },
+                  headerTitle: "",
                   headerTintColor: colors.Grayscale_100,
-                  headerTitleStyle: {
-                    fontFamily: "Pretendard-Medium",
-                  },
                   headerShown: true,
-                  headerBackgroundColor: colors.bg,
-                  headerBackTitleVisible: true,
+                  headerBackTitleVisible: false,
                 }}
               />
               <Stack.Screen
