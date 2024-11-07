@@ -1,16 +1,15 @@
-import { useState, useRef, useEffect } from 'react';
-import styled from 'styled-components/native';
-import { StatusBar } from 'expo-status-bar';
-import { Dimensions } from 'react-native';
+import { useState, useRef, useEffect } from "react";
+import styled from "styled-components/native";
+import { StatusBar } from "expo-status-bar";
+import { Dimensions } from "react-native";
 
-import TermsOfUseBtn from '../components/TermsOfUseBtn';
-import CheckBtn_Off from '../assets/CheckBtn_Off.png';
-import CheckBtn_On from '../assets/CheckBtn_On.png';
-import Salary_Character from '../assets/Salary_Character.png';
-import Fireworks from '../assets/Fireworks.png';
+import TermsOfUseBtn from "../components/TermsOfUseBtn";
+import CheckBtn_Off from "../assets/img/signUpScreen/CheckBtn_Off.png";
+import CheckBtn_On from "../assets/img/signUpScreen/CheckBtn_On.png";
+import Salary_Character from "../assets/img/signUpScreen/Salary_Character.png";
+import Fireworks from "../assets/img/signUpScreen/Fireworks.png";
 
-
-const windowWidth = Dimensions.get('window').width;
+const windowWidth = Dimensions.get("window").width;
 
 const ViewContainer = styled.SafeAreaView`
   flex: 1;
@@ -21,7 +20,7 @@ const Modal = styled.Modal``;
 
 const ModalBackdrop = styled.View`
   flex: 1;
-  background-color: 'rgba(0, 0, 0, 0.7)';
+  background-color: "rgba(0, 0, 0, 0.7)";
 `;
 
 const ModalView = styled.View`
@@ -68,13 +67,13 @@ const GoToNextBtn = styled.Pressable`
   width: 100%;
   height: 45px;
   border-radius: 10px;
-  background-color: ${(props) => (!props.allApproved ? '#eff4d2' : '#d7ff01')};
+  background-color: ${(props) => (!props.allApproved ? "#eff4d2" : "#d7ff01")};
 `;
 
 const GoToNextBtnText = styled.Text`
   font-size: 16px;
   font-weight: 600;
-  color: ${(props) => (props.allApproved ? '#313131' : '#a0a0a0')};
+  color: ${(props) => (props.allApproved ? "#313131" : "#a0a0a0")};
 `;
 
 const SignUpView = styled.View`
@@ -99,7 +98,7 @@ const NickNameInput = styled.TextInput`
   padding-left: 22px;
   margin-top: 10px;
   border-radius: 5px;
-  border: 2px solid ${(props) => (props.focused ? '#d7ff01' : '#e8e8e8')};
+  border: 2px solid ${(props) => (props.focused ? "#d7ff01" : "#e8e8e8")};
   width: 320px;
   height: 40px;
 `;
@@ -127,23 +126,21 @@ const SubmitText = styled.Text`
 const WelcomeContainer = styled.View`
   margin-top: 270px;
   align-items: center;
-`
+`;
 
 const ImgContainer = styled.View`
   position: relative;
   height: 106px;
   width: 202px;
-  
-
-`
+`;
 
 const CharacterImg = styled.Image`
-resizemode: cover;
-width: 106px;
-height: 106px;
-position: absolute;
-left: 48px;
-`
+  resizemode: cover;
+  width: 106px;
+  height: 106px;
+  position: absolute;
+  left: 48px;
+`;
 
 // const FireworksLeftImg = styled.Image`
 // resizemode: cover;
@@ -155,37 +152,35 @@ left: 48px;
 // `;
 
 const FireworksRightImg = styled.Image`
-resizemode: cover;
-width: 78px;
-height: 78px;
-position: absolute;
-top: 25%;
-left: 124px;
+  resizemode: cover;
+  width: 78px;
+  height: 78px;
+  position: absolute;
+  top: 25%;
+  left: 124px;
 `;
 
 const CompleteText = styled.Text`
-color: #c7ec00;
-font-size: 20px;
-font-weight: 600;
-margin-top: 5px;
+  color: #c7ec00;
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 5px;
 `;
 
 const WelcomeText = styled.Text`
-margin-top: 12px;
-color: #121212;
-font-size: 26px;
-font-weight: 500;
-max-width: 300px;
+  margin-top: 12px;
+  color: #121212;
+  font-size: 26px;
+  font-weight: 500;
+  max-width: 300px;
 `;
 
 function SignUpScreen({ onEnter, navigation }) {
-
-
   const InitializedTermsOfUseList = [
-    { id: '#1', approved: false, text: '(필수) 서비스 이용약관' },
-    { id: '#2', approved: false, text: '(필수) 개인정보수집 및 이용 동의' },
-    { id: '#3', approved: false, text: '(필수) 개인정보 제 3자 정보제공 동의' },
-    { id: '#4', approved: false, text: '(선택) 수신 알림 서비스 동의' },
+    { id: "#1", approved: false, text: "(필수) 서비스 이용약관" },
+    { id: "#2", approved: false, text: "(필수) 개인정보수집 및 이용 동의" },
+    { id: "#3", approved: false, text: "(필수) 개인정보 제 3자 정보제공 동의" },
+    { id: "#4", approved: false, text: "(선택) 수신 알림 서비스 동의" },
   ];
 
   const [termsOfUseList, setTermsOfUseList] = useState(
@@ -194,7 +189,7 @@ function SignUpScreen({ onEnter, navigation }) {
   const [allApproved, setAllApproved] = useState(false);
   const [modalVisible, setModalVisible] = useState(true);
   const [isFocused, setIsFocused] = useState(false);
-  const [nickname, setNickname] = useState('');
+  const [nickname, setNickname] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = () => {
@@ -233,9 +228,9 @@ function SignUpScreen({ onEnter, navigation }) {
 
   useEffect(() => {
     if (isSubmitted)
-    setTimeout(() => {
-      onEnter();
-    }, 3000);
+      setTimeout(() => {
+        onEnter();
+      }, 3000);
   }, [isSubmitted]);
 
   return (

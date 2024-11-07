@@ -1,10 +1,10 @@
 import styled from "styled-components/native";
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from "expo-status-bar";
 
-import SignInCharacter from "../assets/SignInCharacter.png";
-import SignInText_SALARY from "../assets/SignInText_SALARY.png";
-import KakaoLoginBtn from "../assets/KakaoLoginBtn.png";
-import NaverLoginBtn from "../assets/NaverLoginBtn.png";
+import SignInCharacter from "../assets/img/signInScreen/SignInCharacter.png";
+import SignInText_SALARY from "../assets/img/signInScreen/SignInText_SALARY.png";
+import KakaoLoginBtn from "../assets/img/signInScreen/KakaoLoginBtn.png";
+import NaverLoginBtn from "../assets/img/signInScreen/NaverLoginBtn.png";
 
 const ViewContainer = styled.View`
   flex: 1;
@@ -17,7 +17,7 @@ const TopTitleContainer = styled.View`
 `;
 
 const SignInCharacterImage = styled.Image`
-  resizemode: cover;
+  resizemode: contain;
   width: 36px;
   height: 36px;
 `;
@@ -66,13 +66,13 @@ const LoginBtnContainer = styled.View`
 const TouchableImage = styled.TouchableOpacity``;
 
 const KakaoBtn = styled.Image`
-  width: 300px;
-  height: 60px;
+  width: 346px;
+  height: 52px;
 `;
 
 const NaverBtn = styled.Image`
-  width: 300px;
-  height: 60px;
+  width: 346px;
+  height: 52px;
 `;
 
 function SignInScreen({ onEnter, navigation }) {
@@ -92,7 +92,7 @@ function SignInScreen({ onEnter, navigation }) {
         <TouchableImage onPress={onEnter}>
           <KakaoBtn source={KakaoLoginBtn} />
         </TouchableImage>
-        <TouchableImage onPress={() => navigation.navigate('SignUp')}>
+        <TouchableImage onPress={() => navigation.navigate("SignUp")}>
           <NaverBtn source={NaverLoginBtn} />
         </TouchableImage>
       </LoginBtnContainer>
