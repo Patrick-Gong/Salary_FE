@@ -16,6 +16,10 @@ import TodaySalaryScreen from './screens/TodaySalaryScreen';
 import TodayTrendQuizScreen from './screens/TodayTrendQuizScreen';
 import SignUpScreen from './screens/SignUpScreen';
 
+import { useFonts } from "expo-font";
+import colors from "./styles/colors";
+import fonts from "./styles/fonts";
+
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 
@@ -83,6 +87,14 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // 폰트 불러오는 로직 추가
+  // 폰트 안 불러와졌으면 loading을 해야되는데 Splash랑 충돌날까봐 일단 뺌
+  const [fontsLoaded] = useFonts({
+    "Pretendard-Bold": require("./assets/font/fonts/Pretendard-Bold.ttf"),
+    "Pretendard-SemiBold": require("./assets/font/fonts/Pretendard-SemiBold.ttf"),
+    "Pretendard-Medium": require("./assets/font/fonts/Pretendard-Medium.ttf"),
+  });
+
   function handleLogIn() {
     setIsLoggedIn(true);
     console.log('메인으로 갑니다');
@@ -125,17 +137,38 @@ export default function App() {
                 }}
               />
               <Stack.Screen
-                name="TodaySalary"
-                component={TodaySalaryScreen}
+                name="TodaySalaryQuiz"
+                component={TodaySalaryQuizScreen}
                 options={{
-                  headerShown: false,
+                  title: "오늘의 샐러리 한조각 QUIZ",
+                  headerStyle: {
+                    backgroundColor: colors.bg,
+                  },
+                  headerTintColor: colors.Grayscale_100,
+                  headerTitleStyle: {
+                    fontFamily: "Pretendard-Medium",
+                  },
+                  headerShown: true,
+                  headerBackgroundColor: colors.bg,
+                  headerBackTitleVisible: false,
+                }}
+              />
+              <Stack.Screen
+                name="TodaySalaryEdu"
+                component={TodaySalaryEduScreen}
+                options={{
+                  headerTitle: "",
+                  headerTintColor: colors.Grayscale_100,
+                  headerShown: true,
+                  headerBackTitleVisible: false,
                 }}
               />
               <Stack.Screen
                 name="TodayTrendQuiz"
                 component={TodayTrendQuizScreen}
                 options={{
-                  headerShown: false,
+                  title: "트렌즈 퀴즈",
+                  headerShown: true,
                 }}
               />
             </>
