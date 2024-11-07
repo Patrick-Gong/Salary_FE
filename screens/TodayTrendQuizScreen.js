@@ -1,7 +1,7 @@
-import { StatusBar } from 'expo-status-bar';
-import styled from 'styled-components/native';
-import { useLayoutEffect, useState } from 'react';
-import GreenCheckMark from '../assets/GreenCheckMark.png';
+import { StatusBar } from "expo-status-bar";
+import styled from "styled-components/native";
+import { useLayoutEffect, useState } from "react";
+import GreenCheckMark from "../assets/img/todayTrendQuizScreen/GreenCheckMark.png";
 
 const ViewContainer = styled.SafeAreaView`
   background-color: white;
@@ -61,7 +61,7 @@ const AnswerBox = styled.Pressable`
   width: 320px;
   height: 46px;
   border-radius: 6px;
-  background-color: ${(props) => (!props.isSelected ? '#ffffff' : '#313131')};
+  background-color: ${(props) => (!props.isSelected ? "#ffffff" : "#313131")};
   margin-bottom: 14px;
 `;
 
@@ -97,7 +97,7 @@ const GreenCheckMarkImg = styled.Image`
 `;
 
 const AnswerBox_Text = styled.Text`
-  color: ${(props) => (!props.isSelected ? '#121212' : '#ffffff')};
+  color: ${(props) => (!props.isSelected ? "#121212" : "#ffffff")};
   font-size: 16px;
   font-weight: 500;
 `;
@@ -111,21 +111,21 @@ const SubmitBtn = styled.Pressable`
   height: 45px;
   border-radius: 10px;
   background-color: ${(props) =>
-    !props.isAbleToSubmit ? '#eff4d2' : '#d7ff01'};
+    !props.isAbleToSubmit ? "#eff4d2" : "#d7ff01"};
 `;
 
 const SubmitBtn_Text = styled.Text`
   font-size: 16px;
   font-weight: 600;
-  color: ${(props) => (props.isAbleToSubmit ? '#313131' : '#a0a0a0')};
+  color: ${(props) => (props.isAbleToSubmit ? "#313131" : "#a0a0a0")};
 `;
 
 function TodayTrendQuizScreen() {
   const InitialAnswers = [
-    { isCorrect: false, isSelected: false, content: '금리 인상' },
-    { isCorrect: true, isSelected: false, content: '금리 인하' },
-    { isCorrect: false, isSelected: false, content: '금리 동결' },
-    { isCorrect: false, isSelected: false, content: '세금 인상' },
+    { isCorrect: false, isSelected: false, content: "금리 인상" },
+    { isCorrect: true, isSelected: false, content: "금리 인하" },
+    { isCorrect: false, isSelected: false, content: "금리 동결" },
+    { isCorrect: false, isSelected: false, content: "세금 인상" },
   ];
 
   const [answersState, setAnswersState] = useState(InitialAnswers);
@@ -191,7 +191,9 @@ function TodayTrendQuizScreen() {
             ))}
           </AnswerContainer>
           <SubmitBtn isAbleToSubmit={isAbleToSubmit}>
-            <SubmitBtn_Text isAbleToSubmit={isAbleToSubmit}>제출하기</SubmitBtn_Text>
+            <SubmitBtn_Text isAbleToSubmit={isAbleToSubmit}>
+              제출하기
+            </SubmitBtn_Text>
           </SubmitBtn>
         </QuizContainer>
       </QuizViewContainer>
