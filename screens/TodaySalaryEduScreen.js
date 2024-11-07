@@ -55,7 +55,7 @@ const BookMarkContainer = styled.TouchableOpacity`
 const StoryTellingContainer = styled.View`
   padding: 8px 24px 28px;
   width: auto;
-  height: 272px;
+  height: 400px;
   gap: 20px;
 
   align-items: center;
