@@ -111,11 +111,9 @@ export default function App() {
               <Stack.Screen name="SignIn" options={{ headerShown: false }}>
                 {({navigation}) => <SignInScreen onEnter={handleLogIn} navigation={navigation} />}
               </Stack.Screen>
-              <Stack.Screen
-                name="SignUp"
-                component={SignUpScreen}
-                options={{ headerShown: false }}
-              />
+              <Stack.Screen name="SignUp" options={{ headerShown: false }}>
+                {({navigation}) => <SignUpScreen onEnter={handleLogIn} navigation={navigation} />}
+              </Stack.Screen>
             </>
           ) : (
             <>
