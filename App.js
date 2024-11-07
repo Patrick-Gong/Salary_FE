@@ -172,8 +172,10 @@ export default function App() {
                 name="TodayTrendQuiz"
                 component={TodayTrendQuizScreen}
                 options={{
-                  title: "트렌즈 퀴즈",
+                  headerTitle: "",
+                  headerTintColor: colors.Grayscale_100,
                   headerShown: true,
+                  headerBackTitleVisible: false,
                 }}
               />
             </>
