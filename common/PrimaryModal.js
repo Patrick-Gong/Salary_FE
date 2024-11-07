@@ -77,6 +77,7 @@ function PrimaryModal({
   closeModal,
   replaceScreenName,
 }) {
+  var screenName = replaceScreenName;
   const handleNavigateEdu = () => {
     closeModal();
     setTimeout(() => {
@@ -98,14 +99,13 @@ function PrimaryModal({
   const navigation = useNavigation();
 
   useEffect(() => {
-    const screenName = replaceScreenName;
+    screenName = replaceScreenName;
 
     if (screenName && navigation.isFocused()) {
-      navigation.replace(screenName, { word_id: 1 });
     } else {
       console.warn("Invalid screen name or navigator context");
     }
-  }, []);
+  }, [screenName]);
 
   return (
     <TouchableWithoutFeedback onPress={closeModal}>

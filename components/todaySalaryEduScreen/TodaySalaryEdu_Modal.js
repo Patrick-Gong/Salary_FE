@@ -54,10 +54,7 @@ function TodaySalaryEdu_Modal({ closeModal }) {
   const handleNavigateBookmark = () => {
     closeModal();
     setTimeout(() => {
-      navigation.replace(screenName, {
-        // params 전달
-        word_id: word_id,
-      }); // 모달 닫은 후 화면 교체하도록
+      navigation.goBack(); // 모달 닫은 후 화면 교체하도록
     }, 300); // 모달 닫는 애니메이션 시간과 동일하게 설정
   };
 

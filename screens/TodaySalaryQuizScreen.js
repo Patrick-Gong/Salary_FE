@@ -70,7 +70,8 @@ const InputAnswer = styled.TextInput`
   color: ${colors.Grayscale_40};
   font-family: "Pretendard-Medium";
   font-size: 14px;
-  line-height: 22px;
+  line-height: 14px;
+  vertical-align: middle;
 `;
 
 const InputHint = styled(fonts.Caption2)`
@@ -123,6 +124,8 @@ function TodaySalaryScreen({ word_id, answer, description }) {
   useEffect(() => {
     // 화면 렌더링 후 TextInput에 포커스
     if (inputRef.current) {
+      // 화면 렌더링마다 모달 상태 초기화
+      setIsModalVisible(false);
       inputRef.current.focus();
     }
   }, []);
