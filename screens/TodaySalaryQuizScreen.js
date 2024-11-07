@@ -18,7 +18,7 @@ import Advertise from "../assets/img/todaySalaryQuizScreen/avt.jpg";
 import { Shadow } from "react-native-shadow-2";
 import PrimaryBtn from "../common/PrimaryBtn";
 import { useNavigation } from "@react-navigation/native";
-import Home_TodaySalaryQuiz_Modal from "../components/homeScreen/Home_TodaySalaryQuiz_Modal";
+import PrimaryModal from "../common/PrimaryModal";
 
 const Container = styled.View`
   align-items: center;
@@ -151,12 +151,14 @@ function TodaySalaryScreen({ word_id, answer, description }) {
       >
         {/* Modal 태그 내부에 Modal View를 정의 */}
 
-        <Home_TodaySalaryQuiz_Modal
+        <PrimaryModal
+          type="todaySalary"
           result={tempAnsLth === tempAnswerInput.length}
           answer={tempAnswer}
           word_id={tempWordId}
           closeModal={closeModal}
-        />
+          replaceScreenName="TodaySalaryEdu"
+        ></PrimaryModal>
       </Modal>
 
       {/* 전체 컨테이너 */}

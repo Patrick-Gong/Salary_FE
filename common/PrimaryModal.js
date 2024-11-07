@@ -5,11 +5,12 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
-import PrimaryBtn from "../../common/PrimaryBtn";
+import PrimaryBtn from "./PrimaryBtn";
 import { useNavigation } from "@react-navigation/native";
-import colors from "../../styles/colors";
-import fonts from "../../styles/fonts";
+import colors from "../styles/colors";
+import fonts from "../styles/fonts";
 import HighlightText from "react-native-highlight-underline-text";
+import { useEffect } from "react";
 
 const ModalOverlay = styled.View`
   flex: 1;
@@ -61,20 +62,32 @@ const ButtonText = styled(fonts.Caption2)`
   color: ${colors.Grayscale_80};
 `;
 
+// type: todaySalary 혹은 trendQuiz 문자열 형태로 전달
 //   result: 정답 여부
-//   정답 : answer
-//   정답의 word_id
-function Home_TodaySalaryQuiz_Modal({ result, answer, word_id, closeModal }) {
+//   answer: 정답 word
+//   정답의 word_id (트렌드 퀴즈는 id 없음)
+//   closeModal : 모달을 닫는 함수를 전달
+//  replaceScreenName: 버튼 클릭시 replace할 스크린명을 전달
+//  ??? : 트렌드 퀴즈의 데이터 관리 how
+function PrimaryModal({
+  type,
+  result,
+  answer,
+  word_id,
+  closeModal,
+  replaceScreenName,
+}) {
   const handleNavigateEdu = () => {
     closeModal();
     setTimeout(() => {
-      navigation.replace("TodaySalaryEdu", {
+      navigation.replace(screenName, {
         // params 전달
         word_id: word_id,
       }); // 모달 닫은 후 화면 교체하도록
     }, 300); // 모달 닫는 애니메이션 시간과 동일하게 설정
   };
 
+  // 단어학습, 트렌드 퀴즈 모두 공통으로 적용
   const handleNavigateHome = () => {
     closeModal();
     setTimeout(() => {
@@ -83,6 +96,17 @@ function Home_TodaySalaryQuiz_Modal({ result, answer, word_id, closeModal }) {
   };
 
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const screenName = replaceScreenName;
+
+    if (screenName && navigation.isFocused()) {
+      navigation.replace(screenName, { word_id: 1 });
+    } else {
+      console.warn("Invalid screen name or navigator context");
+    }
+  }, []);
+
   return (
     <TouchableWithoutFeedback onPress={closeModal}>
       <ModalOverlay>
@@ -106,13 +130,28 @@ function Home_TodaySalaryQuiz_Modal({ result, answer, word_id, closeModal }) {
                 text={answer}
               ></HighlightText>
               <GuideText>
-                이어서 단어학습을 진행해보세요!{"\n"}단어학습을 모두 완료하면
-                시드 5개를 받을 수 있어요.
+                {type === "todaySalary" ? (
+                  <GuideText>
+                    {" "}
+                    이어서 단어학습을 진행해보세요!{"\n"}단어학습을 모두
+                    완료하면 시드 5개를 받을 수 있어요.
+                  </GuideText>
+                ) : (
+                  <GuideText>
+                    트렌드 퀴즈에 참여해 시드 5개를 획득했어요. 축하해요.
+                  </GuideText>
+                )}
               </GuideText>
             </TextContainer>
             <PrimaryBtn
               type="active"
-              text={result ? "단어 학습하러 가기" : "단어 이해하러 가기"}
+              text={
+                type === "trendQuiz"
+                  ? "해설 보러가기"
+                  : result
+                  ? "단어 학습하러 가기"
+                  : "단어 이해하러 가기"
+              }
               onPress={handleNavigateEdu}
             ></PrimaryBtn>
             <CloseButton onPress={handleNavigateHome}>
@@ -125,4 +164,4 @@ function Home_TodaySalaryQuiz_Modal({ result, answer, word_id, closeModal }) {
   );
 }
 
-export default Home_TodaySalaryQuiz_Modal;
+export default PrimaryModal;

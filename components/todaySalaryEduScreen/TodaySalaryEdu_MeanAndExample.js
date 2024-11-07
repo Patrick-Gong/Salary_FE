@@ -38,7 +38,7 @@ const ToggleText = styled(fonts.Body2)`
 `;
 
 const ContentContainer = styled.View`
-  width: 260px;
+  width: 90%;
   text-align: center;
   padding: 18px 0px;
   justify-content: center;

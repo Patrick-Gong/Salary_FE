@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { View, Text, ScrollView, ActivityIndicator } from "react-native";
+import { Modal, View, Text, ScrollView, ActivityIndicator } from "react-native";
 import styled, { css } from "styled-components";
 import colors from "../styles/colors";
 import fonts from "../styles/fonts";
@@ -27,7 +27,7 @@ const Title = styled(fonts.H4)`
 
 // 섹션 1) 뜻과 예문
 const MeanAndExampleContainer = styled.View`
-  padding: 12px 24px 44px;
+  padding: 20px 24px 44px;
 `;
 
 const MeanContainer = styled.View`
@@ -165,9 +165,8 @@ function TodaySalaryEduScreen({ word_id }) {
     if (loading) return; // 중복 요청 방지
     setLoading(true);
 
-    setTimeout(() => {
-      console.log("핸들러 함수 호출");
-    }, 3000);
+    // API 요청 후 loading을 false로  (주석 제거)
+    setIsModalVisible(true);
   }
 
   // 스크롤 이벤트 핸들러
@@ -182,6 +181,18 @@ function TodaySalaryEduScreen({ word_id }) {
       handleDoneTodaySalary();
     }
   };
+
+  // 모달 관리
+  // 모달 관리
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  function openModal() {
+    setIsModalVisible(true);
+  }
+
+  function closeModal() {
+    setIsModalVisible(false);
+  }
 
   useEffect(() => {
     // API 호출하여
@@ -206,6 +217,15 @@ function TodaySalaryEduScreen({ word_id }) {
           <Text>Loading...</Text>
         </View>
       )} */}
+      <Modal
+        visible={isModalVisible}
+        transparent={true} // 배경 투명
+        animationType="slide" // 모달 등장 애니메이션
+        onRequestClose={closeModal} // 안드로이드에서 뒤로가기 버튼 처리
+      >
+        {/* Modal 태그 내부에 Modal View를 정의 */}
+        <TodaySalaryEdu_Modal closeModal={closeModal}></TodaySalaryEdu_Modal>
+      </Modal>
       <RootContainer>
         {/* 1. 오늘의 샐러리 한조각 */}
         <MeanAndExampleContainer>

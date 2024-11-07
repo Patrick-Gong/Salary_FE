@@ -18,8 +18,10 @@ function TodaySalaryEdu_StoryTelling() {
 
   const renderItem = ({ item }) => {
     return (
-      <View style={styles.slide}>
-        <Text style={styles.slideText}>{item.text}</Text>
+      <View style={styles.slide} key={item.id}>
+        <Text style={styles.slideText} key={item.id}>
+          {item.text}
+        </Text>
       </View>
     );
   };
