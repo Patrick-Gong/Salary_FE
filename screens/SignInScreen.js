@@ -1,4 +1,6 @@
 import styled from "styled-components/native";
+import { StatusBar } from 'expo-status-bar';
+
 import SignInCharacter from "../assets/SignInCharacter.png";
 import SignInText_SALARY from "../assets/SignInText_SALARY.png";
 import KakaoLoginBtn from "../assets/KakaoLoginBtn.png";
@@ -73,9 +75,10 @@ const NaverBtn = styled.Image`
   height: 60px;
 `;
 
-function SignInScreen({ onEnter }) {
+function SignInScreen({ onEnter, navigation }) {
   return (
     <ViewContainer>
+      <StatusBar style="light" />
       <TopTitleContainer>
         <SignInCharacterImage source={SignInCharacter} />
         <SubTitle>하루 3분</SubTitle>
@@ -89,7 +92,7 @@ function SignInScreen({ onEnter }) {
         <TouchableImage onPress={onEnter}>
           <KakaoBtn source={KakaoLoginBtn} />
         </TouchableImage>
-        <TouchableImage onPress={onEnter}>
+        <TouchableImage onPress={() => navigation.navigate('SignUp')}>
           <NaverBtn source={NaverLoginBtn} />
         </TouchableImage>
       </LoginBtnContainer>
