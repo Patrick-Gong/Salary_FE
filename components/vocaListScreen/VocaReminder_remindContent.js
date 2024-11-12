@@ -1,11 +1,20 @@
 import styled, { css } from "styled-components";
-import { Pressable, Text, TouchableOpacity, View } from "react-native";
+import {
+  Pressable,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from "react-native";
 import fonts from "../../styles/fonts";
 import colors from "../../styles/colors";
+import WordToggle from "../../common/WordToggle";
+import { useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 const Container = styled.View`
   width: 100%;
-  padding: 50px;
 
   display: flex;
   justify-content: flex-start;
@@ -13,12 +22,20 @@ const Container = styled.View`
 `;
 
 const ReminderContainer = styled.View`
-  width: 80%;
+  padding: 50px;
+  width: 90%;
 
   display: flex;
   flex-direction: row;
   justify-content: center;
   flex-wrap: wrap;
+`;
+
+const RemindContentContainer = styled.ScrollView`
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  padding: 0 25px;
 `;
 
 const WordBtnElement = styled.Pressable`
@@ -43,11 +60,21 @@ const WordBtnText = styled(fonts.Body1)`
 // data={remindWords}
 // reminding={reminding}
 // onClick={handleWordClick}
-function VocaReminder_remindContent({ data, reminding, onClick }) {
+function VocaReminder_remindContent({
+  data,
+  reminding,
+  onClick,
+  clickedWordCount,
+}) {
+  const navigation = useNavigation();
   let content;
 
+  // 0개 고른 경우 렌더링 방지
+  if (reminding && clickedWordCount === 0) {
+    navigation.goBack(-1);
+  }
   if (!reminding) {
-    return (
+    content = (
       <Container>
         <ReminderContainer>
           {data.map((item) => (
@@ -62,8 +89,27 @@ function VocaReminder_remindContent({ data, reminding, onClick }) {
       </Container>
     );
   } else {
-    <Text>아직..</Text>;
+    let wordIndex = 1; // indexing을 위한 변수 선언
+    content = (
+      <Container>
+        <RemindContentContainer>
+          {data.map((item) =>
+            item.clickState ? (
+              <WordToggle
+                index={wordIndex++}
+                word={item.word}
+                mean={item.mean}
+              />
+            ) : (
+              <></>
+            )
+          )}
+        </RemindContentContainer>
+      </Container>
+    );
   }
+
+  return content;
 }
 
 export default VocaReminder_remindContent;

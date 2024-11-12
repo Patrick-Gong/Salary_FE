@@ -66,10 +66,10 @@ function VocaListScreen() {
   async function getData() {
     try {
       // const postRes = await axios.post(
-      //   "https://api.ssalary.shop/wordbook?word=나스닥"
       // );
       // console.log(postRes);
-      // const res = await axios.get("https://api.ssalary.shop/wordbook");
+      // const res = await axios.get(
+      // );
       // console.log(res);
     } catch (error) {
       console.log(error);
@@ -84,6 +84,46 @@ function VocaListScreen() {
   }, [isFocused]);
 
   const data = [
+    {
+      word_id: 2,
+      word: "블록체인",
+      like_date: "2024-09-01",
+    },
+    {
+      word_id: 4,
+      word: "수출입물가지수",
+      like_date: "2024-09-02",
+    },
+    {
+      word_id: 2,
+      word: "블록체인",
+      like_date: "2024-09-01",
+    },
+    {
+      word_id: 4,
+      word: "수출입물가지수",
+      like_date: "2024-09-02",
+    },
+    {
+      word_id: 2,
+      word: "블록체인",
+      like_date: "2024-09-01",
+    },
+    {
+      word_id: 4,
+      word: "수출입물가지수",
+      like_date: "2024-09-02",
+    },
+    {
+      word_id: 2,
+      word: "블록체인",
+      like_date: "2024-09-01",
+    },
+    {
+      word_id: 4,
+      word: "수출입물가지수",
+      like_date: "2024-09-02",
+    },
     {
       word_id: 2,
       word: "블록체인",
@@ -113,6 +153,11 @@ function VocaListScreen() {
           data={data}
           renderItem={({ item }) => <VocaList_FlatListItem {...item} />}
           keyExtractor={(item) => item.word_id}
+          ListEmptyComponent={
+            <fonts.H2B style={{ textAlign: "center" }}>
+              단어장에 단어를 추가해보세요!
+            </fonts.H2B>
+          }
         />
       </FlatListContainer>
       <BtnContainer>

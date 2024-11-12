@@ -46,7 +46,7 @@ function VocaReminderScreen() {
   const [remindWords, setRemindWords] = useState([
     {
       word: "헤지",
-      mean: "어쩌고 저쩌고",
+      mean: "한때 주식은 현장에서 직접 종이로 거래되었지만, 1971년 미국에서는 전자적으로 주식을 거래할 수 있는 새로운 시장이 열렸어요. 이 시장의 이름이 바로 나스닥(NASDAQ)입니다. 나스닥은 특히 기술 관련 주식들이 많이 상장되어 있는 시장으로, 기술주를 중심으로 한 세계에서 가장 큰 전자거래 시장이에요.",
     },
     {
       word: "소득공제",
@@ -94,7 +94,8 @@ function VocaReminderScreen() {
   // 리마인드할 단어를 가져옴
   async function fetchRemindWords() {
     try {
-      //   const res = axios.get("https://api.ssalary.shop/wordbook/reminder");
+      //   const res = axios.get(
+      // );
       //   console.log("결과", res);
     } catch (error) {
       console.log(error);
@@ -108,7 +109,7 @@ function VocaReminderScreen() {
       ...item,
       clickState: allTrue,
     }));
-    console.log(updateData);
+    // console.log(updateData);
     setRemindWords(updateData);
   }
 
@@ -119,7 +120,7 @@ function VocaReminderScreen() {
 
     // word 자체를 매개변수로 받아 해당 word의 state를 변경하여
     // state 값을 바꾼다.
-    console.log(updateData);
+    // console.log(updateData);
     setRemindWords(updateData);
   }
 
@@ -161,7 +162,8 @@ function VocaReminderScreen() {
           </fonts.Caption2>
         ) : (
           <fonts.Caption2>
-            저번보다 2개의 단어를 더 기억하고 있어요! {"\n"}
+            저번보다 <Text style={{ color: colors.text_green }}>2개</Text>의
+            단어를 더 기억하고 있어요! {"\n"}
             체크하지 못한 단어들은 다시 한번 복습해볼까요?
           </fonts.Caption2>
         )}
@@ -172,6 +174,7 @@ function VocaReminderScreen() {
           data={remindWords}
           reminding={reminding}
           onClick={handleWordClick}
+          clickedWordCount={returnCountClicked()}
         />
       </ContentContainer>
       <BtnContainer>
