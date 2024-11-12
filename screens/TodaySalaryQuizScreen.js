@@ -51,7 +51,7 @@ const DescriptContainer = styled.View`
   gap: 22px;
 `;
 
-const AnswerDescript = styled(fonts.Body2)`
+const AnswerDescript = styled(fonts.Body2M)`
   color: ${colors.Grayscale_90};
 `;
 

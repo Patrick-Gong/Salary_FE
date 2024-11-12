@@ -16,11 +16,11 @@ const RootContainer = styled.View`
   background-color: ${colors.Grayscale_white};
 `;
 
-const BoldTitle = styled(fonts.H4)`
+const BoldTitle = styled(fonts.H4SB)`
   color: ${colors.Grayscale_100};
 `;
 
-const Title = styled(fonts.H4)`
+const Title = styled(fonts.H4M)`
   font-family: "Pretendard-Medium";
   color: ${colors.Grayscale_100};
 `;
@@ -61,9 +61,8 @@ const StoryTellingContainer = styled.View`
   align-items: center;
 `;
 
-const StoryTellingTitle = styled(fonts.H4)`
+const StoryTellingTitle = styled(fonts.H4M)`
   width: 100%;
-  font-family: "Pretendard-Medium";
   color: ${colors.Grayscale_100};
   text-align: left;
 `;
@@ -125,7 +124,7 @@ const EduDoneContainer = styled.View`
   align-items: center;
 `;
 
-const EduDoneText = styled(fonts.Body2)`
+const EduDoneText = styled(fonts.Body2M)`
   color: #000000;
   text-align: center;
 `;
