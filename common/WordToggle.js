@@ -10,7 +10,7 @@ import { useState } from "react";
 const Container = styled.View`
   width: 100%;
 
-  margin: 5px;
+  margin-bottom: 10px;
 
   border-radius: 14px;
   background-color: ${colors.Grayscale_90};
