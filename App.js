@@ -21,6 +21,7 @@ import { useFonts } from "expo-font";
 import colors from "./styles/colors";
 import fonts from "./styles/fonts";
 import VocaReminderScreen from "./screens/VocaReminderScreen";
+import VocaReminder_HeaderRight from "./components/vocaListScreen/VocaReminder_HeaderRight";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -187,6 +188,7 @@ export default function App() {
                   headerTintColor: colors.Grayscale_100,
                   headerShown: true,
                   headerBackTitleVisible: false,
+                  headerRight: () => <VocaReminder_HeaderRight />,
                 }}
               />
             </>

@@ -17,7 +17,7 @@ import PrimaryBtn from "../common/PrimaryBtn";
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons"; // 북마크
 import VocaList_FlatListItem from "../components/vocaListScreen/VocaList_FlatListItem";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 const AdvertiseWrapper = styled.View`
   display: flex;
@@ -61,6 +61,7 @@ const BtnContainer = styled.View`
 function VocaListScreen() {
   // stack에 쌓여있던 VocaScreen이 focus되면 리렌더링되어 데이터를 알맞게 띄우도록 함
   const isFocused = useIsFocused();
+  const navigation = useNavigation();
 
   async function getData() {
     try {
@@ -118,7 +119,13 @@ function VocaListScreen() {
         <fonts.Caption1 style={{ textAlign: "center" }}>
           단어를 10개 이상 저장해야 리마인드를 진행할 수 있어요.
         </fonts.Caption1>
-        <PrimaryBtn type="active" text="단어 리마인드 하러 가기" />
+        <PrimaryBtn
+          type="active"
+          text="단어 리마인드 하러 가기"
+          onPress={() => {
+            navigation.navigate("VocaReminder");
+          }}
+        />
       </BtnContainer>
     </View>
   );

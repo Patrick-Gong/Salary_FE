@@ -101,7 +101,7 @@ const AnswerDescript = styled(fonts.Body2M)`
 // state 1: 학습 진행 여부에 따라 검정색 혹은 흰색
 // state 2: 그날의 학습할 단어를 받아와야됨.
 function Home_TodaySalary({ word }) {
-  const [doneTodaySalary, setDoneTodaySalary] = useState(true);
+  const [doneTodaySalary, setDoneTodaySalary] = useState(false);
   const [todayVoca, setTodayVoca] = useState("나스닥");
 
   const navigation = useNavigation();

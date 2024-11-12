@@ -8,6 +8,7 @@ import TodaySalaryEdu_MeanAndExample from "../components/todaySalaryEduScreen/To
 import TodaySalaryEdu_StoryTelling from "../components/todaySalaryEduScreen/TodaySalaryEdu_StoryTelling";
 import TodaySalaryEdu_ScrollDownAnim from "../components/todaySalaryEduScreen/TodaySalaryEdu_ScrollDownAnim";
 import { Ionicons } from "@expo/vector-icons";
+import HighlightText from "react-native-highlight-underline-text";
 
 const RootContainer = styled.View`
   flex: 1;
