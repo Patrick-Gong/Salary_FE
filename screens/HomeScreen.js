@@ -154,7 +154,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     backgroundColor: colors.Grayscale_white,
-    paddingTop: Constants.statusBarHeight, // // Constants의 statusBarHeight 값을 이용한다.
   },
   shadowContainer: {
     width: "100%",
