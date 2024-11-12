@@ -20,6 +20,7 @@ import SignUpScreen from "./screens/SignUpScreen";
 import { useFonts } from "expo-font";
 import colors from "./styles/colors";
 import fonts from "./styles/fonts";
+import VocaReminderScreen from "./screens/VocaReminderScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -173,6 +174,16 @@ export default function App() {
                 component={TodayTrendQuizScreen}
                 options={{
                   headerTitle: "",
+                  headerTintColor: colors.Grayscale_100,
+                  headerShown: true,
+                  headerBackTitleVisible: false,
+                }}
+              />
+              <Stack.Screen
+                name="VocaReminder"
+                component={VocaReminderScreen}
+                options={{
+                  headerTitle: "단어 리마인드",
                   headerTintColor: colors.Grayscale_100,
                   headerShown: true,
                   headerBackTitleVisible: false,

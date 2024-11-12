@@ -17,6 +17,7 @@ import PrimaryBtn from "../common/PrimaryBtn";
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons"; // 북마크
 import VocaList_FlatListItem from "../components/vocaListScreen/VocaList_FlatListItem";
+import { useIsFocused } from "@react-navigation/native";
 
 const AdvertiseWrapper = styled.View`
   display: flex;
@@ -32,7 +33,6 @@ const AdvertiseImg = styled.Image`
 `;
 
 const TitleContainer = styled.View`
-  border: 1px solid black;
   width: 100%;
   padding: 30px;
   display: flex;
@@ -59,20 +59,28 @@ const BtnContainer = styled.View`
 // * 전역상태 닉네임 받아와서 띄울 필요 있음
 // 리마인드 클릭 상태에 따라 버튼 active, deactive 관리
 function VocaListScreen() {
-  // async function getData() {
-  //   try {
-  //     console.log("try");
-  //     const res = await axios.get(
-  //       "https://api.ssalary.shop/words/search?word=시장"
-  //     );
-  //     console.log(res.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-  // getData();
+  // stack에 쌓여있던 VocaScreen이 focus되면 리렌더링되어 데이터를 알맞게 띄우도록 함
+  const isFocused = useIsFocused();
+
+  async function getData() {
+    try {
+      // const postRes = await axios.post(
+      //   "https://api.ssalary.shop/wordbook?word=나스닥"
+      // );
+      // console.log(postRes);
+      // const res = await axios.get("https://api.ssalary.shop/wordbook");
+      // console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const nickname = "나야들기름";
+
+  useEffect(() => {
+    // 북마크 단어장에 있는 단어를 받아옴
+    getData();
+  }, [isFocused]);
 
   const data = [
     {
