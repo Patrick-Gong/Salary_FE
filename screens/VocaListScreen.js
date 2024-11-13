@@ -85,7 +85,17 @@ function VocaListScreen() {
 
   const data = [
     {
+      word_id: 1,
+      word: "블록체인",
+      like_date: "2024-09-01",
+    },
+    {
       word_id: 2,
+      word: "수출입물가지수",
+      like_date: "2024-09-02",
+    },
+    {
+      word_id: 3,
       word: "블록체인",
       like_date: "2024-09-01",
     },
@@ -95,42 +105,32 @@ function VocaListScreen() {
       like_date: "2024-09-02",
     },
     {
-      word_id: 2,
+      word_id: 5,
       word: "블록체인",
       like_date: "2024-09-01",
     },
     {
-      word_id: 4,
+      word_id: 6,
       word: "수출입물가지수",
       like_date: "2024-09-02",
     },
     {
-      word_id: 2,
+      word_id: 7,
       word: "블록체인",
       like_date: "2024-09-01",
     },
     {
-      word_id: 4,
+      word_id: 8,
       word: "수출입물가지수",
       like_date: "2024-09-02",
     },
     {
-      word_id: 2,
+      word_id: 9,
       word: "블록체인",
       like_date: "2024-09-01",
     },
     {
-      word_id: 4,
-      word: "수출입물가지수",
-      like_date: "2024-09-02",
-    },
-    {
-      word_id: 2,
-      word: "블록체인",
-      like_date: "2024-09-01",
-    },
-    {
-      word_id: 4,
+      word_id: 10,
       word: "수출입물가지수",
       like_date: "2024-09-02",
     },

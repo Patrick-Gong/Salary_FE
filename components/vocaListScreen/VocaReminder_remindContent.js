@@ -22,7 +22,7 @@ const Container = styled.View`
 `;
 
 const ReminderContainer = styled.View`
-  padding: 50px;
+  padding: 40px;
   width: 90%;
 
   display: flex;
