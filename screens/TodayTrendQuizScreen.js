@@ -1,10 +1,11 @@
-import { StatusBar } from "expo-status-bar";
-import styled from "styled-components/native";
-import { useEffect, useLayoutEffect, useState } from "react";
-import GreenCheckMark from "../assets/img/todayTrendQuizScreen/GreenCheckMark.png";
-import { Shadow } from "react-native-shadow-2";
-import { Modal } from "react-native";
-import PrimaryModal from "../common/PrimaryModal";
+import { StatusBar } from 'expo-status-bar';
+import styled from 'styled-components/native';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import GreenCheckMark from '../assets/img/todayTrendQuizScreen/GreenCheckMark.png';
+import { Shadow } from 'react-native-shadow-2';
+import { Modal } from 'react-native';
+import PrimaryModal from '../common/PrimaryModal';
+import axios from 'axios';
 
 const ViewContainer = styled.SafeAreaView`
   background-color: white;
@@ -19,7 +20,7 @@ const MainTitle = styled.Text`
   color: #121212;
   font-size: 20px;
   font-weight: 600;
-  margin: 10px 0px 0px 12px;
+  margin: 20px 0px 0px 12px;
 `;
 
 const SubTitle = styled.Text`
@@ -64,7 +65,7 @@ const AnswerBox = styled.Pressable`
   width: 320px;
   height: 46px;
   border-radius: 6px;
-  background-color: ${(props) => (!props.isSelected ? "#ffffff" : "#313131")};
+  background-color: ${(props) => (!props.isSelected ? '#ffffff' : '#313131')};
   margin-bottom: 14px;
 `;
 
@@ -100,48 +101,85 @@ const GreenCheckMarkImg = styled.Image`
 `;
 
 const AnswerBox_Text = styled.Text`
-  color: ${(props) => (!props.isSelected ? "#121212" : "#ffffff")};
+  color: ${(props) => (!props.isSelected ? '#121212' : '#ffffff')};
   font-size: 16px;
   font-weight: 500;
 `;
 
 // 초록 버튼 컴포넌트로 재활용하자(SignUpModal에도 존재)
 const SubmitBtn = styled.Pressable`
-  margin-top: 200px;
+  margin-top: 240px;
+  margin-bottom: 17px;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 320px;
   height: 45px;
   border-radius: 10px;
   background-color: ${(props) =>
-    !props.isAbleToSubmit ? "#eff4d2" : "#d7ff01"};
+    !props.isAbleToSubmit ? '#eff4d2' : '#d7ff01'};
 `;
 
 const SubmitBtn_Text = styled.Text`
   font-size: 16px;
   font-weight: 600;
-  color: ${(props) => (props.isAbleToSubmit ? "#313131" : "#a0a0a0")};
+  color: ${(props) => (props.isAbleToSubmit ? '#313131' : '#a0a0a0')};
 `;
 
+function shuffle(array) {
+  const shuffledArray = array.slice(); // Create a copy to avoid mutating the original array
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]]; // Swap elements
+  }
+  return shuffledArray;
+}
+
 function TodayTrendQuizScreen() {
+  const responseData = {
+    trend_quiz:
+      '최근 중앙은행들이 통화 긴축을 완화하고 있는 이유로 가장 적절한 것은 무엇인가요?',
+    correct: '경제 성장 둔화로 인한 경기 활성화 필요',
+    incorrect: [
+      '인플레이션 상승 방지',
+      '원자재 가격 상승 억제',
+      '금융 시장 불안정성 증가',
+    ],
+    explanation:
+      '최근 글로벌 경기 둔화와 경제 불확실성이 높아지면서 중앙은행들은 통화 긴축 정책을 완화하고 있습니다. 이는 경기를 활성화하여 경제 성장 둔화를 완화하려는 목적이 있습니다.',
+  };
+
   const InitialAnswers = [
-    { isCorrect: false, isSelected: false, content: "금리 인상" },
-    { isCorrect: true, isSelected: false, content: "금리 인하" },
-    { isCorrect: false, isSelected: false, content: "금리 동결" },
-    { isCorrect: false, isSelected: false, content: "세금 인상" },
+    { isCorrect: true, isSelected: false, content: `${responseData.correct}` },
+    {
+      isCorrect: false,
+      isSelected: false,
+      content: `${responseData.incorrect[0]}`,
+    },
+    {
+      isCorrect: false,
+      isSelected: false,
+      content: `${responseData.incorrect[1]}`,
+    },
+    {
+      isCorrect: false,
+      isSelected: false,
+      content: `${responseData.incorrect[2]}`,
+    },
   ];
 
-  const [answersState, setAnswersState] = useState(InitialAnswers);
+  const [answersState, setAnswersState] = useState(shuffle(InitialAnswers));
   const [isAbleToSubmit, setIsAbleToSubmit] = useState(false);
 
   const handleSelectAnswer = (targetedIndex) => {
     let updatedAnswersState;
+    // 답을 아무것도 고르지 않았을 때
     if (!answersState.find((item) => item.isSelected)) {
       updatedAnswersState = answersState.map((item, index) =>
         index === targetedIndex
           ? { ...item, isSelected: !item.isSelected }
           : item
       );
+      // 답을 하나 골랐을 때
     } else {
       updatedAnswersState = answersState.map((item, index) =>
         index === targetedIndex || item.isSelected
@@ -194,29 +232,28 @@ function TodayTrendQuizScreen() {
         <PrimaryModal
           type="trendQuiz"
           // result={answersState.isCorrect}
-          result={true} // 테스트용
+          result={answersState.find(
+            (item) => item.isSelected && item.isCorrect
+          )} // 테스트용
           // answer={answersState.content}
-          answer={"테스트용입니다."}
+          answer={`${responseData.correct}`}
           closeModal={closeModal}
-          replaceScreenName="TodaySalaryEdu" // 여기에 새로운 트렌드 퀴즈 해설 스크린명을 전달해주세요
+          replaceScreenName="TodayTrendSolution" // 여기에 새로운 트렌드 퀴즈 해설 스크린명을 전달해주세요
         ></PrimaryModal>
       </Modal>
       <QuizViewContainer>
         <MainTitle>오늘의 트렌드 퀴즈</MainTitle>
         <SubTitle>요즘 경제 상황에 맞는 퀴즈를 준비했어요</SubTitle>
         <Shadow
-          style={{ width: "100%" }}
+          style={{ width: '100%' }}
           distance={10}
-          startColor="rgba(0, 0, 0, 0.03)"
+          startColor="rgba(0, 0, 0, 0.02)"
           offset={[4, 4]}
         >
           <QuizContainer>
             <QuestionText>
               <QDot>Q. </QDot>
-              <QuestionContent>
-                2024년 8월 한국의 물가 상승률이 2.0%로 둔화된 가운데, 한국은행이
-                향후 취할 가능성이 높은 조치는 무엇일까요?
-              </QuestionContent>
+              <QuestionContent>{responseData.trend_quiz}</QuestionContent>
             </QuestionText>
             <AnswerContainer>
               {answersState.map((item, index) => (
@@ -243,7 +280,7 @@ function TodayTrendQuizScreen() {
             </AnswerContainer>
             <SubmitBtn
               isAbleToSubmit={isAbleToSubmit}
-              onPress={onSubmitHandler}
+              onPress={isAbleToSubmit ? onSubmitHandler : null}
             >
               <SubmitBtn_Text isAbleToSubmit={isAbleToSubmit}>
                 제출하기
