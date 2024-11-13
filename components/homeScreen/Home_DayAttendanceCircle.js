@@ -28,25 +28,36 @@ const TouchableContainer = styled.TouchableOpacity`
       : css`
           background-color: white;
         `}
+
+  ${(props) =>
+    props.empty
+      ? css`
+          background-color: white;
+        `
+      : css``}
 `;
 
 const DayText = styled(fonts.Body2M)`
-  color: ${colors.Grayscale_80};
+  ${(props) =>
+    props.empty
+      ? css`
+          color: ${colors.Grayscale_20};
+        `
+      : css`
+          color: ${colors.Grayscale_80};
+        `}
 `;
 
 function Home_DayAttendanceCircle({
-  calendarDate,
-  date,
-  selected,
-  onPress,
-  state,
-  marking,
-  onDateSelected,
-  attendance_state,
+  calendarDate, // 캘린더에서 보내는 date
+  date, // week strip에서 보내는 date
+  attendance_state, // api를 통해 받은 학습 상태
   onCalendarModalOpen,
   type, // calendar면 전달
+  empty, // true라면 비활성화된 circle을 전달
 }) {
-  console.log(date);
+  //   console.log("date", date); //date "2024-12-06T03:25:08.085Z"
+  //   console.log("calendarDate", calendarDate);
   //   0부터 5까지 랜덤 (더미 데이터)
   const randNum = Math.floor(Math.random() * 5);
   attendance_state = randNum;
@@ -61,10 +72,11 @@ function Home_DayAttendanceCircle({
       <TouchableContainer
         onPress={() => onCalendarModalOpen()}
         attendance_state={attendance_state}
+        empty={empty}
       >
         {/* 날짜 */}
-        {attendance_state < 4 ? (
-          <DayText>
+        {empty || attendance_state < 4 ? (
+          <DayText empty={empty}>
             {type === "calendar" ? calendarDate.day : date.format("D")}
           </DayText>
         ) : (
