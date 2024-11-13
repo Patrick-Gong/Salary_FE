@@ -24,19 +24,6 @@ import process3 from "../assets/img/homeScreen/charac/process3.png";
 import process4 from "../assets/img/homeScreen/charac/process4.png";
 import fonts from "../styles/fonts";
 
-// 임시 박스
-const TemporaryBox2 = styled.View`
-  border: 1px solid red;
-  flex-shrink: 0;
-
-  width: 100%;
-  height: 100px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 const ContentsContainer = styled.View`
   background: ${colors.bg};
   border-top-left-radius: 20px;
@@ -111,11 +98,8 @@ function HomeScreen() {
   // api
   return (
     <SafeAreaView style={styles.rootScreen}>
-      <StatusBar style="dark" />
-      <ScrollView>
-        <TemporaryBox2>
-          <Text>날짜 관리와 스트립 형태의 달력 컴포넌트</Text>
-        </TemporaryBox2>
+      <ScrollView automaticallyAdjustContentInsets={false}>
+        <Home_WeekStrip />
         <ProcessBarWrapper>
           <StepContainer>
             <fonts.H2M style={{ color: colors.Grayscale_100 }}>
