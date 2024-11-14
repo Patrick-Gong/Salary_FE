@@ -15,6 +15,7 @@ import MyPageScreen from "./screens/MyPageScreen";
 import TodaySalaryEduScreen from "./screens/TodaySalaryEduScreen";
 import TodaySalaryQuizScreen from "./screens/TodaySalaryQuizScreen";
 import TodayTrendQuizScreen from "./screens/TodayTrendQuizScreen";
+import TodayTrendSolutionScreen from "./screens/TodayTrendSolutionScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 
 import { useFonts } from "expo-font";
@@ -173,6 +174,26 @@ export default function App() {
               <Stack.Screen
                 name="TodayTrendQuiz"
                 component={TodayTrendQuizScreen}
+                options={{
+                  headerTitle: '',
+                  headerTintColor: colors.Grayscale_100,
+                  headerShown: true,
+                  headerBackTitleVisible: false,
+                }}
+              />
+              <Stack.Screen
+                name="VocaSearchResult"
+                component={VocaSearchResultScreen}
+                options={{
+                  headerTitle: "",
+                  headerTintColor: colors.Grayscale_100,
+                  headerShown: true,
+                  headerBackTitleVisible: false,
+                }}
+              />
+                            <Stack.Screen
+                name="TodayTrendSolution"
+                component={TodayTrendSolutionScreen}
                 options={{
                   headerTitle: "",
                   headerTintColor: colors.Grayscale_100,
