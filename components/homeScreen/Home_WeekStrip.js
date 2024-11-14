@@ -60,7 +60,6 @@ const Home_WeekStrip = ({ onCalendarModalOpen }) => {
   const dayCache = useMemo(() => ({}), []);
 
   const getCachedDayComponent = (props) => {
-    console.log(getFormattedDate(new Date(props.date)));
     const randNum = Math.floor(Math.random() * 5);
     attendance_state = randNum;
 

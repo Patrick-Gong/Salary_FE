@@ -1,5 +1,6 @@
 import { atom } from "recoil";
 import getKoreaFormattedDate from "../functions/getKoreaForamttedDate";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const todayAttendanceState = atom({
   key: "todayAttendanceState",
@@ -18,6 +19,7 @@ export const todayAttendanceState = atom({
       loadPersisted(); // async storage에 저장되어 있던 오늘의 attendance state를 불러옴
 
       onSet(async (newValue) => {
+        console.log("새로 set!!!", newValue);
         await AsyncStorage.setItem(
           getKoreaFormattedDate(),
           JSON.stringify(newValue)

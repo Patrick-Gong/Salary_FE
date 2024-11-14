@@ -34,7 +34,7 @@ const ItemWrapper = styled.View`
 const BookMarkContainer = styled.TouchableOpacity``;
 
 function VocaList_FlatListItem({ word_id, word }) {
-  const [bookMark, setBookMark] = useState(false);
+  const [bookMark, setBookMark] = useState(true);
 
   async function fetchBookMarkState(tmpState) {
     if (tmpState) {

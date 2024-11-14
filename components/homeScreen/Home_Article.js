@@ -6,11 +6,12 @@ import fonts from "../../styles/fonts";
 import ellipse_done from "../../common/homeScreen/ellipse_done.png";
 import ellipse_yet from "../../common/homeScreen/ellipse_yet.png";
 import Home_Article_List from "./Home_Article_List";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   todayArticleSelector,
   todayAttendanceDetail,
 } from "../../Recoil/todayAttendanceDetail";
+import { todayAttendanceState } from "../../Recoil/todayAttendanceState";
 
 const Container = styled.View`
   flex: 1;
@@ -51,8 +52,13 @@ const DoneMarker = styled.Image`
 `;
 
 function Home_TrendQuiz() {
+  // detailState 관리
   const articleState = useRecoilValue(todayArticleSelector);
   const setArticleState = useSetRecoilState(todayArticleSelector);
+
+  // attendanceState 관리
+  const [attendaceState, setAttendanceState] =
+    useRecoilState(todayAttendanceState);
 
   return (
     <Container articleState={articleState}>

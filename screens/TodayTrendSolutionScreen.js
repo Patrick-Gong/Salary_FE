@@ -8,8 +8,9 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { BASE_URL } from "@env";
 import { useState } from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { todayTrendSelector } from "../Recoil/todayAttendanceDetail";
+import { todayAttendanceState } from "../Recoil/todayAttendanceState";
 
 const ViewContainer = styled.SafeAreaView`
   background-color: white;
@@ -117,6 +118,8 @@ const CompleteBtnText = styled.Text`
 function TodayTrendSolutionScreen({ navigation, route }) {
   // 메인화면에서 알맞게 렌더링하기 위해 전역 상태 관리
   const setTrendState = useSetRecoilState(todayTrendSelector);
+  const [attendanceState, setAttendanceState] =
+    useRecoilState(todayAttendanceState);
 
   const handleFinishStudy = async () => {
     try {
@@ -124,6 +127,8 @@ function TodayTrendSolutionScreen({ navigation, route }) {
         `${BASE_URL}/trend-quiz/update-status?trend=${true}`
       );
       setTrendState(true);
+      setAttendanceState((prev) => prev + 1); // attendance state에 1을 더해주어 알맞게 상태 관리
+      // 중복 처리되어서는 안됨!!
       console.log(res.data);
       navigation.navigate("BottomTab");
     } catch (error) {

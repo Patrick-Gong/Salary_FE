@@ -23,10 +23,6 @@ const TouchableContainer = styled.TouchableOpacity`
   ${(props) =>
     Number(props.attendance_state) > 3
       ? css`
-          background-color: ${colors.Grayscale_100};
-        `
-      : Number(props.attendance_state) > 0
-      ? css`
           background-color: ${colors.Primary_100};
         `
       : css`
@@ -52,7 +48,12 @@ const DayText = styled(fonts.Body2M)`
         `}
 `;
 
-async function getStateFromStorage(date, calendarDate, setEmpty) {
+async function getStateFromStorage(
+  date,
+  calendarDate,
+  setEmpty,
+  setAttendanceState
+) {
   // console.log(date, calendarDate, "함수 호출");
 
   var formattedDate;
@@ -62,11 +63,13 @@ async function getStateFromStorage(date, calendarDate, setEmpty) {
   const storedState = await AsyncStorage.getItem(formattedDate);
   // date를 key로 저장되어 있던 state를 불러온다.
   if (storedState !== null) {
-    // console.log("storedState return", storedState);
+    console.log("storedState return", storedState);
+    await setEmpty(false);
+    await setAttendanceState(storedState);
     return storedState;
   } else {
     // console.log("false return");
-    setEmpty(true);
+    await setEmpty(true);
     return false;
   }
 }
@@ -83,9 +86,15 @@ function Home_DayAttendanceCircle({
   //   console.log("calendarDate.dateString", calendarDate); // 2024-11-15
 
   const [emptyState, setEmpty] = useState(empty);
+  const [attendanceState, setAttendanceState] = useState(0);
 
   attendance_state = 0;
-  attendance_state = getStateFromStorage(date, calendarDate, setEmpty);
+  attendance_state = getStateFromStorage(
+    date,
+    calendarDate,
+    setEmpty,
+    setAttendanceState
+  );
 
   // empty = compareDate(new Date(), new Date(formattedDate)); // 중복 처리임
 
@@ -98,11 +107,11 @@ function Home_DayAttendanceCircle({
     >
       <TouchableContainer
         onPress={() => onCalendarModalOpen()}
-        attendance_state={attendance_state}
+        attendance_state={attendanceState}
         empty={emptyState}
       >
         {/* 날짜 */}
-        {emptyState || attendance_state < 4 ? (
+        {attendance_state !== 5 ? (
           <DayText empty={emptyState}>
             {type === "calendar" ? calendarDate.day : date.format("D")}
           </DayText>

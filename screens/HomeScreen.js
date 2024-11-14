@@ -33,6 +33,7 @@ import { todayAttendanceState } from "../Recoil/todayAttendanceState";
 import { todayAttendanceDetail } from "../Recoil/todayAttendanceDetail";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import getKoreaFormattedDate from "../functions/getKoreaForamttedDate";
+import { parse } from "react-native-svg";
 
 const ContentsContainer = styled.View`
   background: ${colors.bg};
@@ -103,7 +104,8 @@ function HomeScreen() {
     todayAttendanceDetail
   );
 
-  // 최초 렌더링 시 attendance_state를 받아와 전역 상태로 관리
+  // 1. 최초 렌더링 시 attendance_state를 받아와 전역 상태로 관리
+  // 이후 학습 완료시 전역으로 관리는 함
   useEffect(() => {
     async function fetchTodayAttendanceState() {
       try {
@@ -116,6 +118,9 @@ function HomeScreen() {
           setAttendanceId(res.data.attendance_id);
         }
       } catch (error) {
+        console.log(
+          `${BASE_URL}/attendance/status?attendance_date=${getKoreaFormattedDate()}`
+        );
         console.log("1. attendance state: ", error);
       }
     }
@@ -123,7 +128,7 @@ function HomeScreen() {
     fetchTodayAttendanceState();
   }, []);
 
-  //오늘 학습 과목 조회 API 받아오기
+  // 2. 오늘 학습 과목 조회 API 받아오기
   //굳이 매번 받아와야 할까 싶긴 한데
   useEffect(() => {
     async function fetchTodayAttendanceDetail() {
@@ -131,16 +136,17 @@ function HomeScreen() {
         const res = await axios.get(`${BASE_URL}/attendance/today`);
         if (res.status === 200) {
           setAttendanceDetail(res.data);
-          console.log("attendance today", res.data);
+          console.log("2. attendance today", res.data);
         }
       } catch (error) {
-        console.log(error);
+        console.log("1번 에러", error);
       }
     }
 
     fetchTodayAttendanceDetail();
   }, []);
 
+  // 3. 오늘의 단어 id를 받아오기 (하루에 1번만 받아옴)
   async function fetchTodayWordId() {
     try {
       const res = await axios.get(`${BASE_URL}/today-word`);
@@ -149,19 +155,22 @@ function HomeScreen() {
         fetchTodayWordData({ word_id: res.data.word_id }); //data를 fetch하러
       }
     } catch (error) {
-      console.log("에러", error);
+      console.log("2번 에러", error);
     }
   }
 
   async function fetchTodayWordData({ word_id }) {
     try {
       const res = await axios.get(`${BASE_URL}/words?word_id=${word_id}`);
-      console.log(res.data);
-      console.log(res.status);
       if (res.status === 200) {
         const data = [
-          ["todaySalaryData", JSON.stringify(res.data)],
-          ["todaySalaryFetchDate", JSON.stringify(getKoreaFormattedDate())],
+          [
+            "todaySalaryData",
+            JSON.stringify({
+              ...res.data,
+              lastFetchedDate: getKoreaFormattedDate(),
+            }),
+          ],
         ];
         await AsyncStorage.multiSet(data);
       }
@@ -170,18 +179,23 @@ function HomeScreen() {
     }
   }
 
-  // 오늘의 학습 단어를 최초 1회만 받아옴, multi-set으로 업데이트를 관리
+  // 오늘의 학습 단어를 최초 1회만 받아옴
   useEffect(() => {
     const checkAndFetchData = async () => {
       try {
-        const keys = ["todaySalaryData", "todaySalaryFetchDate"];
-        const todaySalaryData = await AsyncStorage.multiGet(keys);
-
-        const target = todaySalaryData.find(
-          ([key]) => key === "todaySalaryFetchDate"
+        const parsedLastFetchedData = JSON.parse(
+          await AsyncStorage.getItem("todaySalaryData")
         );
-        if (target[1] !== getKoreaFormattedDate()) {
+        if (
+          !parsedLastFetchedData ||
+          parsedLastFetchedData.lastFetchedDate !== getKoreaFormattedDate()
+        ) {
+          console.log(
+            "이전에 패치된 데이터가 없거나 지난 날짜라서 새로 단어 id를 받아옴"
+          );
           fetchTodayWordId();
+        } else {
+          console.log("이미 word Id를 받아옴");
         }
       } catch (error) {
         console.log(error);

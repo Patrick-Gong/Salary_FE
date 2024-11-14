@@ -9,11 +9,13 @@ import TodaySalaryEdu_StoryTelling from "../components/todaySalaryEduScreen/Toda
 import TodaySalaryEdu_ScrollDownAnim from "../components/todaySalaryEduScreen/TodaySalaryEdu_ScrollDownAnim";
 import { Ionicons } from "@expo/vector-icons";
 import HighlightText from "react-native-highlight-underline-text";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { todayWordSelector } from "../Recoil/todayAttendanceDetail";
 import axios from "axios";
 import { BASE_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { todayAttendanceState } from "../Recoil/todayAttendanceState";
+import WordToggle from "../common/WordToggle";
 
 const RootContainer = styled.View`
   flex: 1;
@@ -144,6 +146,10 @@ function TodaySalaryEduScreen() {
   const wordState = useRecoilValue(todayWordSelector);
   const setTodayWordState = useSetRecoilState(todayWordSelector);
 
+  // attendance state를 업데이트해주기 위해 불러옴
+  const [attendaceState, setAttendanceState] =
+    useRecoilState(todayAttendanceState);
+
   const [loading, setLoading] = useState(false);
   const [wordId, setWordId] = useState("");
 
@@ -190,6 +196,7 @@ function TodaySalaryEduScreen() {
     if (postWordAttendance() && !wordState) {
       setTodayWordState(true); // 전역 상태 관리
       setIsModalVisible(true); // 모달 상태 관리
+      setAttendanceState((prev) => prev + 3); // 3을 더해주어 salary done 표시
     }
   }
 
@@ -337,9 +344,11 @@ function TodaySalaryEduScreen() {
         </NewsContainer>
         {/* 4. 끝까지 내려 => 모달 올리기 & 학습 완료 api 호출 */}
         <EduDoneContainer>
-          <TodaySalaryEdu_ScrollDownAnim />
+          {!wordState ? <TodaySalaryEdu_ScrollDownAnim /> : <></>}
           <EduDoneText>
-            끝까지 내리면 오늘의 샐러리 한조각 학습이 완료돼요!
+            {!wordState
+              ? "끝까지 내리면 오늘의 샐러리 한조각 학습이 완료돼요!"
+              : "오늘의 학습을 완료했어요!"}
           </EduDoneText>
         </EduDoneContainer>
       </RootContainer>
