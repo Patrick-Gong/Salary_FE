@@ -1,15 +1,15 @@
-import styled from 'styled-components/native';
-import colors from '../styles/colors';
-import fonts from '../styles/fonts';
-import ArrowBtn from '../assets/img/vocaSearchScreen/ArrowBtn.png';
-import Question from '../assets/img/vocaSearchScreen/Question.png';
-import SearchIcon from '../assets/img/vocaSearchScreen/SearchIcon.png';
-import ResetIcon from '../assets/img/vocaSearchScreen/ResetIcon.png';
-import Salary_Character from '../assets/Salary_Character.png';
-import { useCallback, useEffect, useState } from 'react';
-import useDebounce from '../hooks/useDebounce';
-import axios from 'axios';
-import { BASE_URL } from '@env';
+import styled from "styled-components/native";
+import colors from "../styles/colors";
+import fonts from "../styles/fonts";
+import ArrowBtn from "../assets/img/vocaSearchScreen/ArrowBtn.png";
+import Question from "../assets/img/vocaSearchScreen/Question.png";
+import SearchIcon from "../assets/img/vocaSearchScreen/SearchIcon.png";
+import ResetIcon from "../assets/img/vocaSearchScreen/ResetIcon.png";
+import Salary_Character from "../assets/Salary_Character.png";
+import { useCallback, useEffect, useState } from "react";
+import useDebounce from "../hooks/useDebounce";
+import axios from "axios";
+import { BASE_URL } from "@env";
 
 const ViewContainer = styled.SafeAreaView`
   flex: 1;
@@ -186,9 +186,9 @@ const ExcludedText = styled.Text`
   color: ${colors.Grayscale_40};
 `;
 
-const KeywordText = styled(fonts.Body2)``;
+const KeywordText = styled(fonts.Body2M)``;
 
-const RecommendedBox_Text = styled(fonts.Body2)``;
+const RecommendedBox_Text = styled(fonts.Body2M)``;
 
 const EmptyView = styled.View`
   align-items: center;
@@ -196,14 +196,14 @@ const EmptyView = styled.View`
   width: 100%;
 `;
 
-const EmptyText = styled(fonts.Body2)`
+const EmptyText = styled(fonts.Body2M)`
   text-align: center;
 `;
 
 function VocaSearchScreen({ navigation }) {
   const [isFocused, setIsFocused] = useState(false);
   const [recommendedList, setRecommendedList] = useState([]);
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState("");
   const [keywordList, setKeywordList] = useState([]);
 
   useEffect(() => {
@@ -236,7 +236,7 @@ function VocaSearchScreen({ navigation }) {
   }, [debouncedSearchText]);
 
   const handleDeleteInput = () => {
-    setInputText('');
+    setInputText("");
   };
 
   const handleChangeKeyword = useCallback((text) => {
@@ -255,7 +255,7 @@ function VocaSearchScreen({ navigation }) {
     return (
       <KeywordBox
         onPress={() =>
-          navigation.navigate('TodaySalaryEdu', {
+          navigation.navigate("TodaySalaryEdu", {
             // params 전달
             word_id: item.word_id,
           })
@@ -266,7 +266,7 @@ function VocaSearchScreen({ navigation }) {
     );
   };
 
-  console.log('isFocused: ', isFocused);
+  console.log("isFocused: ", isFocused);
 
   return (
     <ViewContainer>
@@ -291,14 +291,14 @@ function VocaSearchScreen({ navigation }) {
             </CenteredView>
             <RecommendationContainer>
               <RecommendationTitle>
-                나야 들기름님,{'\n'}이 단어들은 알고 있나요?
+                나야 들기름님,{"\n"}이 단어들은 알고 있나요?
               </RecommendationTitle>
               <RecommendedBoxContainer>
                 {recommendedList.map((item) => (
                   <RecommendedBox
                     key={item.word_id}
                     onPress={() =>
-                      navigation.navigate('TodaySalaryEdu', {
+                      navigation.navigate("TodaySalaryEdu", {
                         word_id: item.word_id,
                       })
                     }
@@ -322,7 +322,7 @@ function VocaSearchScreen({ navigation }) {
                   onSubmitEditing={
                     keywordList.length > 0
                       ? () =>
-                          navigation.navigate('VocaSearchResult', {
+                          navigation.navigate("VocaSearchResult", {
                             input: inputText,
                             renderedItems: keywordList,
                           })
@@ -342,7 +342,7 @@ function VocaSearchScreen({ navigation }) {
                   onPress={
                     keywordList.length > 0
                       ? () =>
-                          navigation.navigate('VocaSearchResult', {
+                          navigation.navigate("VocaSearchResult", {
                             input: inputText,
                             renderedItems: keywordList,
                           })
@@ -361,7 +361,7 @@ function VocaSearchScreen({ navigation }) {
               ListEmptyComponent={
                 <EmptyView>
                   <EmptyText>
-                    검색결과가 존재하지 않아요.{'\n'}다시 검색해주세요.
+                    검색결과가 존재하지 않아요.{"\n"}다시 검색해주세요.
                   </EmptyText>
                 </EmptyView>
               }

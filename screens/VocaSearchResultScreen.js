@@ -1,10 +1,10 @@
-import styled from 'styled-components/native';
-import { StyleSheet } from 'react-native';
-import Salary_CharacterImg from '../assets/Salary_Character.png';
-import ArrowBtn from '../assets/img/signUpScreen/ArrowBtn.png';
-import fonts from '../styles/fonts';
-import colors from '../styles/colors';
-import { Shadow } from 'react-native-shadow-2';
+import styled from "styled-components/native";
+import { StyleSheet } from "react-native";
+import Salary_CharacterImg from "../assets/Salary_Character.png";
+import ArrowBtn from "../assets/img/signUpScreen/ArrowBtn.png";
+import fonts from "../styles/fonts";
+import colors from "../styles/colors";
+import { Shadow } from "react-native-shadow-2";
 
 const ResultViewContainer = styled.View`
   width: 100%;
@@ -74,7 +74,7 @@ const ResultBox_Word = styled.View`
   padding: 4px 12px;
   height: 29px;
 `;
-const ResultBox_Word_Text = styled(fonts.Body2)`
+const ResultBox_Word_Text = styled(fonts.Body2M)`
   height: 22px;
 `;
 const ArrowBtnImg = styled.Image`
@@ -97,7 +97,7 @@ function VocaSearchResultScreen({ navigation, route }) {
       >
         <ResultBox
           onPress={() =>
-            navigation.navigate('TodaySalaryEdu', { word_id: item.word_id })
+            navigation.navigate("TodaySalaryEdu", { word_id: item.word_id })
           }
         >
           <ResultBoxUpperContainer>
@@ -127,7 +127,7 @@ function VocaSearchResultScreen({ navigation, route }) {
           data={route.params.renderedItems}
           renderItem={renderItem}
           keyExtractor={(item) => item.word_id}
-          contentContainerStyle={{ alignItems: 'center' }}
+          contentContainerStyle={{ alignItems: "center" }}
         />
       </CenteredView>
     </ResultViewContainer>

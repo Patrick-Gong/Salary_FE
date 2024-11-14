@@ -25,6 +25,9 @@ import process3 from "../assets/img/homeScreen/charac/process3.png";
 import process4 from "../assets/img/homeScreen/charac/process4.png";
 import fonts from "../styles/fonts";
 import Home_CalendarModal from "../components/homeScreen/Home_CalendarModal";
+import axios from "axios";
+import { BASE_URL } from "@env";
+import getFormattedDate from "../function/getFormattedDate";
 
 const ContentsContainer = styled.View`
   background: ${colors.bg};
@@ -91,13 +94,32 @@ function HomeScreen() {
 
   const step = 13;
 
+  // 첫 렌더링시 날짜별 출석률 조회를 통해 "오늘의" attendance_state를 받아온다. 이를 전역 상태에 반영해준다.
+  useEffect(() => {
+    async function getAttendanceStateData() {
+      try {
+        const res = await axios.get(
+          `${BASE_URL}/attendance/status?attendance_date=${getFormattedDate(
+            new Date()
+          )})`
+        );
+        console.log(res);
+      } catch (error) {
+        console.log(res);
+      }
+    }
+
+    getAttendanceStateData();
+  }, []);
+
+  // focus 됐을 때에는 알아서 전역 상태 데이터를 가져옴.
   useEffect(() => {
     //오늘 학습 과목 조회 API 받아오기
     // "word": true,
     // "trend": true,
     // "article": false
 
-    console.log("알맞은 데이터로 리렌더링되고 있는지 확인");
+    console.log("알맞은 전역 데이터로 리렌더링되고 있는지 확인");
   }, [isFocused]);
 
   function onCalendarModalOpen() {
