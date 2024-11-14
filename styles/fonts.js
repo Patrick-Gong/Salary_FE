@@ -5,16 +5,25 @@ const fonts = {
     font-family: "Pretendard-Bold";
     font-size: 34px;
   `,
-  H2: styled.Text`
+  H2B: styled.Text`
     font-family: "Pretendard-Bold";
+    font-size: 26px;
+  `,
+  H2M: styled.Text`
+    font-family: "Pretendard-Medium";
     font-size: 26px;
   `,
   H3: styled.Text`
     font-family: "Pretendard-SemiBold";
     font-size: 24px;
   `,
-  H4: styled.Text`
+  H4SB: styled.Text`
     font-family: "Pretendard-SemiBold";
+    font-size: 20px;
+    font-weight: 600;
+  `,
+  H4M: styled.Text`
+    font-family: "Pretendard-Medium";
     font-size: 20px;
     font-weight: 600;
   `,
@@ -29,8 +38,13 @@ const fonts = {
     font-size: 16px;
     line-height: 18px;
   `,
-  Body2: styled.Text`
+  Body2M: styled.Text`
     font-family: "Pretendard-Medium";
+    font-size: 14px;
+    line-height: 22px;
+  `,
+  Body2R: styled.Text`
+    font-family: "Pretendard-Regular";
     font-size: 14px;
     line-height: 22px;
   `,
