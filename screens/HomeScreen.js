@@ -5,6 +5,7 @@ import {
   View,
   StyleSheet,
   Image,
+  Modal,
 } from "react-native";
 import styled from "styled-components/native";
 import Home_TrendQuiz from "../components/homeScreen/Home_TrendQuiz";
@@ -17,25 +18,13 @@ import { StatusBar } from "expo-status-bar";
 import Constants from "expo-constants";
 import { Shadow } from "react-native-shadow-2";
 import { useIsFocused } from "@react-navigation/native";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import process1 from "../assets/img/homeScreen/charac/process1.png";
 import process2 from "../assets/img/homeScreen/charac/process2.png";
 import process3 from "../assets/img/homeScreen/charac/process3.png";
 import process4 from "../assets/img/homeScreen/charac/process4.png";
 import fonts from "../styles/fonts";
-
-// 임시 박스
-const TemporaryBox2 = styled.View`
-  border: 1px solid red;
-  flex-shrink: 0;
-
-  width: 100%;
-  height: 100px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+import Home_CalendarModal from "../components/homeScreen/Home_CalendarModal";
 
 const ContentsContainer = styled.View`
   background: ${colors.bg};
@@ -91,6 +80,9 @@ function HomeScreen() {
   // stack에 쌓여있던 HomeScreen이 focus되면 리렌더링되어 데이터를 알맞게 띄우도록 함
   const isFocused = useIsFocused();
 
+  // 모달 관리
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   // 더미 데이터
   // 이건 전역으로 처리하는 게 좋을듯한? 나중에 API 완성되면 리팩토링 ㄱ
   var word = "나스닥";
@@ -108,14 +100,19 @@ function HomeScreen() {
     console.log("알맞은 데이터로 리렌더링되고 있는지 확인");
   }, [isFocused]);
 
+  function onCalendarModalOpen() {
+    setIsModalVisible(true);
+  }
+
+  function closeModal() {
+    setIsModalVisible(false);
+  }
+
   // api
   return (
     <SafeAreaView style={styles.rootScreen}>
-      <StatusBar style="dark" />
-      <ScrollView>
-        <TemporaryBox2>
-          <Text>날짜 관리와 스트립 형태의 달력 컴포넌트</Text>
-        </TemporaryBox2>
+      <ScrollView automaticallyAdjustContentInsets={false}>
+        <Home_WeekStrip onCalendarModalOpen={onCalendarModalOpen} />
         <ProcessBarWrapper>
           <StepContainer>
             <fonts.H2M style={{ color: colors.Grayscale_100 }}>
@@ -145,6 +142,14 @@ function HomeScreen() {
           </ContentsContainer>
         </Shadow>
       </ScrollView>
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={closeModal}
+      >
+        <Home_CalendarModal closeModal={closeModal} />
+      </Modal>
     </SafeAreaView>
   );
 }
