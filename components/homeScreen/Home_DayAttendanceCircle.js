@@ -3,6 +3,10 @@ import styled, { css } from "styled-components";
 import { Ionicons } from "@expo/vector-icons";
 import fonts from "../../styles/fonts";
 import colors from "../../styles/colors";
+import getFormattedDate from "../../functions/getFormattedDate";
+import compareDate from "../../functions/compareDate";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useState } from "react";
 
 const TouchableContainer = styled.TouchableOpacity`
   margin-top: 4px;
@@ -48,6 +52,25 @@ const DayText = styled(fonts.Body2M)`
         `}
 `;
 
+async function getStateFromStorage(date, calendarDate, setEmpty) {
+  // console.log(date, calendarDate, "함수 호출");
+
+  var formattedDate;
+  if (date) formattedDate = getFormattedDate(new Date(date));
+  else formattedDate = calendarDate.dateString;
+
+  const storedState = await AsyncStorage.getItem(formattedDate);
+  // date를 key로 저장되어 있던 state를 불러온다.
+  if (storedState !== null) {
+    // console.log("storedState return", storedState);
+    return storedState;
+  } else {
+    // console.log("false return");
+    setEmpty(true);
+    return false;
+  }
+}
+
 function Home_DayAttendanceCircle({
   calendarDate, // 캘린더에서 보내는 date
   date, // week strip에서 보내는 date
@@ -57,10 +80,14 @@ function Home_DayAttendanceCircle({
   empty, // true라면 비활성화된 circle을 전달
 }) {
   //   console.log("date", date); //date "2024-12-06T03:25:08.085Z"
-  //   console.log("calendarDate", calendarDate);
-  //   0부터 5까지 랜덤 (더미 데이터)
-  const randNum = Math.floor(Math.random() * 5);
-  attendance_state = randNum;
+  //   console.log("calendarDate.dateString", calendarDate); // 2024-11-15
+
+  const [emptyState, setEmpty] = useState(empty);
+
+  attendance_state = 0;
+  attendance_state = getStateFromStorage(date, calendarDate, setEmpty);
+
+  // empty = compareDate(new Date(), new Date(formattedDate)); // 중복 처리임
 
   return (
     <Shadow
@@ -72,11 +99,11 @@ function Home_DayAttendanceCircle({
       <TouchableContainer
         onPress={() => onCalendarModalOpen()}
         attendance_state={attendance_state}
-        empty={empty}
+        empty={emptyState}
       >
         {/* 날짜 */}
-        {empty || attendance_state < 4 ? (
-          <DayText empty={empty}>
+        {emptyState || attendance_state < 4 ? (
+          <DayText empty={emptyState}>
             {type === "calendar" ? calendarDate.day : date.format("D")}
           </DayText>
         ) : (

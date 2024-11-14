@@ -4,6 +4,8 @@ import colors from "../../styles/colors";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Text } from "react-native";
+import axios from "axios";
+import { BASE_URL } from "@env";
 
 const ItemWrapper = styled.View`
   height: 60px;
@@ -34,12 +36,23 @@ const BookMarkContainer = styled.TouchableOpacity``;
 function VocaList_FlatListItem({ word_id, word }) {
   const [bookMark, setBookMark] = useState(false);
 
+  async function fetchBookMarkState(tmpState) {
+    if (tmpState) {
+      console.log("삭제");
+      const res = await axios.delete(`${BASE_URL}/wordbook?word_id=${word_id}`);
+      console.log("삭제 결과", res.data);
+    } else {
+      console.log("다시 저장");
+      const res = await axios.post(`${BASE_URL}/wordbook?word_id=${word_id}`);
+      console.log("다시 저장 결과", res.data);
+    }
+  }
+
   function onBookmarkToggle() {
+    const tmpState = bookMark; // 이전 북마크 상태를 받아와둠
     setBookMark(!bookMark);
 
-    // bookMark가 true일 때
-
-    // bookMark가 false일 때
+    fetchBookMarkState(tmpState);
   }
   return (
     <ItemWrapper key={word_id}>

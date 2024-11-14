@@ -5,6 +5,8 @@ import colors from "../../styles/colors";
 import fonts from "../../styles/fonts";
 import { useNavigation } from "@react-navigation/native";
 import PrimaryBtn from "../../common/PrimaryBtn";
+import { todayWordSelector } from "../../Recoil/todayAttendanceDetail";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 const Container = styled.View`
   flex: 1;
@@ -101,7 +103,9 @@ const AnswerDescript = styled(fonts.Body2M)`
 // state 1: 학습 진행 여부에 따라 검정색 혹은 흰색
 // state 2: 그날의 학습할 단어를 받아와야됨.
 function Home_TodaySalary({ word }) {
-  const [doneTodaySalary, setDoneTodaySalary] = useState(true);
+  const wordState = useRecoilValue(todayWordSelector);
+  const setWordState = useSetRecoilState(todayWordSelector);
+
   const [todayVoca, setTodayVoca] = useState("나스닥");
 
   const navigation = useNavigation();
@@ -109,33 +113,33 @@ function Home_TodaySalary({ word }) {
   useEffect(() => setTodayVoca(word), [word]);
 
   return (
-    <Container doneTodaySalary={doneTodaySalary}>
+    <Container wordState={wordState}>
       <TitleContainer>
-        <Title doneTodaySalary={doneTodaySalary}>오늘의 샐러리 한조각</Title>
+        <Title wordState={wordState}>오늘의 샐러리 한조각</Title>
         <TitleDescript>
-          {doneTodaySalary
+          {wordState
             ? "오늘의 단어학습을 완료했어요."
             : "오늘의 단어학습을 완료하면 시드 5개를 받을 수 있어요!"}
         </TitleDescript>
       </TitleContainer>
-      <InputBox doneTodaySalary={doneTodaySalary}>
-        {doneTodaySalary ? (
+      <InputBox wordState={wordState}>
+        {wordState ? (
           <InputPlaceHolderDone>{todayVoca}</InputPlaceHolderDone>
         ) : (
-          <InputPlaceHolder doneTodaySalary={doneTodaySalary}>
-            {doneTodaySalary ? todayVoca : "단어를 맞춰보세요!"}
+          <InputPlaceHolder wordState={wordState}>
+            {wordState ? todayVoca : "단어를 맞춰보세요!"}
           </InputPlaceHolder>
         )}
       </InputBox>
-      <AnswerDescript doneTodaySalary={doneTodaySalary}>
+      <AnswerDescript wordState={wordState}>
         벤처기업들이 상장되어 있는 미국의 장외시장을 말한다. 자본력이 부족한
         비상장벤처기업들이 저리로 자금을 조달하는 창구로 활용하고 있다.
       </AnswerDescript>
       <PrimaryBtn
         type="active"
-        text={doneTodaySalary ? "학습한 단어 보러가기" : "단어 학습하기"}
+        text={wordState ? "학습한 단어 보러가기" : "단어 학습하기"}
         onPress={
-          doneTodaySalary
+          wordState
             ? () => navigation.navigate("TodaySalaryEdu")
             : () => navigation.navigate("TodaySalaryQuiz")
         }

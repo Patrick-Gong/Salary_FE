@@ -1,13 +1,14 @@
-import { StatusBar } from 'expo-status-bar';
-import styled from 'styled-components/native';
-import { useEffect, useLayoutEffect, useState } from 'react';
-import GreenCheckMark from '../assets/img/todayTrendQuizScreen/GreenCheckMark.png';
-import { Shadow } from 'react-native-shadow-2';
-import { Modal } from 'react-native';
-import PrimaryModal from '../common/PrimaryModal';
-import axios from 'axios';
-import { BASE_URL } from '@env';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StatusBar } from "expo-status-bar";
+import styled from "styled-components/native";
+import { useEffect, useLayoutEffect, useState } from "react";
+import GreenCheckMark from "../assets/img/todayTrendQuizScreen/GreenCheckMark.png";
+import { Shadow } from "react-native-shadow-2";
+import { Modal } from "react-native";
+import PrimaryModal from "../common/PrimaryModal";
+import axios from "axios";
+import { BASE_URL } from "@env";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import getKoreaFormattedDate from "../functions/getKoreaForamttedDate";
 
 const ViewContainer = styled.SafeAreaView`
   background-color: white;
@@ -67,7 +68,7 @@ const AnswerBox = styled.Pressable`
   width: 320px;
   min-height: 46px;
   border-radius: 6px;
-  background-color: ${(props) => (!props.isSelected ? '#ffffff' : '#313131')};
+  background-color: ${(props) => (!props.isSelected ? "#ffffff" : "#313131")};
   padding-right: 12px;
   margin-bottom: 14px;
 `;
@@ -104,13 +105,13 @@ const GreenCheckMarkImg = styled.Image`
 `;
 
 const AnswerBox_Text = styled.Text`
-  color: ${(props) => (!props.isSelected ? '#121212' : '#ffffff')};
+  color: ${(props) => (!props.isSelected ? "#121212" : "#ffffff")};
   font-size: 16px;
   font-weight: 500;
   width: 220px;
   flex-wrap: wrap;
   flex: 1;
-  
+
   background-color: red;
 `;
 
@@ -124,13 +125,13 @@ const SubmitBtn = styled.Pressable`
   height: 45px;
   border-radius: 10px;
   background-color: ${(props) =>
-    !props.isAbleToSubmit ? '#eff4d2' : '#d7ff01'};
+    !props.isAbleToSubmit ? "#eff4d2" : "#d7ff01"};
 `;
 
 const SubmitBtn_Text = styled.Text`
   font-size: 16px;
   font-weight: 600;
-  color: ${(props) => (props.isAbleToSubmit ? '#313131' : '#a0a0a0')};
+  color: ${(props) => (props.isAbleToSubmit ? "#313131" : "#a0a0a0")};
 `;
 
 const LoadingIndicator = styled.View`
@@ -151,28 +152,16 @@ function TodayTrendQuizScreen() {
   const [answersState, setAnswersState] = useState([]);
   const [isAbleToSubmit, setIsAbleToSubmit] = useState(false);
 
-  const koreaDate = new Date().toLocaleDateString('en-US', {
-    timeZone: 'Asia/Seoul',
-  });
-
-  const [month, day, year] = koreaDate.split('/'); // Split the string by '/' to get individual components
-
-  const formattedToday = `${year}-${month.padStart(2, '0')}-${day.padStart(
-    2,
-    '0'
-  )}`;
-  console.log(formattedToday);
-
   const fetchTrendQuizData = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/trend-quiz`);
       console.log(res.data);
       setTrendQuizData(res.data);
       await AsyncStorage.setItem(
-        'todayTrendQuizData',
+        "todayTrendQuizData",
         JSON.stringify(res.data)
       );
-      await AsyncStorage.setItem('lastFetchedDate', formattedToday);
+      await AsyncStorage.setItem("lastFetchedDate", getKoreaFormattedDate());
     } catch (error) {
       console.log(error);
     }
@@ -181,14 +170,14 @@ function TodayTrendQuizScreen() {
   useEffect(() => {
     const checkAndFetchData = async () => {
       try {
-        const lastFetchedDate = await AsyncStorage.getItem('lastFetchedDate');
+        const lastFetchedDate = await AsyncStorage.getItem("lastFetchedDate");
 
-        if (lastFetchedDate !== formattedToday) {
+        if (lastFetchedDate !== getKoreaFormattedDate()) {
           fetchTrendQuizData();
         } else {
-          console.log('오늘은 이미 데이터를 불러왔습니다.');
+          console.log("오늘은 이미 데이터를 불러왔습니다.");
           const existingTrendQuizData = JSON.parse(
-            await AsyncStorage.getItem('todayTrendQuizData')
+            await AsyncStorage.getItem("todayTrendQuizData")
           );
           setTrendQuizData(existingTrendQuizData);
         }
@@ -221,7 +210,7 @@ function TodayTrendQuizScreen() {
           isCorrect: false,
           isSelected: false,
           content:
-            '테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다',
+            "테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다",
         },
       ];
       setAnswersState(shuffle(InitialAnswers));
@@ -306,7 +295,7 @@ function TodayTrendQuizScreen() {
           <MainTitle>오늘의 트렌드 퀴즈</MainTitle>
           <SubTitle>요즘 경제 상황에 맞는 퀴즈를 준비했어요</SubTitle>
           <Shadow
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             distance={10}
             startColor="rgba(0, 0, 0, 0.02)"
             offset={[4, 4]}

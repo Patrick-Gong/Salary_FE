@@ -1,13 +1,15 @@
-import { StatusBar } from 'expo-status-bar';
-import styled from 'styled-components/native';
-import Salary_Character from '../assets/img/signUpScreen/Salary_Character.png';
-import colors from '../styles/colors';
-import fonts from '../styles/fonts';
-import { Shadow } from 'react-native-shadow-2';
-import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
-import { BASE_URL } from '@env';
-import { useState } from 'react';
+import { StatusBar } from "expo-status-bar";
+import styled from "styled-components/native";
+import Salary_Character from "../assets/img/signUpScreen/Salary_Character.png";
+import colors from "../styles/colors";
+import fonts from "../styles/fonts";
+import { Shadow } from "react-native-shadow-2";
+import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import { BASE_URL } from "@env";
+import { useState } from "react";
+import { useSetRecoilState } from "recoil";
+import { todayTrendSelector } from "../Recoil/todayAttendanceDetail";
 
 const ViewContainer = styled.SafeAreaView`
   background-color: white;
@@ -18,7 +20,7 @@ const SolutionView = styled.View`
   width: 360px;
 `;
 
-const MainTitle = styled(fonts.H4)`
+const MainTitle = styled(fonts.H4SB)`
   color: ${colors.Grayscale_100};
   text-align: left;
   margin: 20px 0px 0px 12px;
@@ -90,7 +92,7 @@ const ExplanationWrapper = styled.View`
   border-top-color: ${colors.Grayscale_80};
 `;
 
-const Explanation = styled(fonts.Body2)`
+const Explanation = styled(fonts.Body2M)`
   color: ${colors.Grayscale_20};
   margin-top: 18px;
 `;
@@ -108,17 +110,22 @@ const CompleteBtn = styled.Pressable`
 const CompleteBtnText = styled.Text`
   font-size: 16px;
   font-weight: 600;
-  font-family: 'Inter-SemiBold';
+  font-family: "Inter-SemiBold";
   color: ${colors.Grayscale_90};
 `;
 
 function TodayTrendSolutionScreen({ navigation, route }) {
-  
+  // 메인화면에서 알맞게 렌더링하기 위해 전역 상태 관리
+  const setTrendState = useSetRecoilState(todayTrendSelector);
+
   const handleFinishStudy = async () => {
     try {
-      const res = await axios.post(`${BASE_URL}/trend-quiz/update-status?trend=${true}`);
+      const res = await axios.post(
+        `${BASE_URL}/trend-quiz/update-status?trend=${true}`
+      );
+      setTrendState(true);
       console.log(res.data);
-      navigation.navigate('BottomTab');
+      navigation.navigate("BottomTab");
     } catch (error) {
       console.log(error);
     }
@@ -130,12 +137,12 @@ function TodayTrendSolutionScreen({ navigation, route }) {
       <SolutionView>
         <MainTitle>오늘의 트렌드 퀴즈 해설</MainTitle>
         <SubTitle>
-          퀴즈 해설을 확인해보세요.{'\n'}
+          퀴즈 해설을 확인해보세요.{"\n"}
           내일 새로운 퀴즈가 업데이트 될 예정이에요!
         </SubTitle>
         <Salary_CharacterImg source={Salary_Character} />
         <Shadow
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
           distance={20}
           startColor="rgba(0, 0, 0, 0.02)"
           offset={[4, 4]}

@@ -8,6 +8,7 @@ import PrimaryBtn from "../common/PrimaryBtn";
 import { useNavigation } from "@react-navigation/native";
 import VocaReminder_HeaderRigRht from "../components/vocaListScreen/VocaReminder_HeaderRight";
 import VocaReminder_remindContent from "../components/vocaListScreen/VocaReminder_remindContent";
+import { BASE_URL } from "@env";
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -77,11 +78,11 @@ function VocaReminderScreen() {
       mean: "어쩌고 저쩌고",
     },
     {
-      word: "NFTSDFSDFSDF",
+      word: "시장",
       mean: "어쩌고 저쩌고",
     },
     {
-      word: "NFTSFSDFS",
+      word: "나스닥",
       mean: "어쩌고 저쩌고",
     },
   ]);
@@ -94,11 +95,11 @@ function VocaReminderScreen() {
   // 리마인드할 단어를 가져옴
   async function fetchRemindWords() {
     try {
-      //   const res = axios.get(
-      // );
-      //   console.log("결과", res);
+      const res = await axios.get(`${BASE_URL}/wordbook/reminder`);
+      console.log("리마인더 결과", res.data);
+      setRemindWords(res.data);
     } catch (error) {
-      console.log(error);
+      console.log("리마인더 오류", error);
     }
   }
 
@@ -126,8 +127,7 @@ function VocaReminderScreen() {
 
   useEffect(() => {
     // 매번 다른 리마인더 word를 받아오는지 확인 요망
-    // fetchRemindWords();
-    // setRemindWords([]);
+    fetchRemindWords();
 
     // api 요청 후 데이터 가공하여 클릭 여부를 객체의 속성으로 추가
     addClickedState({ allTrue: false });

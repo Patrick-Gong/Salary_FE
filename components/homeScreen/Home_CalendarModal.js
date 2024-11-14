@@ -15,6 +15,8 @@ import fonts from "../../styles/fonts";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../../styles/colors";
 import { Header } from "react-native/Libraries/NewAppScreen";
+import getFormattedDate from "../../functions/getFormattedDate";
+import getKoreaFormattedDate from "../../functions/getKoreaForamttedDate";
 
 const ModalBackdrop = styled.View`
   flex: 1;

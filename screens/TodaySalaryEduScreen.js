@@ -9,6 +9,11 @@ import TodaySalaryEdu_StoryTelling from "../components/todaySalaryEduScreen/Toda
 import TodaySalaryEdu_ScrollDownAnim from "../components/todaySalaryEduScreen/TodaySalaryEdu_ScrollDownAnim";
 import { Ionicons } from "@expo/vector-icons";
 import HighlightText from "react-native-highlight-underline-text";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { todayWordSelector } from "../Recoil/todayAttendanceDetail";
+import axios from "axios";
+import { BASE_URL } from "@env";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const RootContainer = styled.View`
   flex: 1;
@@ -134,8 +139,13 @@ const EduDoneText = styled(fonts.Body2M)`
 // 2) 퀴즈 스크린에서 모르겠어요
 // 3) 단어 검색에서 특정 단어 클릭시
 // word_id를 받아 api 호출
-function TodaySalaryEduScreen({ word_id }) {
+function TodaySalaryEduScreen() {
+  // 전역으로 todaysalary 학습 상태를 관리
+  const wordState = useRecoilValue(todayWordSelector);
+  const setTodayWordState = useSetRecoilState(todayWordSelector);
+
   const [loading, setLoading] = useState(false);
+  const [wordId, setWordId] = useState("");
 
   // 임시 변수 사용
   const word = "나스닥";
@@ -158,14 +168,29 @@ function TodaySalaryEduScreen({ word_id }) {
     // 북마크 아이콘 클릭시마다 API 호출
   }
 
+  async function postWordAttendance() {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/trend-quiz/update-status?word_id=${wordId}`
+      );
+      console.log("단어 학습 완료", res.status);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
   // 밑으로 새로고침시 API 호출하여 단어 학습 완료를 POST
   // 최초 1회만 실행되며. 이후에는 새로고침해도 핸들러 호출 X
   function handleDoneTodaySalary() {
     if (loading) return; // 중복 요청 방지
     setLoading(true);
 
-    // API 요청 후 loading을 false로  (주석 제거)
-    setIsModalVisible(true);
+    if (postWordAttendance() && !wordState) {
+      setTodayWordState(true); // 전역 상태 관리
+      setIsModalVisible(true); // 모달 상태 관리
+    }
   }
 
   // 스크롤 이벤트 핸들러
@@ -194,15 +219,8 @@ function TodaySalaryEduScreen({ word_id }) {
   }
 
   useEffect(() => {
-    // API 호출하여
-    //    "word_id": 1,
-    // "word": "금리",
-    // "mean": "금리의 의미",
-    // "story1":"스토리텔링1",
-    // "story2":"스토리텔링2",
-    // "story3":"스토리텔링3",
-    // "article":"url입니다."
-  }, [word_id]);
+    setWordId();
+  }, [wordId]);
 
   return (
     <ScrollView

@@ -9,7 +9,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../styles/colors";
 import fonts from "../styles/fonts";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Advertise from "../common/assets/avt.jpg";
 import styled from "styled-components";
@@ -18,6 +18,7 @@ import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons"; // 북마크
 import VocaList_FlatListItem from "../components/vocaListScreen/VocaList_FlatListItem";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { BASE_URL } from "@env";
 
 const AdvertiseWrapper = styled.View`
   display: flex;
@@ -62,17 +63,16 @@ function VocaListScreen() {
   // stack에 쌓여있던 VocaScreen이 focus되면 리렌더링되어 데이터를 알맞게 띄우도록 함
   const isFocused = useIsFocused();
   const navigation = useNavigation();
+  const [vocaList, setVocaList] = useState();
 
   async function getData() {
     try {
-      // const postRes = await axios.post(
-      // );
-      // console.log(postRes);
-      // const res = await axios.get(
-      // );
-      // console.log(res);
+      console.log("불러오기");
+      const res = await axios.get(`${BASE_URL}/wordbook`);
+      console.log("단어장 결과", res.data);
+      setVocaList(res.data);
     } catch (error) {
-      console.log(error);
+      console.log("단어장 불러오기 오류", error);
     }
   }
 
@@ -83,97 +83,51 @@ function VocaListScreen() {
     getData();
   }, [isFocused]);
 
-  const data = [
-    {
-      word_id: 1,
-      word: "블록체인",
-      like_date: "2024-09-01",
-    },
-    {
-      word_id: 2,
-      word: "수출입물가지수",
-      like_date: "2024-09-02",
-    },
-    {
-      word_id: 3,
-      word: "블록체인",
-      like_date: "2024-09-01",
-    },
-    {
-      word_id: 4,
-      word: "수출입물가지수",
-      like_date: "2024-09-02",
-    },
-    {
-      word_id: 5,
-      word: "블록체인",
-      like_date: "2024-09-01",
-    },
-    {
-      word_id: 6,
-      word: "수출입물가지수",
-      like_date: "2024-09-02",
-    },
-    {
-      word_id: 7,
-      word: "블록체인",
-      like_date: "2024-09-01",
-    },
-    {
-      word_id: 8,
-      word: "수출입물가지수",
-      like_date: "2024-09-02",
-    },
-    {
-      word_id: 9,
-      word: "블록체인",
-      like_date: "2024-09-01",
-    },
-    {
-      word_id: 10,
-      word: "수출입물가지수",
-      like_date: "2024-09-02",
-    },
-  ];
+  useEffect(() => {
+    getData();
+  }, []);
 
-  return (
-    <View style={styles.rootScreen}>
-      <StatusBar style="dark" />
-      <AdvertiseWrapper>
-        <AdvertiseImg source={Advertise} />
-      </AdvertiseWrapper>
-      <TitleContainer>
-        <fonts.H4SB style={{ color: "3a3a3a" }}>{nickname}의 단어장</fonts.H4SB>
-        <fonts.Caption2 style={{ color: "3a3a3a" }}>
-          저장한 단어들의 목록이에요. 다시 학습해보세요!
-        </fonts.Caption2>
-      </TitleContainer>
-      <FlatListContainer>
-        <FlatList
-          data={data}
-          renderItem={({ item }) => <VocaList_FlatListItem {...item} />}
-          keyExtractor={(item) => item.word_id}
-          ListEmptyComponent={
-            <fonts.H2B style={{ textAlign: "center" }}>
-              단어장에 단어를 추가해보세요!
-            </fonts.H2B>
-          }
-        />
-      </FlatListContainer>
-      <BtnContainer>
-        <fonts.Caption1 style={{ textAlign: "center" }}>
-          단어를 10개 이상 저장해야 리마인드를 진행할 수 있어요.
-        </fonts.Caption1>
-        <PrimaryBtn
-          type="active"
-          text="단어 리마인드 하러 가기"
-          onPress={() => {
-            navigation.navigate("VocaReminder");
-          }}
-        />
-      </BtnContainer>
-    </View>
-  );
+  if (vocaList)
+    return (
+      <View style={styles.rootScreen}>
+        <StatusBar style="dark" />
+        <AdvertiseWrapper>
+          <AdvertiseImg source={Advertise} />
+        </AdvertiseWrapper>
+        <TitleContainer>
+          <fonts.H4SB style={{ color: "3a3a3a" }}>
+            {nickname}의 단어장
+          </fonts.H4SB>
+          <fonts.Caption2 style={{ color: "3a3a3a" }}>
+            저장한 단어들의 목록이에요. 다시 학습해보세요!
+          </fonts.Caption2>
+        </TitleContainer>
+        <FlatListContainer>
+          <FlatList
+            data={vocaList}
+            renderItem={({ item }) => <VocaList_FlatListItem {...item} />}
+            keyExtractor={(item) => item.word_id}
+            ListEmptyComponent={
+              <fonts.H2B style={{ textAlign: "center" }}>
+                단어장에 단어를 추가해보세요!
+              </fonts.H2B>
+            }
+          />
+        </FlatListContainer>
+        <BtnContainer>
+          <fonts.Caption1 style={{ textAlign: "center" }}>
+            단어를 10개 이상 저장해야 리마인드를 진행할 수 있어요.
+          </fonts.Caption1>
+          <PrimaryBtn
+            type={vocaList.length >= 10 ? "active" : "deactive"}
+            text="단어 리마인드 하러 가기"
+            onPress={() => {
+              if (vocaList.length >= 10) navigation.navigate("VocaReminder");
+            }}
+          />
+        </BtnContainer>
+      </View>
+    );
 }
 
 export default VocaListScreen;

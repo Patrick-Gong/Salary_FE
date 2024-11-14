@@ -7,6 +7,7 @@ import styled, { css } from "styled-components";
 import { Ionicons } from "@expo/vector-icons";
 import moment from "moment";
 import Home_DayAttendanceCircle from "./Home_DayAttendanceCircle";
+import getFormattedDate from "../../functions/getFormattedDate";
 
 const Container = styled.View`
   flex: 1;
@@ -59,6 +60,7 @@ const Home_WeekStrip = ({ onCalendarModalOpen }) => {
   const dayCache = useMemo(() => ({}), []);
 
   const getCachedDayComponent = (props) => {
+    console.log(getFormattedDate(new Date(props.date)));
     const randNum = Math.floor(Math.random() * 5);
     attendance_state = randNum;
 
@@ -66,8 +68,6 @@ const Home_WeekStrip = ({ onCalendarModalOpen }) => {
 
     // 캐싱 목록에 없는 경우
     if (!dayCache[key]) {
-      console.log("week strip 데이터 캐싱");
-
       dayCache[key] = (
         <Home_DayAttendanceCircle
           {...props}

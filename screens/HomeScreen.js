@@ -25,6 +25,14 @@ import process3 from "../assets/img/homeScreen/charac/process3.png";
 import process4 from "../assets/img/homeScreen/charac/process4.png";
 import fonts from "../styles/fonts";
 import Home_CalendarModal from "../components/homeScreen/Home_CalendarModal";
+import getFormattedDate from "../functions/getFormattedDate";
+import { BASE_URL } from "@env";
+import axios from "axios";
+import { useRecoilState } from "recoil";
+import { todayAttendanceState } from "../Recoil/todayAttendanceState";
+import { todayAttendanceDetail } from "../Recoil/todayAttendanceDetail";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import getKoreaFormattedDate from "../functions/getKoreaForamttedDate";
 
 const ContentsContainer = styled.View`
   background: ${colors.bg};
@@ -83,22 +91,105 @@ function HomeScreen() {
   // 모달 관리
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // 더미 데이터
-  // 이건 전역으로 처리하는 게 좋을듯한? 나중에 API 완성되면 리팩토링 ㄱ
-  var word = "나스닥";
-  var trend = false;
-  var article = false;
+  // 오늘의 attendance state : 학습시마다 전역 상태에 반영됨.
+  const [attendanceState, setAttendanceState] =
+    useRecoilState(todayAttendanceState);
 
-  const step = 13;
+  // 오늘의 attendance id : step을 렌더링하기 위함
+  const [attendanceId, setAttendanceId] = useState(0);
 
+  // 오늘의 attendance detail : word, trend, article의 boolean 값으로 구성
+  const [attendanceDetail, setAttendanceDetail] = useRecoilState(
+    todayAttendanceDetail
+  );
+
+  // 최초 렌더링 시 attendance_state를 받아와 전역 상태로 관리
   useEffect(() => {
-    //오늘 학습 과목 조회 API 받아오기
-    // "word": true,
-    // "trend": true,
-    // "article": false
+    async function fetchTodayAttendanceState() {
+      try {
+        const res = await axios.get(
+          `${BASE_URL}/attendance/status?attendance_date=${getKoreaFormattedDate()}`
+        );
+        console.log("1. attendance state: ", res.data);
+        if (res.status === 200) {
+          setAttendanceState(res.data.attendance_state); // 전역으로 저장
+          setAttendanceId(res.data.attendance_id);
+        }
+      } catch (error) {
+        console.log("1. attendance state: ", error);
+      }
+    }
 
-    console.log("알맞은 데이터로 리렌더링되고 있는지 확인");
-  }, [isFocused]);
+    fetchTodayAttendanceState();
+  }, []);
+
+  //오늘 학습 과목 조회 API 받아오기
+  //굳이 매번 받아와야 할까 싶긴 한데
+  useEffect(() => {
+    async function fetchTodayAttendanceDetail() {
+      try {
+        const res = await axios.get(`${BASE_URL}/attendance/today`);
+        if (res.status === 200) {
+          setAttendanceDetail(res.data);
+          console.log("attendance today", res.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    fetchTodayAttendanceDetail();
+  }, []);
+
+  async function fetchTodayWordId() {
+    try {
+      const res = await axios.get(`${BASE_URL}/today-word`);
+      if (res.status === 200) {
+        console.log("새로운 word id를 받음");
+        fetchTodayWordData({ word_id: res.data.word_id }); //data를 fetch하러
+      }
+    } catch (error) {
+      console.log("에러", error);
+    }
+  }
+
+  async function fetchTodayWordData({ word_id }) {
+    try {
+      const res = await axios.get(`${BASE_URL}/words?word_id=${word_id}`);
+      console.log(res.data);
+      console.log(res.status);
+      if (res.status === 200) {
+        const data = [
+          ["todaySalaryData", JSON.stringify(res.data)],
+          ["todaySalaryFetchDate", JSON.stringify(getKoreaFormattedDate())],
+        ];
+        await AsyncStorage.multiSet(data);
+      }
+    } catch (error) {
+      console.log("에러", error);
+    }
+  }
+
+  // 오늘의 학습 단어를 최초 1회만 받아옴, multi-set으로 업데이트를 관리
+  useEffect(() => {
+    const checkAndFetchData = async () => {
+      try {
+        const keys = ["todaySalaryData", "todaySalaryFetchDate"];
+        const todaySalaryData = await AsyncStorage.multiGet(keys);
+
+        const target = todaySalaryData.find(
+          ([key]) => key === "todaySalaryFetchDate"
+        );
+        if (target[1] !== getKoreaFormattedDate()) {
+          fetchTodayWordId();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    checkAndFetchData();
+  }, []);
 
   function onCalendarModalOpen() {
     setIsModalVisible(true);
@@ -116,13 +207,23 @@ function HomeScreen() {
         <ProcessBarWrapper>
           <StepContainer>
             <fonts.H2M style={{ color: colors.Grayscale_100 }}>
-              STEP {step}
+              STEP {attendanceId}
             </fonts.H2M>
             <Text>학습 진행률</Text>
           </StepContainer>
           {/* progressbar */}
           <Home_AttendanceProgress />
-          <CharacWrapper source={process1} />
+          <CharacWrapper
+            source={
+              attendanceState === 5
+                ? process4
+                : attendanceState > 3 // todaySalary와 article, trend 중 한 가지 수행
+                ? process3
+                : attendanceState > 0 // 최소 하나의 학습 수행
+                ? process2
+                : process1
+            }
+          ></CharacWrapper>
         </ProcessBarWrapper>
         {/* 하단의 3가지 요소를 감싸는 Container */}
         <Shadow
@@ -133,12 +234,12 @@ function HomeScreen() {
           endColor="rgba(0, 0, 0, 0.0)" // 그림자의 끝 색상 (투명)
         >
           <ContentsContainer>
-            <Home_TodaySalary word={word} />
-            <Home_TrendQuiz trend={trend} />
+            <Home_TodaySalary />
+            <Home_TrendQuiz />
             {/* horizon */}
             <Horizon />
             {/* 아티클 */}
-            <Home_Article article={article}></Home_Article>
+            <Home_Article></Home_Article>
           </ContentsContainer>
         </Shadow>
       </ScrollView>

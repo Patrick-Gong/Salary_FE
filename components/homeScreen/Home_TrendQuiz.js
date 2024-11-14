@@ -7,6 +7,9 @@ import ellipse_yet from "../../common/homeScreen/ellipse_yet.png";
 import { useNavigation } from "@react-navigation/native";
 import PrimaryBtn from "../../common/PrimaryBtn";
 import fonts from "../../styles/fonts";
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
+import { todayAttendanceDetail } from "../../Recoil/todayAttendanceDetail";
+import { todayTrendSelector } from "../../Recoil/todayAttendanceDetail";
 
 const Container = styled.View`
   flex: 1;
@@ -47,25 +50,22 @@ const DoneMarker = styled.Image`
 `;
 
 function Home_TrendQuiz({ trend }) {
-  const [doneTrendQuiz, setDoneTrendQuiz] = useState(false);
+  const trendState = useRecoilValue(todayTrendSelector);
+  const setTrendState = useSetRecoilState(todayTrendSelector);
 
   const navigation = useNavigation();
-
-  useEffect(() => {
-    setDoneTrendQuiz(trend);
-  }, [trend]);
 
   return (
     <Container>
       <DesriptContainer>
         <TitleContainer>
           <DoneMarker
-            source={doneTrendQuiz ? ellipse_done : ellipse_yet}
+            source={trendState ? ellipse_done : ellipse_yet}
           ></DoneMarker>
-          <Title doneTrendQuiz={doneTrendQuiz}>뜨거운 감자가 도착했어요!</Title>
+          <Title trendState={trendState}>뜨거운 감자가 도착했어요!</Title>
         </TitleContainer>
         <TitleDescript>
-          {doneTrendQuiz
+          {trendState
             ? "오늘의 퀴즈를 이미 풀었어요. \n 내일 새로운 퀴즈가 업데이트 될 예정이에요!"
             : "요즘 경제 상황에 기반한 퀴즈를 준비했어요"}
         </TitleDescript>
@@ -73,9 +73,10 @@ function Home_TrendQuiz({ trend }) {
 
       <PrimaryBtn
         type="active"
-        text={doneTrendQuiz ? "트렌드 퀴즈 해설 보러가기" : "트렌드 퀴즈 풀기"}
+        text={trendState ? "트렌드 퀴즈 해설 보러가기" : "트렌드 퀴즈 풀기"}
         onPress={() => {
-          navigation.push("TodayTrendQuiz");
+          if (!trendState) navigation.push("TodayTrendQuiz");
+          else navigation.push("TodayTrendSolution");
         }}
       ></PrimaryBtn>
     </Container>
