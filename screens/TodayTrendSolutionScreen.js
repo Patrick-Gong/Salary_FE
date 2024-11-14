@@ -5,6 +5,9 @@ import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 import { Shadow } from 'react-native-shadow-2';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import { BASE_URL } from '@env';
+import { useState } from 'react';
 
 const ViewContainer = styled.SafeAreaView`
   background-color: white;
@@ -80,11 +83,11 @@ const AnswerContent = styled.Text`
 `;
 
 const ExplanationWrapper = styled.View`
-width: 100%;
-height: 415px;
-margin-top: 16px;
-border-top-width: 1px;
-border-top-color: ${colors.Grayscale_80};
+  width: 100%;
+  height: 415px;
+  margin-top: 16px;
+  border-top-width: 1px;
+  border-top-color: ${colors.Grayscale_80};
 `;
 
 const Explanation = styled(fonts.Body2)`
@@ -100,7 +103,6 @@ const CompleteBtn = styled.Pressable`
   background-color: ${colors.Primary_100};
   justify-content: center;
   align-items: center;
-  
 `;
 
 const CompleteBtnText = styled.Text`
@@ -110,53 +112,51 @@ const CompleteBtnText = styled.Text`
   color: ${colors.Grayscale_90};
 `;
 
-function TodayTrendSolutionScreen({ navigation }) {
-  const responseData = {
-    trend_quiz:
-      '최근 중앙은행들이 통화 긴축을 완화하고 있는 이유로 가장 적절한 것은 무엇인가요?',
-    correct: '경제 성장 둔화로 인한 경기 활성화 필요',
-    incorrect: [
-      '인플레이션 상승 방지',
-      '원자재 가격 상승 억제',
-      '금융 시장 불안정성 증가',
-    ],
-    explanation:
-      '최근 글로벌 경기 둔화와 경제 불확실성이 높아지면서 중앙은행들은 통화 긴축 정책을 완화하고 있습니다. 이는 경기를 활성화하여 경제 성장 둔화를 완화하려는 목적이 있습니다.',
+function TodayTrendSolutionScreen({ navigation, route }) {
+  
+  const handleFinishStudy = async () => {
+    try {
+      const res = await axios.post(`${BASE_URL}/trend-quiz/update-status?trend=${true}`);
+      console.log(res.data);
+      navigation.navigate('BottomTab');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <ViewContainer>
       <StatusBar style="dark" />
       <SolutionView>
-      <MainTitle>오늘의 트렌드 퀴즈 해설</MainTitle>
-      <SubTitle>
-        퀴즈 해설을 확인해보세요.{'\n'}
-        내일 새로운 퀴즈가 업데이트 될 예정이에요!
-      </SubTitle>
-      <Salary_CharacterImg source={Salary_Character} />
-      <Shadow
-        style={{ width: '100%' }}
-        distance={20}
-        startColor="rgba(0, 0, 0, 0.02)"
-        offset={[4, 4]}
-      >
-        <SolutionContainer>
-          <QuestionText>
-            <QDot>Q. </QDot>
-            <QuestionContent>{responseData.trend_quiz}</QuestionContent>
-          </QuestionText>
-          <AnswerText>
-            <ADot>A. </ADot>
-            <AnswerContent>{responseData.correct}</AnswerContent>
-          </AnswerText>
-          <ExplanationWrapper>
-            <Explanation>{responseData.explanation}</Explanation>
-          </ExplanationWrapper>
-          <CompleteBtn onPress={() => navigation.navigate('BottomTab')}>
+        <MainTitle>오늘의 트렌드 퀴즈 해설</MainTitle>
+        <SubTitle>
+          퀴즈 해설을 확인해보세요.{'\n'}
+          내일 새로운 퀴즈가 업데이트 될 예정이에요!
+        </SubTitle>
+        <Salary_CharacterImg source={Salary_Character} />
+        <Shadow
+          style={{ width: '100%' }}
+          distance={20}
+          startColor="rgba(0, 0, 0, 0.02)"
+          offset={[4, 4]}
+        >
+          <SolutionContainer>
+            <QuestionText>
+              <QDot>Q. </QDot>
+              <QuestionContent>{route.params.trend_quiz}</QuestionContent>
+            </QuestionText>
+            <AnswerText>
+              <ADot>A. </ADot>
+              <AnswerContent>{route.params.correct}</AnswerContent>
+            </AnswerText>
+            <ExplanationWrapper>
+              <Explanation>{route.params.explanation}</Explanation>
+            </ExplanationWrapper>
+            <CompleteBtn onPress={handleFinishStudy}>
               <CompleteBtnText>트렌드 퀴즈 완료하기</CompleteBtnText>
             </CompleteBtn>
-        </SolutionContainer>
-      </Shadow>
+          </SolutionContainer>
+        </Shadow>
       </SolutionView>
     </ViewContainer>
   );
