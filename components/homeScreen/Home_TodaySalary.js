@@ -13,18 +13,18 @@ const Container = styled.View`
   height: 100%;
   padding: 20px;
   margin: 23px;
+  margin-bottom: 31px;
   gap: 24px;
-
   padding-right: 23px;
   padding-left: 23px;
   padding-top: 20px;
+
   border-radius: 20px;
-  margin-bottom: 31px;
 
   ${(props) =>
     props.doneTodaySalary
       ? css`
-          background-color: transparent;
+          background-color: ${colors.Grayscale_white};
           border: 1px solid ${colors.Grayscale_20};
         `
       : css`
@@ -37,7 +37,7 @@ const TitleContainer = styled.View`
   align-items: flex-start;
 `;
 
-const Title = styled(fonts.H4)`
+const Title = styled(fonts.H4SB)`
   ${(props) =>
     props.doneTodaySalary
       ? css`
@@ -73,7 +73,7 @@ const InputBox = styled.View`
         `}
 `;
 
-const InputPlaceHolder = styled(fonts.Body2)`
+const InputPlaceHolder = styled(fonts.Body2M)`
   color: ${colors.Grayscale_40};
 `;
 
@@ -85,7 +85,7 @@ const InputPlaceHolderDone = styled.Text`
   font-weight: 600;
 `;
 
-const AnswerDescript = styled(fonts.Body2)`
+const AnswerDescript = styled(fonts.Body2M)`
   text-align: center;
 
   ${(props) =>
@@ -101,14 +101,12 @@ const AnswerDescript = styled(fonts.Body2)`
 // state 1: 학습 진행 여부에 따라 검정색 혹은 흰색
 // state 2: 그날의 학습할 단어를 받아와야됨.
 function Home_TodaySalary({ word }) {
-  const [doneTodaySalary, setDoneTodaySalary] = useState(false);
+  const [doneTodaySalary, setDoneTodaySalary] = useState(true);
   const [todayVoca, setTodayVoca] = useState("나스닥");
 
   const navigation = useNavigation();
 
-  const temporaryAnswer = "정답";
-
-  useEffect(() => setDoneTodaySalary(word), [word]);
+  useEffect(() => setTodayVoca(word), [word]);
 
   return (
     <Container doneTodaySalary={doneTodaySalary}>
@@ -122,7 +120,7 @@ function Home_TodaySalary({ word }) {
       </TitleContainer>
       <InputBox doneTodaySalary={doneTodaySalary}>
         {doneTodaySalary ? (
-          <InputPlaceHolderDone>{temporaryAnswer}</InputPlaceHolderDone>
+          <InputPlaceHolderDone>{todayVoca}</InputPlaceHolderDone>
         ) : (
           <InputPlaceHolder doneTodaySalary={doneTodaySalary}>
             {doneTodaySalary ? todayVoca : "단어를 맞춰보세요!"}

@@ -32,7 +32,7 @@ const Toggle = styled.TouchableOpacity`
         `}
 `;
 
-const ToggleText = styled(fonts.Body2)`
+const ToggleText = styled(fonts.Body2M)`
   color: "#000000";
   box-sizing: content-box;
 `;
@@ -47,7 +47,7 @@ const ContentContainer = styled.View`
   background-color: ${colors.Grayscale_white};
 `;
 
-const ContentText = styled(fonts.Body2)`
+const ContentText = styled(fonts.Body2M)`
   box-sizing: content-box;
   flex-wrap: wrap;
   word-break: break-all;
