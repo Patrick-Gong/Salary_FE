@@ -5782,6 +5782,13 @@ react-native-dotenv@^3.4.11:
   dependencies:
     dotenv "^16.4.5"
 
+react-native-circular-progress@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/react-native-circular-progress/-/react-native-circular-progress-1.4.1.tgz#46d94e73e5973bb415937b912ba56ce1947f66b7"
+  integrity sha512-HEzvI0WPuWvsCgWE3Ff2HBTMgAEQB2GvTFw0KHyD/t1STAlDDRiolu0mEGhVvihKR3jJu3v3V4qzvSklY/7XzQ==
+  dependencies:
+    prop-types "^15.8.1"
+
 react-native-global-props@^1.1.5:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/react-native-global-props/-/react-native-global-props-1.1.5.tgz#443e0ffc89d5402fa20ebedf37bcbca6d861c34d"

@@ -173,6 +173,16 @@ export default function App() {
                 name="TodayTrendQuiz"
                 component={TodayTrendQuizScreen}
                 options={{
+                  headerTitle: '',
+                  headerTintColor: colors.Grayscale_100,
+                  headerShown: true,
+                  headerBackTitleVisible: false,
+                }}
+              />
+              <Stack.Screen
+                name="VocaSearchResult"
+                component={VocaSearchResultScreen}
+                options={{
                   headerTitle: "",
                   headerTintColor: colors.Grayscale_100,
                   headerShown: true,

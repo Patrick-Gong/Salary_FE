@@ -41,7 +41,7 @@ const ResultText = styled.Text`
   font-family: Pretendard-SemiBold;
 `;
 
-const AnswerText = styled(fonts.H2)`
+const AnswerText = styled(fonts.H2B)`
   color: ${colors.Grayscale_100};
 `;
 
