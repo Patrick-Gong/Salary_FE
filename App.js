@@ -23,6 +23,7 @@ import colors from "./styles/colors";
 import fonts from "./styles/fonts";
 import VocaReminderScreen from "./screens/VocaReminderScreen";
 import VocaReminder_HeaderRight from "./components/vocaListScreen/VocaReminder_HeaderRight";
+import VocaSearchResultScreen from "./screens/VocaSearchResultScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -175,7 +176,7 @@ export default function App() {
                 name="TodayTrendQuiz"
                 component={TodayTrendQuizScreen}
                 options={{
-                  headerTitle: '',
+                  headerTitle: "",
                   headerTintColor: colors.Grayscale_100,
                   headerShown: true,
                   headerBackTitleVisible: false,
@@ -191,7 +192,7 @@ export default function App() {
                   headerBackTitleVisible: false,
                 }}
               />
-                            <Stack.Screen
+              <Stack.Screen
                 name="TodayTrendSolution"
                 component={TodayTrendSolutionScreen}
                 options={{
