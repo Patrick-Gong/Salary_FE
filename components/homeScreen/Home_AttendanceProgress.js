@@ -24,7 +24,7 @@ function Home_AttendanceProgress({}) {
             arcSweepAngle={190} // 반원 형태
             rotation={265} // 시작 위치를 위쪽으로 조정
             lineCap="round" // 둥근 끝
-            duration={1000}
+            duration={2000}
           />
         </View>
 
