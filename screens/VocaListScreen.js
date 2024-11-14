@@ -17,6 +17,7 @@ import PrimaryBtn from "../common/PrimaryBtn";
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons"; // 북마크
 import VocaList_FlatListItem from "../components/vocaListScreen/VocaList_FlatListItem";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 const AdvertiseWrapper = styled.View`
   display: flex;
@@ -32,7 +33,6 @@ const AdvertiseImg = styled.Image`
 `;
 
 const TitleContainer = styled.View`
-  border: 1px solid black;
   width: 100%;
   padding: 30px;
   display: flex;
@@ -59,29 +59,78 @@ const BtnContainer = styled.View`
 // * 전역상태 닉네임 받아와서 띄울 필요 있음
 // 리마인드 클릭 상태에 따라 버튼 active, deactive 관리
 function VocaListScreen() {
-  // async function getData() {
-  //   try {
-  //     console.log("try");
-  //     const res = await axios.get(
-  //       "https://api.ssalary.shop/words/search?word=시장"
-  //     );
-  //     console.log(res.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-  // getData();
+  // stack에 쌓여있던 VocaScreen이 focus되면 리렌더링되어 데이터를 알맞게 띄우도록 함
+  const isFocused = useIsFocused();
+  const navigation = useNavigation();
+
+  async function getData() {
+    try {
+      // const postRes = await axios.post(
+      // );
+      // console.log(postRes);
+      // const res = await axios.get(
+      // );
+      // console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const nickname = "나야들기름";
 
+  useEffect(() => {
+    // 북마크 단어장에 있는 단어를 받아옴
+    getData();
+  }, [isFocused]);
+
   const data = [
     {
+      word_id: 1,
+      word: "블록체인",
+      like_date: "2024-09-01",
+    },
+    {
       word_id: 2,
+      word: "수출입물가지수",
+      like_date: "2024-09-02",
+    },
+    {
+      word_id: 3,
       word: "블록체인",
       like_date: "2024-09-01",
     },
     {
       word_id: 4,
+      word: "수출입물가지수",
+      like_date: "2024-09-02",
+    },
+    {
+      word_id: 5,
+      word: "블록체인",
+      like_date: "2024-09-01",
+    },
+    {
+      word_id: 6,
+      word: "수출입물가지수",
+      like_date: "2024-09-02",
+    },
+    {
+      word_id: 7,
+      word: "블록체인",
+      like_date: "2024-09-01",
+    },
+    {
+      word_id: 8,
+      word: "수출입물가지수",
+      like_date: "2024-09-02",
+    },
+    {
+      word_id: 9,
+      word: "블록체인",
+      like_date: "2024-09-01",
+    },
+    {
+      word_id: 10,
       word: "수출입물가지수",
       like_date: "2024-09-02",
     },
@@ -104,13 +153,24 @@ function VocaListScreen() {
           data={data}
           renderItem={({ item }) => <VocaList_FlatListItem {...item} />}
           keyExtractor={(item) => item.word_id}
+          ListEmptyComponent={
+            <fonts.H2B style={{ textAlign: "center" }}>
+              단어장에 단어를 추가해보세요!
+            </fonts.H2B>
+          }
         />
       </FlatListContainer>
       <BtnContainer>
         <fonts.Caption1 style={{ textAlign: "center" }}>
           단어를 10개 이상 저장해야 리마인드를 진행할 수 있어요.
         </fonts.Caption1>
-        <PrimaryBtn type="active" text="단어 리마인드 하러 가기" />
+        <PrimaryBtn
+          type="active"
+          text="단어 리마인드 하러 가기"
+          onPress={() => {
+            navigation.navigate("VocaReminder");
+          }}
+        />
       </BtnContainer>
     </View>
   );
