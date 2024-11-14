@@ -1,16 +1,16 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 import {
   View,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
-} from "react-native";
-import PrimaryBtn from "./PrimaryBtn";
-import { useNavigation } from "@react-navigation/native";
-import colors from "../styles/colors";
-import fonts from "../styles/fonts";
-import HighlightText from "react-native-highlight-underline-text";
-import { useEffect } from "react";
+} from 'react-native';
+import PrimaryBtn from './PrimaryBtn';
+import { useNavigation } from '@react-navigation/native';
+import colors from '../styles/colors';
+import fonts from '../styles/fonts';
+import HighlightText from 'react-native-highlight-underline-text';
+import { useEffect } from 'react';
 
 const ModalOverlay = styled.View`
   flex: 1;
@@ -76,15 +76,25 @@ function PrimaryModal({
   word_id,
   closeModal,
   replaceScreenName,
+  trend_quiz,
+  explanation,
 }) {
   var screenName = replaceScreenName;
   const handleNavigateEdu = () => {
     closeModal();
     setTimeout(() => {
-      navigation.replace(screenName, {
-        // params 전달
-        word_id: word_id,
-      }); // 모달 닫은 후 화면 교체하도록
+      navigation.replace(
+        screenName,
+        type === 'trendQuiz'
+          ? {
+              // 트렌드 퀴즈 params 전달
+              trend_quiz: trend_quiz,
+              correct: answer,
+              explanation: explanation,
+            }
+            // 샐러리 한조각 params 전달
+          : { word_id: word_id }
+      ); // 모달 닫은 후 화면 교체하도록
     }, 300); // 모달 닫는 애니메이션 시간과 동일하게 설정
   };
 
@@ -103,7 +113,7 @@ function PrimaryModal({
 
     if (screenName && navigation.isFocused()) {
     } else {
-      console.warn("Invalid screen name or navigator context");
+      console.warn('Invalid screen name or navigator context');
     }
   }, [screenName]);
 
@@ -112,24 +122,24 @@ function PrimaryModal({
       <ModalContent>
         {/* 세가지 요소를 담는 컨테이너 */}
         <TextContainer>
-          <ResultText>{result ? "정답이에요! 🎉" : "정답은 ...🧐"}</ResultText>
+          <ResultText>{result ? '정답이에요! 🎉' : '정답은 ...🧐'}</ResultText>
           <HighlightText
             isFixed
             underlineSize={10}
             underlineColor={colors.Primary_100}
             textStyle={{
-              color: "#121212",
-              fontFamily: "Pretendard-Bold",
+              color: '#121212',
+              fontFamily: 'Pretendard-Bold',
               fontSize: 23,
               lineHeight: 23,
             }}
             text={answer}
           ></HighlightText>
           <GuideText>
-            {type === "todaySalary" ? (
+            {type === 'todaySalary' ? (
               <GuideText>
-                {" "}
-                이어서 단어학습을 진행해보세요!{"\n"}단어학습을 모두 완료하면
+                {' '}
+                이어서 단어학습을 진행해보세요!{'\n'}단어학습을 모두 완료하면
                 시드 5개를 받을 수 있어요.
               </GuideText>
             ) : (
@@ -142,11 +152,11 @@ function PrimaryModal({
         <PrimaryBtn
           type="active"
           text={
-            type === "trendQuiz"
-              ? "해설 보러가기"
+            type === 'trendQuiz'
+              ? '해설 보러가기'
               : result
-              ? "단어 학습하러 가기"
-              : "단어 이해하러 가기"
+              ? '단어 학습하러 가기'
+              : '단어 이해하러 가기'
           }
           onPress={handleNavigateEdu}
         ></PrimaryBtn>

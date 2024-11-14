@@ -6,6 +6,8 @@ import { Shadow } from 'react-native-shadow-2';
 import { Modal } from 'react-native';
 import PrimaryModal from '../common/PrimaryModal';
 import axios from 'axios';
+import { BASE_URL } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ViewContainer = styled.SafeAreaView`
   background-color: white;
@@ -63,9 +65,10 @@ const AnswerContainer = styled.View`
 
 const AnswerBox = styled.Pressable`
   width: 320px;
-  height: 46px;
+  min-height: 46px;
   border-radius: 6px;
   background-color: ${(props) => (!props.isSelected ? '#ffffff' : '#313131')};
+  padding-right: 12px;
   margin-bottom: 14px;
 `;
 
@@ -104,6 +107,11 @@ const AnswerBox_Text = styled.Text`
   color: ${(props) => (!props.isSelected ? '#121212' : '#ffffff')};
   font-size: 16px;
   font-weight: 500;
+  width: 220px;
+  flex-wrap: wrap;
+  flex: 1;
+  
+  background-color: red;
 `;
 
 // 초록 버튼 컴포넌트로 재활용하자(SignUpModal에도 존재)
@@ -125,50 +133,100 @@ const SubmitBtn_Text = styled.Text`
   color: ${(props) => (props.isAbleToSubmit ? '#313131' : '#a0a0a0')};
 `;
 
+const LoadingIndicator = styled.View`
+  background-color: #fff;
+`;
+
 function shuffle(array) {
-  const shuffledArray = array.slice(); // Create a copy to avoid mutating the original array
+  const shuffledArray = array.slice();
   for (let i = shuffledArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]]; // Swap elements
+    [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
   }
   return shuffledArray;
 }
 
 function TodayTrendQuizScreen() {
-  const responseData = {
-    trend_quiz:
-      '최근 중앙은행들이 통화 긴축을 완화하고 있는 이유로 가장 적절한 것은 무엇인가요?',
-    correct: '경제 성장 둔화로 인한 경기 활성화 필요',
-    incorrect: [
-      '인플레이션 상승 방지',
-      '원자재 가격 상승 억제',
-      '금융 시장 불안정성 증가',
-    ],
-    explanation:
-      '최근 글로벌 경기 둔화와 경제 불확실성이 높아지면서 중앙은행들은 통화 긴축 정책을 완화하고 있습니다. 이는 경기를 활성화하여 경제 성장 둔화를 완화하려는 목적이 있습니다.',
+  const [trendQuizData, setTrendQuizData] = useState({});
+  const [answersState, setAnswersState] = useState([]);
+  const [isAbleToSubmit, setIsAbleToSubmit] = useState(false);
+
+  const koreaDate = new Date().toLocaleDateString('en-US', {
+    timeZone: 'Asia/Seoul',
+  });
+
+  const [month, day, year] = koreaDate.split('/'); // Split the string by '/' to get individual components
+
+  const formattedToday = `${year}-${month.padStart(2, '0')}-${day.padStart(
+    2,
+    '0'
+  )}`;
+  console.log(formattedToday);
+
+  const fetchTrendQuizData = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/trend-quiz`);
+      console.log(res.data);
+      setTrendQuizData(res.data);
+      await AsyncStorage.setItem(
+        'todayTrendQuizData',
+        JSON.stringify(res.data)
+      );
+      await AsyncStorage.setItem('lastFetchedDate', formattedToday);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const InitialAnswers = [
-    { isCorrect: true, isSelected: false, content: `${responseData.correct}` },
-    {
-      isCorrect: false,
-      isSelected: false,
-      content: `${responseData.incorrect[0]}`,
-    },
-    {
-      isCorrect: false,
-      isSelected: false,
-      content: `${responseData.incorrect[1]}`,
-    },
-    {
-      isCorrect: false,
-      isSelected: false,
-      content: `${responseData.incorrect[2]}`,
-    },
-  ];
+  useEffect(() => {
+    const checkAndFetchData = async () => {
+      try {
+        const lastFetchedDate = await AsyncStorage.getItem('lastFetchedDate');
 
-  const [answersState, setAnswersState] = useState(shuffle(InitialAnswers));
-  const [isAbleToSubmit, setIsAbleToSubmit] = useState(false);
+        if (lastFetchedDate !== formattedToday) {
+          fetchTrendQuizData();
+        } else {
+          console.log('오늘은 이미 데이터를 불러왔습니다.');
+          const existingTrendQuizData = JSON.parse(
+            await AsyncStorage.getItem('todayTrendQuizData')
+          );
+          setTrendQuizData(existingTrendQuizData);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    checkAndFetchData();
+  }, []);
+
+  useEffect(() => {
+    if (trendQuizData.correct && trendQuizData.incorrect) {
+      const InitialAnswers = [
+        {
+          isCorrect: true,
+          isSelected: false,
+          content: `${trendQuizData.correct}`,
+        },
+        {
+          isCorrect: false,
+          isSelected: false,
+          content: `${trendQuizData.incorrect[0]}`,
+        },
+        {
+          isCorrect: false,
+          isSelected: false,
+          content: `${trendQuizData.incorrect[1]}`,
+        },
+        {
+          isCorrect: false,
+          isSelected: false,
+          content:
+            '테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다',
+        },
+      ];
+      setAnswersState(shuffle(InitialAnswers));
+    }
+  }, [trendQuizData]);
 
   const handleSelectAnswer = (targetedIndex) => {
     let updatedAnswersState;
@@ -236,59 +294,69 @@ function TodayTrendQuizScreen() {
             (item) => item.isSelected && item.isCorrect
           )} // 테스트용
           // answer={answersState.content}
-          answer={`${responseData.correct}`}
+          answer={`${trendQuizData.correct}`}
+          trend_quiz={`${trendQuizData.trend_quiz}`}
+          explanation={`${trendQuizData.explanation}`}
           closeModal={closeModal}
           replaceScreenName="TodayTrendSolution" // 여기에 새로운 트렌드 퀴즈 해설 스크린명을 전달해주세요
         ></PrimaryModal>
       </Modal>
-      <QuizViewContainer>
-        <MainTitle>오늘의 트렌드 퀴즈</MainTitle>
-        <SubTitle>요즘 경제 상황에 맞는 퀴즈를 준비했어요</SubTitle>
-        <Shadow
-          style={{ width: '100%' }}
-          distance={10}
-          startColor="rgba(0, 0, 0, 0.02)"
-          offset={[4, 4]}
-        >
-          <QuizContainer>
-            <QuestionText>
-              <QDot>Q. </QDot>
-              <QuestionContent>{responseData.trend_quiz}</QuestionContent>
-            </QuestionText>
-            <AnswerContainer>
-              {answersState.map((item, index) => (
-                <AnswerBox
-                  key={index}
-                  onPress={() => handleSelectAnswer(index)}
-                  isSelected={answersState[index].isSelected}
-                >
-                  <AnswerContentContainer>
-                    {!answersState[index].isSelected ? (
-                      <AnswerBox_Btn key={index}>
-                        <AnswerBox_BtnNumber>{index + 1}</AnswerBox_BtnNumber>
-                      </AnswerBox_Btn>
-                    ) : (
-                      <GreenCheckMarkImg source={GreenCheckMark} />
-                    )}
+      {trendQuizData.trend_quiz ? (
+        <QuizViewContainer>
+          <MainTitle>오늘의 트렌드 퀴즈</MainTitle>
+          <SubTitle>요즘 경제 상황에 맞는 퀴즈를 준비했어요</SubTitle>
+          <Shadow
+            style={{ width: '100%' }}
+            distance={10}
+            startColor="rgba(0, 0, 0, 0.02)"
+            offset={[4, 4]}
+          >
+            <QuizContainer>
+              <QuestionText>
+                <QDot>Q. </QDot>
+                <QuestionContent>{trendQuizData.trend_quiz}</QuestionContent>
+              </QuestionText>
+              <AnswerContainer>
+                {answersState.map((item, index) => (
+                  <AnswerBox
+                    key={index}
+                    onPress={() => handleSelectAnswer(index)}
+                    isSelected={answersState[index].isSelected}
+                  >
+                    <AnswerContentContainer>
+                      {!answersState[index].isSelected ? (
+                        <AnswerBox_Btn key={index}>
+                          <AnswerBox_BtnNumber>{index + 1}</AnswerBox_BtnNumber>
+                        </AnswerBox_Btn>
+                      ) : (
+                        <GreenCheckMarkImg source={GreenCheckMark} />
+                      )}
 
-                    <AnswerBox_Text isSelected={answersState[index].isSelected}>
-                      {item.content}
-                    </AnswerBox_Text>
-                  </AnswerContentContainer>
-                </AnswerBox>
-              ))}
-            </AnswerContainer>
-            <SubmitBtn
-              isAbleToSubmit={isAbleToSubmit}
-              onPress={isAbleToSubmit ? onSubmitHandler : null}
-            >
-              <SubmitBtn_Text isAbleToSubmit={isAbleToSubmit}>
-                제출하기
-              </SubmitBtn_Text>
-            </SubmitBtn>
-          </QuizContainer>
-        </Shadow>
-      </QuizViewContainer>
+                      <AnswerBox_Text
+                        isSelected={answersState[index].isSelected}
+                        numberOfLines={4}
+                        ellipsizeMode="tail"
+                      >
+                        {item.content}
+                      </AnswerBox_Text>
+                    </AnswerContentContainer>
+                  </AnswerBox>
+                ))}
+              </AnswerContainer>
+              <SubmitBtn
+                isAbleToSubmit={isAbleToSubmit}
+                onPress={isAbleToSubmit ? onSubmitHandler : null}
+              >
+                <SubmitBtn_Text isAbleToSubmit={isAbleToSubmit}>
+                  제출하기
+                </SubmitBtn_Text>
+              </SubmitBtn>
+            </QuizContainer>
+          </Shadow>
+        </QuizViewContainer>
+      ) : (
+        <LoadingIndicator />
+      )}
     </ViewContainer>
   );
 }
