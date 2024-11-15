@@ -76,13 +76,13 @@ function VocaReminder_remindContent({
     content = (
       <Container>
         <ReminderContainer>
-          {data.map((item) => (
+          {data.map((item, index) => (
             <WordBtnElement
               onPress={() => onClick({ word: item.word })}
               clickState={item.clickState}
-              key={item.word_id}
+              key={item.word}
             >
-              <WordBtnText key={item.word_id}>{item.word}</WordBtnText>
+              <WordBtnText key={item.word}>{item.word}</WordBtnText>
             </WordBtnElement>
           ))}
         </ReminderContainer>
