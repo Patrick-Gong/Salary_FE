@@ -167,9 +167,14 @@ function TodayTrendSolutionScreen({ navigation, route }) {
             <ExplanationWrapper>
               <Explanation>{route.params.explanation}</Explanation>
             </ExplanationWrapper>
-            <CompleteBtn onPress={handleFinishStudy}>
-              <CompleteBtnText>트렌드 퀴즈 완료하기</CompleteBtnText>
-            </CompleteBtn>
+            {/* 학습 완료한 상태면 버튼 렌더링 안 됨 */}
+            {trendState ? (
+              <></>
+            ) : (
+              <CompleteBtn onPress={handleFinishStudy}>
+                <CompleteBtnText>트렌드 퀴즈 완료하기</CompleteBtnText>
+              </CompleteBtn>
+            )}
           </SolutionContainer>
         </Shadow>
       </SolutionView>

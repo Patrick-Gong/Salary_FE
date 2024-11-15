@@ -91,11 +91,11 @@ function Home_TrendQuiz() {
         type="active"
         text={trendState ? "트렌드 퀴즈 해설 보러가기" : "트렌드 퀴즈 풀기"}
         onPress={() => {
-          console.log(trendQuizData);
           if (!trendState) navigation.push("TodayTrendQuiz");
           else
             navigation.push("TodayTrendSolution", {
               // trendquiz params 전달
+              ...trendQuizData,
             });
         }}
       ></PrimaryBtn>
