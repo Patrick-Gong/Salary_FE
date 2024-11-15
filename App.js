@@ -170,6 +170,7 @@ export default function App() {
                   headerTitle: "",
                   headerTintColor: colors.Grayscale_100,
                   headerShown: true,
+                  headerBackTitle: "",
                   headerBackTitleVisible: false,
                 }}
               />

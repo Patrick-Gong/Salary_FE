@@ -1,5 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Modal, View, Text, ScrollView, ActivityIndicator } from "react-native";
+import {
+  Modal,
+  View,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import styled, { css } from "styled-components";
 import colors from "../styles/colors";
 import fonts from "../styles/fonts";
@@ -15,6 +22,7 @@ import { BASE_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { todayAttendanceState } from "../Recoil/todayAttendanceState";
 import WordToggle from "../common/WordToggle";
+import * as Linking from "expo-linking";
 import {
   isSavedSelector,
   todaySalaryContent,
@@ -131,7 +139,8 @@ const NewsContentContainer = styled.View`
 
 // 임시
 const NewsContentBox = styled.View`
-  background-color: #c2c2c2;
+  /* background-color: #c2c2c2; */
+  background-color: #faebd7;
   border-radius: 3px;
   align-items: center;
 `;
@@ -329,6 +338,10 @@ function TodaySalaryEduScreen({ route }) {
     setIsModalVisible(false);
   }
 
+  const link = (url) => {
+    Linking.openURL(url);
+  };
+
   if (!loading || isModalVisible)
     return (
       <ScrollView
@@ -440,22 +453,25 @@ function TodaySalaryEduScreen({ route }) {
               <Title style={{ lineHeight: 20 }}>관련 뉴스 확인하기</Title>
             </NewsTitleContainer>
             <NewsContentContainer>
-              <NewsContentBox>
-                <NewsText>{wordData.articles[0].title}</NewsText>
-                {/* <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 50,
-                    color: "#858585",
-                    marginBottom: 5,
-                  }}
-                >
-                  기사 관련 이미지(배경)
-                </Text> */}
-              </NewsContentBox>
-              <NewsContentBox>
-                <NewsText>{wordData.articles[1].title}</NewsText>
-                {/* <Text
+              <TouchableOpacity onPress={() => link(wordData.articles[0].url)}>
+                <NewsContentBox>
+                  <NewsText>{wordData.articles[0].title}</NewsText>
+                  {/* <Text
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 50,
+                      color: "#858585",
+                      marginBottom: 5,
+                    }}
+                  >
+                    바로가기
+                  </Text> */}
+                </NewsContentBox>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => link(wordData.articles[1].url)}>
+                <NewsContentBox>
+                  <NewsText>{wordData.articles[1].title}</NewsText>
+                  {/* <Text
                   style={{
                     fontSize: 14,
                     fontWeight: 500,
@@ -465,7 +481,8 @@ function TodaySalaryEduScreen({ route }) {
                 >
                   기사 관련 이미지(배경)
                 </Text> */}
-              </NewsContentBox>
+                </NewsContentBox>
+              </TouchableOpacity>
             </NewsContentContainer>
           </NewsContainer>
           {/* 4. 끝까지 내려 => 모달 올리기 & 학습 완료 api 호출 */}

@@ -72,8 +72,7 @@ function VocaReminder_remindContent({
   // 0개 고른 경우 렌더링 방지
   if (reminding && clickedWordCount === 0) {
     navigation.goBack(-1);
-  }
-  if (!reminding) {
+  } else if (!reminding) {
     content = (
       <Container>
         <ReminderContainer>
