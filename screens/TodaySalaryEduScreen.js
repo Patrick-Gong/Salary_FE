@@ -137,6 +137,7 @@ const NewsContentBox = styled.View`
 `;
 
 const NewsText = styled(fonts.Caption2)`
+  width: 100%;
   color: #323232;
 
   letter-spacing: 0.24px;
@@ -187,7 +188,7 @@ function TodaySalaryEduScreen({ route }) {
 
   // 알맞게 렌더링되도록 함
   useEffect(() => {
-    console.log(wordData, storyTelling, bookMark, storyTelling);
+    console.log(wordData.articles);
   }, [
     wordData,
     storyTelling,
@@ -440,8 +441,8 @@ function TodaySalaryEduScreen({ route }) {
             </NewsTitleContainer>
             <NewsContentContainer>
               <NewsContentBox>
-                <NewsText>{news1}</NewsText>
-                <Text
+                <NewsText>{wordData.articles[0].title}</NewsText>
+                {/* <Text
                   style={{
                     fontSize: 14,
                     fontWeight: 50,
@@ -450,11 +451,11 @@ function TodaySalaryEduScreen({ route }) {
                   }}
                 >
                   기사 관련 이미지(배경)
-                </Text>
+                </Text> */}
               </NewsContentBox>
               <NewsContentBox>
-                <NewsText>{news2}</NewsText>
-                <Text
+                <NewsText>{wordData.articles[1].title}</NewsText>
+                {/* <Text
                   style={{
                     fontSize: 14,
                     fontWeight: 500,
@@ -463,7 +464,7 @@ function TodaySalaryEduScreen({ route }) {
                   }}
                 >
                   기사 관련 이미지(배경)
-                </Text>
+                </Text> */}
               </NewsContentBox>
             </NewsContentContainer>
           </NewsContainer>

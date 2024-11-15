@@ -10,6 +10,7 @@ import fonts from "../../styles/fonts";
 import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import { todayAttendanceDetail } from "../../Recoil/todayAttendanceDetail";
 import { todayTrendSelector } from "../../Recoil/todayAttendanceDetail";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Container = styled.View`
   flex: 1;
@@ -49,11 +50,26 @@ const DoneMarker = styled.Image`
   object-fit: cover;
 `;
 
-function Home_TrendQuiz({ trend }) {
+function Home_TrendQuiz() {
   const trendState = useRecoilValue(todayTrendSelector);
   const setTrendState = useSetRecoilState(todayTrendSelector);
 
   const navigation = useNavigation();
+
+  const [trendQuizData, setTrendQuizData] = useState({});
+
+  useEffect(() => {
+    async function fetchTrendQuizData() {
+      // 당연히 있을 테니 검증은 안 함
+      const existingTrendQuizData = JSON.parse(
+        await AsyncStorage.getItem("todayTrendQuizData")
+      );
+      setTrendQuizData(existingTrendQuizData);
+    }
+
+    fetchTrendQuizData();
+    console.log(trendQuizData);
+  }, []);
 
   return (
     <Container>
@@ -75,8 +91,12 @@ function Home_TrendQuiz({ trend }) {
         type="active"
         text={trendState ? "트렌드 퀴즈 해설 보러가기" : "트렌드 퀴즈 풀기"}
         onPress={() => {
+          console.log(trendQuizData);
           if (!trendState) navigation.push("TodayTrendQuiz");
-          else navigation.push("TodayTrendSolution");
+          else
+            navigation.push("TodayTrendSolution", {
+              // trendquiz params 전달
+            });
         }}
       ></PrimaryBtn>
     </Container>

@@ -6,7 +6,7 @@ import colors from "../../styles/colors";
 import getFormattedDate from "../../functions/getFormattedDate";
 import compareDate from "../../functions/compareDate";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import getKoreaFormattedDate from "../../functions/getKoreaForamttedDate";
 
 const TouchableContainer = styled.TouchableOpacity`
@@ -150,4 +150,4 @@ function Home_DayAttendanceCircle({
   );
 }
 
-export default Home_DayAttendanceCircle;
+export default React.memo(Home_DayAttendanceCircle);

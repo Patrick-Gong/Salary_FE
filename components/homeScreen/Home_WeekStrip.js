@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import CalendarStrip from "react-native-calendar-strip";
 import fonts from "../../styles/fonts";
@@ -61,6 +61,10 @@ const Home_WeekStrip = ({ onCalendarModalOpen }) => {
   // day circle을 caching하여 로딩 속도를 줄인다.
   const dayCache = useMemo(() => ({}), []);
 
+  useEffect(() => {
+    console.log("weekstrip 렌더링");
+  });
+
   return (
     <Container>
       <HeaderContainer>
@@ -72,6 +76,7 @@ const Home_WeekStrip = ({ onCalendarModalOpen }) => {
       <CalendarStrip
         calendarHeaderStyle={{ height: 0, opacity: 0 }} // 헤더 숨기기
         style={styles.calendar}
+        startingDay={3}
         dayComponent={(props) => {
           return (
             <Home_DayAttendanceCircle
@@ -98,4 +103,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Home_WeekStrip;
+export default React.memo(Home_WeekStrip);
