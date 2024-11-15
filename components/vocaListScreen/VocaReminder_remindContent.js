@@ -96,6 +96,7 @@ function VocaReminder_remindContent({
           {data.map((item) =>
             item.clickState ? (
               <WordToggle
+                type="vocaReminder"
                 index={wordIndex++}
                 word={item.word}
                 mean={item.mean}

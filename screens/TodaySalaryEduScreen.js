@@ -5,7 +5,6 @@ import colors from "../styles/colors";
 import fonts from "../styles/fonts";
 import TodaySalaryEdu_Modal from "../components/todaySalaryEduScreen/TodaySalaryEdu_Modal";
 import TodaySalaryEdu_MeanAndExample from "../components/todaySalaryEduScreen/TodaySalaryEdu_MeanAndExample";
-import TodaySalaryEdu_StoryTelling from "../components/todaySalaryEduScreen/TodaySalaryEdu_StoryTelling";
 import TodaySalaryEdu_ScrollDownAnim from "../components/todaySalaryEduScreen/TodaySalaryEdu_ScrollDownAnim";
 import { Ionicons } from "@expo/vector-icons";
 import HighlightText from "react-native-highlight-underline-text";
@@ -16,6 +15,8 @@ import { BASE_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { todayAttendanceState } from "../Recoil/todayAttendanceState";
 import WordToggle from "../common/WordToggle";
+import { todaySalaryContent } from "../Recoil/todaySalaryContent";
+import parseStoryString from "../functions/parseStoryString";
 
 const RootContainer = styled.View`
   flex: 1;
@@ -60,12 +61,28 @@ const BookMarkContainer = styled.TouchableOpacity`
 
 // 섹션 2) 스토리텔링
 const StoryTellingContainer = styled.View`
-  padding: 8px 24px 28px;
-  width: auto;
-  height: 400px;
+  padding: 8px 0px 28px;
+  width: 100%;
+
   gap: 20px;
 
+  display: flex;
+  gap: 10px;
   align-items: center;
+  flex: 1;
+`;
+
+const StoryTellingTitleContainer = styled.View`
+  padding-left: 24px;
+
+  width: 100%;
+`;
+
+const StoryTellingContentContainer = styled.View`
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  padding: 0 25px;
 `;
 
 const StoryTellingTitle = styled(fonts.H4M)`
@@ -140,8 +157,9 @@ const EduDoneText = styled(fonts.Body2M)`
 // 1) modal에서 학습 버튼
 // 2) 퀴즈 스크린에서 모르겠어요
 // 3) 단어 검색에서 특정 단어 클릭시
-// word_id를 받아 api 호출
-function TodaySalaryEduScreen() {
+
+// word_id를 params로 받아 api 호출
+function TodaySalaryEduScreen({ route }) {
   // 전역으로 todaysalary 학습 상태를 관리
   const wordState = useRecoilValue(todayWordSelector);
   const setTodayWordState = useSetRecoilState(todayWordSelector);
@@ -150,34 +168,47 @@ function TodaySalaryEduScreen() {
   const [attendaceState, setAttendanceState] =
     useRecoilState(todayAttendanceState);
 
+  // 전역 오늘의 샐러리 단어 데이터를 사용
+  const todaySalary = useRecoilValue(todaySalaryContent);
+
   const [loading, setLoading] = useState(false);
-  const [wordId, setWordId] = useState("");
+  const [wordData, setWordData] = useState(todaySalary);
+  const [storyTelling, setStoryTelling] = useState([
+    parseStoryString(todaySalary.story1),
+    parseStoryString(todaySalary.story2),
+    parseStoryString(todaySalary.story3),
+  ]);
 
   // 임시 변수 사용
-  const word = "나스닥";
-  const example =
-    "테슬라의 주가는 나스닥에서 급등하여 기술주의 상승세를 이끌었습니다.";
-  const mean =
-    "벤처기업들이 상장되어 있는 미국의 장외시장을 말한다. 자본력이 부족한 비상장벤처기업들이 저리로 자금을 조달하는 창구로 활용하고 있다.";
-  const story1 = "스토리텔링1";
-  const story2 = "스토리텔링2";
-  const story3 = "스토리텔링3";
-  const article = "www.naver.com";
   const news1 = "기술주 중심 나스닥 또 급락…신규 고용 시장 기대 못미쳐";
   const news2 = "美 고용지표 악화에 증시 급락…AI 빅테크 주가 일제히 하락";
 
   // 단어 저장 상태를 관리
+  // 초기에 단어 저장 상태를 확인하는 로직 필요!!
   const [bookMark, setBookMark] = useState(false);
 
   function onBookmarkToggle() {
+    fetchBookMarkState(!bookMark);
     setBookMark(!bookMark);
     // 북마크 아이콘 클릭시마다 API 호출
+  }
+
+  async function fetchBookMarkState(tmpState) {
+    if (tmpState) {
+      const res = await axios.delete(
+        `${BASE_URL}/wordbook?word_id=${wordData.word_id}`
+      );
+    } else {
+      const res = await axios.post(
+        `${BASE_URL}/wordbook?word_id=${wordData.word_id}`
+      );
+    }
   }
 
   async function postWordAttendance() {
     try {
       const res = await axios.post(
-        `${BASE_URL}/trend-quiz/update-status?word_id=${wordId}`
+        `${BASE_URL}/today-word/update-status?word_id=${wordData.word_id}`
       );
       console.log("단어 학습 완료", res.status);
       return true;
@@ -199,6 +230,30 @@ function TodaySalaryEduScreen() {
       setAttendanceState((prev) => prev + 3); // 3을 더해주어 salary done 표시
     }
   }
+
+  useEffect(() => {
+    async function fetchWordData() {
+      try {
+        const res = await axios.get(
+          `${BASE_URL}/words?word_id=${route.params.word_id}`
+        );
+        if (res.status === 200) {
+          setWordData(res.data);
+        }
+      } catch (error) {
+        console.log("에러", error);
+      }
+    }
+
+    if (route.params.type !== "todaySalary") fetchWordData();
+
+    const storyTellingData = [
+      parseStoryString(wordData.story1),
+      parseStoryString(wordData.story2),
+      parseStoryString(wordData.story3),
+    ];
+    setStoryTelling(storyTellingData);
+  }, []);
 
   // 스크롤 이벤트 핸들러
   const handleScroll = ({ nativeEvent }) => {
@@ -224,10 +279,6 @@ function TodaySalaryEduScreen() {
   function closeModal() {
     setIsModalVisible(false);
   }
-
-  useEffect(() => {
-    setWordId();
-  }, [wordId]);
 
   return (
     <ScrollView
@@ -265,7 +316,7 @@ function TodaySalaryEduScreen() {
                 fontSize: 26,
                 lineHeight: 26,
               }}
-              text={word}
+              text={wordData.word}
             ></HighlightText>
             <BookMarkContainer onPress={onBookmarkToggle}>
               {bookMark ? (
@@ -285,20 +336,42 @@ function TodaySalaryEduScreen() {
             </BookMarkContainer>
           </MeanContainer>
           <TodaySalaryEdu_MeanAndExample
-            word={word}
-            mean={mean}
-            example={example}
+            word={wordData.word}
+            mean={wordData.mean}
+            example={wordData.example}
           />
         </MeanAndExampleContainer>
         {/* 2. 스토리텔링 */}
         <StoryTellingContainer>
-          <StoryTellingTitle>더 쉽게 이해해볼까요?</StoryTellingTitle>
-          <TodaySalaryEdu_StoryTelling />
+          <StoryTellingTitleContainer>
+            <StoryTellingTitle>더 쉽게 이해해볼까요?</StoryTellingTitle>
+          </StoryTellingTitleContainer>
+
+          <StoryTellingContentContainer>
+            <WordToggle
+              type="todaySalaryEdu"
+              index={1}
+              word={storyTelling[0][0]}
+              mean={storyTelling[0][1]}
+            />
+            <WordToggle
+              type="todaySalaryEdu"
+              index={2}
+              word={storyTelling[1][0]}
+              mean={storyTelling[1][1]}
+            />
+            <WordToggle
+              type="todaySalaryEdu"
+              index={3}
+              word={storyTelling[2][0]}
+              mean={storyTelling[2][1]}
+            />
+          </StoryTellingContentContainer>
         </StoryTellingContainer>
         <Horizon />
         {/* 3. 관련 뉴스 확인 */}
         <NewsContainer>
-          <NewsTitleContainer tooLong={word.length > 10}>
+          <NewsTitleContainer tooLong={wordData.word.length > 10}>
             <HighlightText
               isFixed
               underlineSize={10}
@@ -309,7 +382,7 @@ function TodaySalaryEduScreen() {
                 fontSize: 20,
                 lineHeight: 20,
               }}
-              text={word}
+              text={wordData.word}
             ></HighlightText>
             <Title style={{ lineHeight: 20 }}>관련 뉴스 확인하기</Title>
           </NewsTitleContainer>

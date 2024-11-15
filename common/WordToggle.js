@@ -22,7 +22,12 @@ const Container = styled.View`
 
   align-self: flex-start;
 
-  ${(props) => (props.toggle ? css`` : css``)}
+  ${(props) =>
+    props.type === "todaySalaryEdu"
+      ? css`
+          background-color: ${colors.Primary_20};
+        `
+      : css``}
 `;
 
 const TitleContainer = styled.View`
@@ -43,13 +48,31 @@ const TitleContainer = styled.View`
   ${(props) =>
     props.toggle
       ? css`
-          border-bottom-color: ${colors.Grayscale_80};
           border-bottom-width: 1px;
           border-bottom-style: "solid";
         `
       : css``}
+
+  ${(props) =>
+    props.type === "todaySalaryEdu"
+      ? css`
+          border-bottom-color: ${colors.Grayscale_20};
+        `
+      : css`
+          border-bottom-color: ${colors.Grayscale_80};
+        `}
 `;
 
+const Title = styled(fonts.H4SB)`
+  ${(props) =>
+    props.type === "todaySalaryEdu"
+      ? css`
+          color: ${colors.Grayscale_100};
+        `
+      : css`
+          color: ${colors.Grayscale_white};
+        `}
+`;
 const WordContainer = styled.View`
   gap: 10px;
   display: flex;
@@ -59,7 +82,20 @@ const WordContainer = styled.View`
 const MeanContainer = styled.View`
   width: 100%;
 
-  padding: 15px 40px 20px;
+  padding: 20px 40px 30px;
+`;
+
+const Mean = styled(fonts.Body1)`
+  ${(props) =>
+    props.type === "todaySalaryEdu"
+      ? css`
+          color: ${colors.Grayscale_100};
+        `
+      : css`
+          color: ${colors.Grayscale_white};
+        `}
+
+  line-height: 28px;
 `;
 
 const ToggleBtn = styled.Pressable`
@@ -72,39 +108,52 @@ const ToggleBtn = styled.Pressable`
   align-items: center;
 `;
 
-function WordToggle({ index, word, mean }) {
+// type: 1) todaySalaryEdu
+// type: 2) vocaReminder
+function WordToggle({ type, index, word, mean }) {
   const [toggle, setToggle] = useState(false);
+  console.log(type);
 
   return (
-    <Container toggle={toggle}>
-      <TitleContainer toggle={toggle}>
+    <Container type={type} toggle={toggle}>
+      <TitleContainer type={type} toggle={toggle}>
         <WordContainer>
-          <fonts.H4SB style={{ color: colors.Grayscale_white }}>
-            <fonts.H4SB style={{ color: colors.Primary_100 }}>
+          <Title type={type}>
+            <fonts.H4SB
+              style={
+                type === "todaySalaryEdu"
+                  ? { color: colors.Grayscale_100 }
+                  : { color: colors.Primary_100 }
+              }
+            >
               {index}.
             </fonts.H4SB>
             {"  "}
             {word}
-          </fonts.H4SB>
+          </Title>
           {/* horizon */}
         </WordContainer>
 
         <ToggleBtn onPress={() => setToggle(!toggle)}>
           {toggle ? (
-            <SimpleLineIcons name="arrow-up" size={14} color="white" />
+            <SimpleLineIcons
+              name="arrow-up"
+              size={18}
+              color={type === "todaySalaryEdu" ? colors.text_green : "white"}
+            />
           ) : (
-            <SimpleLineIcons name="arrow-down" size={14} color="white" />
+            <SimpleLineIcons
+              name="arrow-down"
+              size={18}
+              color={type === "todaySalaryEdu" ? colors.text_green : "white"}
+            />
           )}
         </ToggleBtn>
       </TitleContainer>
 
       {toggle ? (
         <MeanContainer>
-          <fonts.Body1
-            style={{ color: colors.Grayscale_white, lineHeight: 28 }}
-          >
-            {mean}
-          </fonts.Body1>
+          <Mean type={type}> {mean}</Mean>
         </MeanContainer>
       ) : (
         <></>

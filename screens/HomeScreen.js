@@ -34,6 +34,7 @@ import { todayAttendanceDetail } from "../Recoil/todayAttendanceDetail";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import getKoreaFormattedDate from "../functions/getKoreaForamttedDate";
 import { parse } from "react-native-svg";
+import { todaySalaryContent } from "../Recoil/todaySalaryContent";
 
 const ContentsContainer = styled.View`
   background: ${colors.bg};
@@ -104,6 +105,9 @@ function HomeScreen() {
     todayAttendanceDetail
   );
 
+  // 오늘의 salary 학습 content
+  const [todaySalary, setTodaySalary] = useRecoilState(todaySalaryContent);
+
   // 1. 최초 렌더링 시 attendance_state를 받아와 전역 상태로 관리
   // 이후 학습 완료시 전역으로 관리는 함
   useEffect(() => {
@@ -151,7 +155,7 @@ function HomeScreen() {
     try {
       const res = await axios.get(`${BASE_URL}/today-word`);
       if (res.status === 200) {
-        console.log("새로운 word id를 받음");
+        console.log("새로운 word id를 받음", res.data.word_id);
         fetchTodayWordData({ word_id: res.data.word_id }); //data를 fetch하러
       }
     } catch (error) {
@@ -163,16 +167,19 @@ function HomeScreen() {
     try {
       const res = await axios.get(`${BASE_URL}/words?word_id=${word_id}`);
       if (res.status === 200) {
-        const data = [
-          [
-            "todaySalaryData",
-            JSON.stringify({
-              ...res.data,
-              lastFetchedDate: getKoreaFormattedDate(),
-            }),
-          ],
-        ];
-        await AsyncStorage.multiSet(data);
+        await AsyncStorage.setItem(
+          "todaySalaryData",
+          JSON.stringify({
+            ...res.data,
+            lastFetchedDate: getKoreaFormattedDate(),
+          })
+        );
+        // const debug = await AsyncStorage.getItem("todaySalaryData");
+        setTodaySalary(res.data); /// 전역 상태 관리
+        // console.log("todaySalaryDaya storage 저장", {
+        //   ...res.data,
+        //   lastFetchedDate: getKoreaFormattedDate(),
+        // });
       }
     } catch (error) {
       console.log("에러", error);
@@ -182,10 +189,10 @@ function HomeScreen() {
   // 오늘의 학습 단어를 최초 1회만 받아옴
   useEffect(() => {
     const checkAndFetchData = async () => {
+      // await AsyncStorage.removeItem("todaySalaryData"); 디버깅
       try {
-        const parsedLastFetchedData = JSON.parse(
-          await AsyncStorage.getItem("todaySalaryData")
-        );
+        const lastFetchedData = await AsyncStorage.getItem("todaySalaryData");
+        const parsedLastFetchedData = JSON.parse(lastFetchedData);
         if (
           !parsedLastFetchedData ||
           parsedLastFetchedData.lastFetchedDate !== getKoreaFormattedDate()
@@ -195,6 +202,8 @@ function HomeScreen() {
           );
           fetchTodayWordId();
         } else {
+          // 이미 데이터가 asyncStorage에 저장된 상태이므로 전역 상태값의 초기값으로 지정해줌
+          setTodaySalary(parsedLastFetchedData);
           console.log("이미 word Id를 받아옴");
         }
       } catch (error) {
@@ -213,7 +222,9 @@ function HomeScreen() {
     setIsModalVisible(false);
   }
 
-  // api
+  // 리렌더링 관리
+  useEffect(() => {}, [attendanceId, attendanceDetail, attendanceState]);
+
   return (
     <SafeAreaView style={styles.rootScreen}>
       <ScrollView automaticallyAdjustContentInsets={false}>

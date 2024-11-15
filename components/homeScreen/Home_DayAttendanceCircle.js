@@ -21,7 +21,7 @@ const TouchableContainer = styled.TouchableOpacity`
   border-radius: 18px;
 
   ${(props) =>
-    Number(props.attendance_state) > 3
+    Number(props.attendance_state) >= 3
       ? css`
           background-color: ${colors.Primary_100};
         `
@@ -88,7 +88,6 @@ function Home_DayAttendanceCircle({
   const [emptyState, setEmpty] = useState(empty);
   const [attendanceState, setAttendanceState] = useState(0);
 
-  attendance_state = 0;
   attendance_state = getStateFromStorage(
     date,
     calendarDate,
@@ -111,7 +110,7 @@ function Home_DayAttendanceCircle({
         empty={emptyState}
       >
         {/* 날짜 */}
-        {attendance_state !== 5 ? (
+        {attendance_state < 3 ? (
           <DayText empty={emptyState}>
             {type === "calendar" ? calendarDate.day : date.format("D")}
           </DayText>

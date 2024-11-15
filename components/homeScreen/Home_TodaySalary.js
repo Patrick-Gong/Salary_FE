@@ -7,6 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import PrimaryBtn from "../../common/PrimaryBtn";
 import { todayWordSelector } from "../../Recoil/todayAttendanceDetail";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import { todaySalaryContent } from "../../Recoil/todaySalaryContent";
 
 const Container = styled.View`
   flex: 1;
@@ -102,15 +103,16 @@ const AnswerDescript = styled(fonts.Body2M)`
 
 // state 1: 학습 진행 여부에 따라 검정색 혹은 흰색
 // state 2: 그날의 학습할 단어를 받아와야됨.
-function Home_TodaySalary({ word }) {
+function Home_TodaySalary() {
   const wordState = useRecoilValue(todayWordSelector);
   const setWordState = useSetRecoilState(todayWordSelector);
 
-  const [todayVoca, setTodayVoca] = useState("나스닥");
+  // 오늘의 학습 컨텐츠
+  const todaySalary = useRecoilValue(todaySalaryContent);
 
   const navigation = useNavigation();
 
-  useEffect(() => setTodayVoca(word), [word]);
+  useEffect(() => {}, [wordState, todaySalaryContent]);
 
   return (
     <Container wordState={wordState}>
@@ -124,26 +126,25 @@ function Home_TodaySalary({ word }) {
       </TitleContainer>
       <InputBox wordState={wordState}>
         {wordState ? (
-          <InputPlaceHolderDone>{todayVoca}</InputPlaceHolderDone>
+          <InputPlaceHolderDone>{todaySalary.word}</InputPlaceHolderDone>
         ) : (
           <InputPlaceHolder wordState={wordState}>
             {wordState ? todayVoca : "단어를 맞춰보세요!"}
           </InputPlaceHolder>
         )}
       </InputBox>
-      <AnswerDescript wordState={wordState}>
-        벤처기업들이 상장되어 있는 미국의 장외시장을 말한다. 자본력이 부족한
-        비상장벤처기업들이 저리로 자금을 조달하는 창구로 활용하고 있다.
-      </AnswerDescript>
+      <AnswerDescript wordState={wordState}>{todaySalary.mean}</AnswerDescript>
       <PrimaryBtn
         type="active"
         text={wordState ? "학습한 단어 보러가기" : "단어 학습하기"}
         onPress={
           wordState
-            ? () => navigation.navigate("TodaySalaryEdu")
+            ? () =>
+                navigation.navigate("TodaySalaryEdu", {
+                  type: "todaySalary",
+                })
             : () => navigation.navigate("TodaySalaryQuiz")
         }
-        //  {/* answer과 설명을 함께 TodaySalaryScreen에 전달 */}
       ></PrimaryBtn>
     </Container>
   );
