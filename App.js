@@ -24,6 +24,7 @@ import fonts from "./styles/fonts";
 import VocaReminderScreen from "./screens/VocaReminderScreen";
 import VocaReminder_HeaderRight from "./components/vocaListScreen/VocaReminder_HeaderRight";
 import VocaSearchResultScreen from "./screens/VocaSearchResultScreen";
+import { RecoilRoot } from "recoil";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -116,7 +117,7 @@ export default function App() {
   }
 
   return (
-    <>
+    <RecoilRoot>
       <NavigationContainer>
         <Stack.Navigator
         // screenOptions={{
@@ -217,7 +218,7 @@ export default function App() {
           )}
         </Stack.Navigator>
       </NavigationContainer>
-    </>
+    </RecoilRoot>
   );
 }
 

@@ -8,6 +8,9 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { BASE_URL } from "@env";
 import { useState } from "react";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { todayTrendSelector } from "../Recoil/todayAttendanceDetail";
+import { todayAttendanceState } from "../Recoil/todayAttendanceState";
 
 const ViewContainer = styled.SafeAreaView`
   background-color: white;
@@ -113,11 +116,22 @@ const CompleteBtnText = styled.Text`
 `;
 
 function TodayTrendSolutionScreen({ navigation, route }) {
+  // 메인화면에서 알맞게 렌더링하기 위해 전역 상태 관리
+  const trendState = useRecoilValue(todayTrendSelector);
+  const setTrendState = useSetRecoilState(todayTrendSelector);
+  const [attendanceState, setAttendanceState] =
+    useRecoilState(todayAttendanceState);
+
   const handleFinishStudy = async () => {
     try {
       const res = await axios.post(
         `${BASE_URL}/trend-quiz/update-status?trend=${true}`
       );
+      if (!trendState) {
+        setTrendState(true);
+        setAttendanceState((prev) => prev + 1); // attendance state에 1을 더해주어 알맞게 상태 관리
+        // 중복 처리되어서는 안됨!!
+      }
       console.log(res.data);
       navigation.navigate("BottomTab");
     } catch (error) {

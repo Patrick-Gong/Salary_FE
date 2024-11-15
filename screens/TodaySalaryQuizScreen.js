@@ -19,6 +19,8 @@ import { Shadow } from "react-native-shadow-2";
 import PrimaryBtn from "../common/PrimaryBtn";
 import { useNavigation } from "@react-navigation/native";
 import PrimaryModal from "../common/PrimaryModal";
+import { useRecoilValue } from "recoil";
+import { todaySalaryContent } from "../Recoil/todaySalaryContent";
 
 const Container = styled.View`
   align-items: center;
@@ -96,14 +98,10 @@ const SkipBtnText = styled(fonts.Button2)`
   color: ${colors.Grayscale_80};
 `;
 
-// Home_TodaySalary로부터 word_id, answer, description을 전달받음
-function TodaySalaryScreen({ word_id, answer, description }) {
-  // 학습 관련 props 관리
-  const tempAnswer = "나스닥";
-  const tempDescript =
-    "벤처기업들이 상장되어 있는 미국의 장외시장을 말한다. 자본력이 부족한 비상장벤처기업들이 저리로 자금을 조달하는 창구로 활용하고 있다.";
-  const tempWordId = 1;
-  var tempAnsLth = 3;
+function TodaySalaryScreen() {
+  const todaySalary = useRecoilValue(todaySalaryContent);
+
+  var tempAnsLth = todaySalary.word.length;
   const [tempAnswerInput, setTempAnswerInput] = useState("");
   const [answerInputLth, setAnswerInputLth] = useState(0);
 
@@ -133,9 +131,9 @@ function TodaySalaryScreen({ word_id, answer, description }) {
   const navigation = useNavigation();
 
   useEffect(() => {
-    tempAnsLth = tempAnswer.length;
+    tempAnsLth = todaySalary.word.length;
     // answer.length
-  }, [word_id]);
+  }, [todaySalary]);
 
   // 인자: enteredAnswer
   function answerInputHandler(enteredAnswer) {
@@ -156,9 +154,9 @@ function TodaySalaryScreen({ word_id, answer, description }) {
 
         <PrimaryModal
           type="todaySalary"
-          result={tempAnsLth === tempAnswerInput.length}
-          answer={tempAnswer}
-          word_id={tempWordId}
+          result={todaySalary.word === tempAnswerInput}
+          answer={todaySalary.word}
+          word_id={todaySalary.word_id}
           closeModal={closeModal}
           replaceScreenName="TodaySalaryEdu"
         ></PrimaryModal>
@@ -178,7 +176,7 @@ function TodaySalaryScreen({ word_id, answer, description }) {
           <BoxContainer>
             {/* answerDescript와 정답 입력 inputbox */}
             <DescriptContainer>
-              <AnswerDescript>{tempDescript}</AnswerDescript>
+              <AnswerDescript>{todaySalary.mean}</AnswerDescript>
               <InputBoxContainer>
                 <InputAnswer
                   //  maxLength={2}
@@ -213,7 +211,8 @@ function TodaySalaryScreen({ word_id, answer, description }) {
                 onPress={() => {
                   navigation.replace("TodaySalaryEdu", {
                     // params 전달
-                    word_id: word_id,
+                    word_id: todaySalary.word_id,
+                    type: "todaySalary",
                   });
                   // 모달 없이 학습페이지로 바로 이동
                 }}

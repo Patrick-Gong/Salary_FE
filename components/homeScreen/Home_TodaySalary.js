@@ -5,6 +5,9 @@ import colors from "../../styles/colors";
 import fonts from "../../styles/fonts";
 import { useNavigation } from "@react-navigation/native";
 import PrimaryBtn from "../../common/PrimaryBtn";
+import { todayWordSelector } from "../../Recoil/todayAttendanceDetail";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { todaySalaryContent } from "../../Recoil/todaySalaryContent";
 
 const Container = styled.View`
   flex: 1;
@@ -22,7 +25,7 @@ const Container = styled.View`
   border-radius: 20px;
 
   ${(props) =>
-    props.doneTodaySalary
+    props.wordState
       ? css`
           background-color: ${colors.Grayscale_white};
           border: 1px solid ${colors.Grayscale_20};
@@ -39,7 +42,7 @@ const TitleContainer = styled.View`
 
 const Title = styled(fonts.H4SB)`
   ${(props) =>
-    props.doneTodaySalary
+    props.wordState
       ? css`
           color: ${colors.Grayscale_100};
         `
@@ -63,7 +66,7 @@ const InputBox = styled.View`
   justify-content: center;
 
   ${(props) =>
-    props.doneTodaySalary
+    props.wordState
       ? css`
           background-color: ${colors.Grayscale_white};
           border: 1px solid ${colors.Grayscale_10};
@@ -89,7 +92,7 @@ const AnswerDescript = styled(fonts.Body2M)`
   text-align: center;
 
   ${(props) =>
-    props.doneTodaySalary
+    props.wordState
       ? css`
           color: ${colors.Grayscale_100};
         `
@@ -100,46 +103,48 @@ const AnswerDescript = styled(fonts.Body2M)`
 
 // state 1: 학습 진행 여부에 따라 검정색 혹은 흰색
 // state 2: 그날의 학습할 단어를 받아와야됨.
-function Home_TodaySalary({ word }) {
-  const [doneTodaySalary, setDoneTodaySalary] = useState(true);
-  const [todayVoca, setTodayVoca] = useState("나스닥");
+function Home_TodaySalary() {
+  const wordState = useRecoilValue(todayWordSelector);
+  const setWordState = useSetRecoilState(todayWordSelector);
+
+  // 오늘의 학습 컨텐츠
+  const todaySalary = useRecoilValue(todaySalaryContent);
 
   const navigation = useNavigation();
 
-  useEffect(() => setTodayVoca(word), [word]);
+  useEffect(() => {}, [wordState, todaySalaryContent]);
 
   return (
-    <Container doneTodaySalary={doneTodaySalary}>
+    <Container wordState={wordState}>
       <TitleContainer>
-        <Title doneTodaySalary={doneTodaySalary}>오늘의 샐러리 한조각</Title>
+        <Title wordState={wordState}>오늘의 샐러리 한조각</Title>
         <TitleDescript>
-          {doneTodaySalary
+          {wordState
             ? "오늘의 단어학습을 완료했어요."
             : "오늘의 단어학습을 완료하면 시드 5개를 받을 수 있어요!"}
         </TitleDescript>
       </TitleContainer>
-      <InputBox doneTodaySalary={doneTodaySalary}>
-        {doneTodaySalary ? (
-          <InputPlaceHolderDone>{todayVoca}</InputPlaceHolderDone>
+      <InputBox wordState={wordState}>
+        {wordState ? (
+          <InputPlaceHolderDone>{todaySalary.word}</InputPlaceHolderDone>
         ) : (
-          <InputPlaceHolder doneTodaySalary={doneTodaySalary}>
-            {doneTodaySalary ? todayVoca : "단어를 맞춰보세요!"}
+          <InputPlaceHolder wordState={wordState}>
+            {wordState ? todayVoca : "단어를 맞춰보세요!"}
           </InputPlaceHolder>
         )}
       </InputBox>
-      <AnswerDescript doneTodaySalary={doneTodaySalary}>
-        벤처기업들이 상장되어 있는 미국의 장외시장을 말한다. 자본력이 부족한
-        비상장벤처기업들이 저리로 자금을 조달하는 창구로 활용하고 있다.
-      </AnswerDescript>
+      <AnswerDescript wordState={wordState}>{todaySalary.mean}</AnswerDescript>
       <PrimaryBtn
         type="active"
-        text={doneTodaySalary ? "학습한 단어 보러가기" : "단어 학습하기"}
+        text={wordState ? "학습한 단어 보러가기" : "단어 학습하기"}
         onPress={
-          doneTodaySalary
-            ? () => navigation.navigate("TodaySalaryEdu")
+          wordState
+            ? () =>
+                navigation.navigate("TodaySalaryEdu", {
+                  type: "todaySalary",
+                })
             : () => navigation.navigate("TodaySalaryQuiz")
         }
-        //  {/* answer과 설명을 함께 TodaySalaryScreen에 전달 */}
       ></PrimaryBtn>
     </Container>
   );
