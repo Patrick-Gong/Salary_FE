@@ -21,6 +21,7 @@ const Modal = styled.Modal``;
 const ModalBackdrop = styled.View`
   flex: 1;
   background-color: "rgba(0, 0, 0, 0.7)";
+  justify-content: flex-end;
 `;
 
 const ModalView = styled.View`
@@ -29,8 +30,8 @@ const ModalView = styled.View`
   align-items: center;
   height: 380px;
   width: 100%;
-  position: fixed;
-  top: 55%;
+  /* position: fixed;
+  top: 55%; */
 `;
 
 const BtnContainer = styled.View`
@@ -187,7 +188,7 @@ function SignUpScreen({ onEnter, navigation }) {
     InitializedTermsOfUseList
   );
   const [allApproved, setAllApproved] = useState(false);
-  const [modalVisible, setModalVisible] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [nickname, setNickname] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -232,6 +233,12 @@ function SignUpScreen({ onEnter, navigation }) {
         onEnter();
       }, 3000);
   }, [isSubmitted]);
+
+  useEffect(() => {
+      setTimeout(() => {
+        setModalVisible(true)
+      }, 200);
+  }, []);
 
   return (
     <ViewContainer>

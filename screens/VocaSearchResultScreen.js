@@ -49,8 +49,9 @@ const CenteredView = styled.View`
   margin-top: 39px;
 `;
 const ResultList = styled.FlatList`
-  width: 340px;
+  width: 100%;
   padding-top: 10px;
+  margin-bottom: 140px;
 `;
 const ResultBox = styled.Pressable`
   width: 325px;

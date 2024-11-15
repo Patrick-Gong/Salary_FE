@@ -10,6 +10,7 @@ import { useCallback, useEffect, useState } from "react";
 import useDebounce from "../hooks/useDebounce";
 import axios from "axios";
 import { BASE_URL } from "@env";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 const ViewContainer = styled.SafeAreaView`
   flex: 1;
@@ -202,6 +203,7 @@ const EmptyText = styled(fonts.Body2M)`
 
 function VocaSearchScreen({ navigation }) {
   const [isFocused, setIsFocused] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [recommendedList, setRecommendedList] = useState([]);
   const [inputText, setInputText] = useState("");
   const [keywordList, setKeywordList] = useState([]);
@@ -223,20 +225,26 @@ function VocaSearchScreen({ navigation }) {
   useEffect(() => {
     const fetchSearchData = async () => {
       try {
+        
         const response = await axios.get(
           `${BASE_URL}/words/search?word=${debouncedSearchText}`
         );
-        setKeywordList(response.data);
+        setKeywordList(response.data); 
       } catch (error) {
         console.log(error);
         setKeywordList([]);
       }
     };
-    fetchSearchData();
+    if (inputText.length > 0) {
+      fetchSearchData();
+    } else {
+      setKeywordList([]);
+    }
   }, [debouncedSearchText]);
 
   const handleDeleteInput = () => {
     setInputText("");
+    setKeywordList([]);
   };
 
   const handleChangeKeyword = useCallback((text) => {
@@ -266,8 +274,6 @@ function VocaSearchScreen({ navigation }) {
     );
   };
 
-  console.log("isFocused: ", isFocused);
-
   return (
     <ViewContainer>
       <SearchViewContainer>
@@ -280,7 +286,11 @@ function VocaSearchScreen({ navigation }) {
           <TitleText>궁금한 단어를 검색해보세요!</TitleText>
         </TitleContainer>
         {!isFocused ? (
-          <>
+          <Animated.View
+            key={"uniquekey_1"}
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(200)}
+          >
             <CenteredView>
               <SearchBar onPress={() => setIsFocused(true)}>
                 <Dummy_SearchInput>단어를 입력해주세요.</Dummy_SearchInput>
@@ -308,9 +318,13 @@ function VocaSearchScreen({ navigation }) {
                 ))}
               </RecommendedBoxContainer>
             </RecommendationContainer>
-          </>
+          </Animated.View>
         ) : (
-          <>
+          <Animated.View
+            key={"uniqueKey_2"}
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(200)}
+          >
             <SearchContainer>
               <ArrowBtnWrapper onPress={() => setIsFocused(false)}>
                 <ArrowBtnImg source={ArrowBtn} />
@@ -331,6 +345,7 @@ function VocaSearchScreen({ navigation }) {
                   // onEndEditing={() => setIsKeyboardDown(true)}
                   autoFocus={true}
                   onFocus={() => setIsFocused(true)}
+                  returnKeyType="search"
                   placeholder="단어를 입력해주세요."
                 />
                 {inputText.length > 0 && (
@@ -367,7 +382,7 @@ function VocaSearchScreen({ navigation }) {
               }
               keyboardDismissMode="on-drag"
             />
-          </>
+          </Animated.View>
         )}
       </SearchViewContainer>
     </ViewContainer>
