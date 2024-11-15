@@ -161,7 +161,7 @@ function VocaReminderScreen() {
           type="active"
           text={!reminding ? "모두 선택했어요" : "단어 리마인드를 완료했어요"}
           onPress={() => {
-            if (reminding) navigation.navigate("VocabularyList");
+            if (reminding) navigation.goBack(-1);
             else setReminding(!reminding);
           }}
         />
