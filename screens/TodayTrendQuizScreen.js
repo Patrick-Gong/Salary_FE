@@ -9,10 +9,13 @@ import axios from "axios";
 import { BASE_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import getKoreaFormattedDate from "../functions/getKoreaForamttedDate";
+import LottieView from 'lottie-react-native';
+import fonts from '../styles/fonts';
 
 const ViewContainer = styled.SafeAreaView`
   background-color: white;
   align-items: center;
+  height: 100%;
 `;
 
 const QuizViewContainer = styled.View`
@@ -62,14 +65,15 @@ const QuestionContent = styled.Text`
 
 const AnswerContainer = styled.View`
   width: 320px;
+  align-self: center;
 `;
 
 const AnswerBox = styled.Pressable`
-  width: 320px;
-  min-height: 46px;
+  width: 100%;
+  min-height: 60px;
   border-radius: 6px;
-  background-color: ${(props) => (!props.isSelected ? "#ffffff" : "#313131")};
-  padding-right: 12px;
+  background-color: ${(props) => (!props.isSelected ? '#ffffff' : '#313131')};
+  padding: 8px 12px;
   margin-bottom: 14px;
 `;
 
@@ -87,7 +91,6 @@ const AnswerBox_Btn = styled.View`
   align-items: center;
   border-radius: 14px;
   background-color: #e8e8e8;
-  margin-left: 12px;
 `;
 
 const AnswerBox_BtnNumber = styled.Text`
@@ -99,7 +102,6 @@ const AnswerBox_BtnNumber = styled.Text`
 
 const GreenCheckMarkImg = styled.Image`
   resizemode: cover;
-  margin-left: 12px;
   width: 28px;
   height: 28px;
 `;
@@ -109,15 +111,14 @@ const AnswerBox_Text = styled.Text`
   font-size: 16px;
   font-weight: 500;
   width: 220px;
-  flex-wrap: wrap;
   flex: 1;
-
-  background-color: red;
+  flex-shrink: 1;
+  line-height: 20px;
 `;
 
 // 초록 버튼 컴포넌트로 재활용하자(SignUpModal에도 존재)
 const SubmitBtn = styled.Pressable`
-  margin-top: 240px;
+  margin-top: 180px;
   margin-bottom: 17px;
   justify-content: center;
   align-items: center;
@@ -136,6 +137,13 @@ const SubmitBtn_Text = styled.Text`
 
 const LoadingIndicator = styled.View`
   background-color: #fff;
+  align-items: center;
+  padding-top: 100px;
+`;
+
+const LoadingText = styled(fonts.H5)`
+  line-height: 24px;
+  text-align: center;
 `;
 
 function shuffle(array) {
@@ -210,7 +218,7 @@ function TodayTrendQuizScreen() {
           isCorrect: false,
           isSelected: false,
           content:
-            "테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다테스트중입니다",
+            `${trendQuizData.incorrect[2]}`,
         },
       ];
       setAnswersState(shuffle(InitialAnswers));
@@ -344,8 +352,9 @@ function TodayTrendQuizScreen() {
           </Shadow>
         </QuizViewContainer>
       ) : (
-        <LoadingIndicator />
-      )}
+        <LoadingIndicator>
+        <LottieView style={{width: 300, height: 300}} source={require('../assets/animations/Loading.json')} autoPlay loop={true}/><LoadingText>트렌드 퀴즈{'\n'}불러오는 중..</LoadingText>
+      </LoadingIndicator>)}
     </ViewContainer>
   );
 }
