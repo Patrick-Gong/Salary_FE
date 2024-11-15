@@ -216,7 +216,7 @@ function TodaySalaryEduScreen({ route }) {
   }
 
   async function fetchBookMarkState(tmpState) {
-    if (todaySalary.isSaved !== tmpState) {
+    if (wordData.isSaved !== tmpState) {
       if (tmpState) {
         // tmpState로 바꾸겠다
         try {
@@ -224,7 +224,8 @@ function TodaySalaryEduScreen({ route }) {
             `${BASE_URL}/wordbook?word_id=${wordData.word_id}`
           );
           setBookMark(true);
-          setBookmarkTodaySalary(true);
+          if (wordData.word_id === todaySalary.word_id)
+            setBookmarkTodaySalary(true); // 오늘의 샐러리와 일치할 때에만
           if (res.status === 200) console.log("북마크 등록 완료");
         } catch (error) {
           console.log(error);
@@ -235,7 +236,8 @@ function TodaySalaryEduScreen({ route }) {
             `${BASE_URL}/wordbook?word_id=${wordData.word_id}`
           );
           setBookMark(false);
-          setBookmarkTodaySalary(false);
+          if (wordData.word_id === todaySalary.word_id)
+            setBookmarkTodaySalary(false); //오늘의 샐러리와 일치할 때에만
           if (res.status === 200) console.log("북마크 삭제 완료");
         } catch (error) {
           console.log(error);
@@ -385,7 +387,7 @@ function TodaySalaryEduScreen({ route }) {
                 text={wordData.word}
               ></HighlightText>
               <BookMarkContainer onPress={onBookmarkToggle}>
-                {todaySalary.isSaved ? (
+                {bookMark ? (
                   <Ionicons
                     name="bookmark"
                     color={colors.Primary_100}
