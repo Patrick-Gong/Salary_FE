@@ -48,12 +48,21 @@ function VocaList_FlatListItem({ word_id, word }) {
 
   async function fetchBookMarkState(tmpState) {
     if (tmpState) {
-      const res = await axios.delete(`${BASE_URL}/wordbook?word_id=${word_id}`);
-      console.log("삭제 결과", res.data);
+      try {
+        const res = await axios.delete(
+          `${BASE_URL}/wordbook?word_id=${word_id}`
+        );
+        console.log("삭제 결과", res.data);
+      } catch (error) {
+        console.log(error);
+      }
     } else {
-      console.log("다시 저장");
-      const res = await axios.post(`${BASE_URL}/wordbook?word_id=${word_id}`);
-      console.log("다시 저장 결과", res.data);
+      try {
+        const res = await axios.post(`${BASE_URL}/wordbook?word_id=${word_id}`);
+        console.log("다시 저장 결과", res.data);
+      } catch (error) {
+        console.log(error);
+      }
     }
     if (word_id === todaySalary.word_id) {
       // 오늘의 샐러리인 단어라면 북마크 전역 상태에 반영

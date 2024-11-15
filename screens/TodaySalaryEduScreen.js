@@ -209,19 +209,27 @@ function TodaySalaryEduScreen({ route }) {
     if (todaySalary.isSaved !== tmpState) {
       if (tmpState) {
         // tmpState로 바꾸겠다
-        const res = await axios.post(
-          `${BASE_URL}/wordbook?word_id=${wordData.word_id}`
-        );
-        setBookMark(true);
-        setBookmarkTodaySalary(true);
-        if (res.status === 200) console.log("북마크 등록 완료");
+        try {
+          const res = await axios.post(
+            `${BASE_URL}/wordbook?word_id=${wordData.word_id}`
+          );
+          setBookMark(true);
+          setBookmarkTodaySalary(true);
+          if (res.status === 200) console.log("북마크 등록 완료");
+        } catch (error) {
+          console.log(error);
+        }
       } else {
-        const res = await axios.delete(
-          `${BASE_URL}/wordbook?word_id=${wordData.word_id}`
-        );
-        setBookMark(false);
-        setBookmarkTodaySalary(false);
-        if (res.status === 200) console.log("북마크 삭제 완료");
+        try {
+          const res = await axios.delete(
+            `${BASE_URL}/wordbook?word_id=${wordData.word_id}`
+          );
+          setBookMark(false);
+          setBookmarkTodaySalary(false);
+          if (res.status === 200) console.log("북마크 삭제 완료");
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
   }

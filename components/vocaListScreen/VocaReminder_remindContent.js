@@ -81,8 +81,9 @@ function VocaReminder_remindContent({
             <WordBtnElement
               onPress={() => onClick({ word: item.word })}
               clickState={item.clickState}
+              key={item.word_id}
             >
-              <WordBtnText>{item.word}</WordBtnText>
+              <WordBtnText key={item.word_id}>{item.word}</WordBtnText>
             </WordBtnElement>
           ))}
         </ReminderContainer>
@@ -100,6 +101,7 @@ function VocaReminder_remindContent({
                 index={wordIndex++}
                 word={item.word}
                 mean={item.mean}
+                key={item.word_id}
               />
             ) : (
               <></>

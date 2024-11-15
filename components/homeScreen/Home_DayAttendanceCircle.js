@@ -106,7 +106,6 @@ function Home_DayAttendanceCircle({
   empty, // true라면 비활성화된 circle을 전달
   isToday,
 }) {
-  console.log(isToday);
   //   console.log("date", date); //date "2024-12-06T03:25:08.085Z"
   //   console.log("calendarDate.dateString", calendarDate); // 2024-11-15
 

@@ -242,7 +242,7 @@ function HomeScreen() {
         );
         console.log(res);
       } catch (error) {
-        console.log(res);
+        console.log(error);
       }
     }
 
@@ -300,7 +300,7 @@ function HomeScreen() {
         <ProcessBarWrapper>
           <StepContainer>
             <fonts.H2M style={{ color: colors.Grayscale_100 }}>
-              STEP {attendanceId}
+              STEP {todaySalary.word_id}
             </fonts.H2M>
             <Text>학습 진행률</Text>
           </StepContainer>
