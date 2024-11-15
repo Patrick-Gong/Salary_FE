@@ -108,6 +108,50 @@ function HomeScreen() {
   // 오늘의 salary 학습 content
   const [todaySalary, setTodaySalary] = useRecoilState(todaySalaryContent);
 
+  // 날짜 범위에 대해 AsyncStorage에 데이터를 저장하는 함수
+  // 나중에 쓸까봐 안 지움
+  // const storeAttendanceData = async () => {
+  //   // 시작 날짜와 끝 날짜 설정
+  //   const startDate = new Date("2024-10-01"); // 시작 날짜: 2024-10-01
+  //   const endDate = new Date("2024-11-14"); // 끝 날짜: 2024-11-14
+
+  //   // 날짜를 순차적으로 반복
+  //   let currentDate = new Date(startDate);
+
+  //   while (currentDate <= endDate) {
+  //     const formattedDate = getFormattedDate(currentDate); // 날짜 형식 변환
+
+  //     try {
+  //       // API 호출하여 해당 날짜의 데이터 받기
+  //       const res = await axios.get(
+  //         `${BASE_URL}/attendance/status?attendance_date=${formattedDate}`
+  //       );
+
+  //       if (res.status === 200) {
+  //         // 받은 데이터를 AsyncStorage에 저장
+  //         await AsyncStorage.setItem(
+  //           formattedDate,
+  //           JSON.stringify(res.data.attendance_state)
+  //         );
+  //         console.log(
+  //           `Data for ${formattedDate} saved successfully. : `,
+  //           "state : ",
+  //           res.data.attendance_state
+  //         );
+  //       } else {
+  //         console.log(
+  //           `Error fetching data for ${formattedDate}: ${res.status}`
+  //         );
+  //       }
+  //     } catch (error) {
+  //       console.error(`Error fetching data for ${formattedDate}:`, error);
+  //     }
+
+  //     // 날짜를 하루 증가시킴
+  //     currentDate.setDate(currentDate.getDate() + 1);
+  //   }
+  // };
+
   // 1. 최초 렌더링 시 attendance_state를 받아와 전역 상태로 관리
   // 이후 학습 완료시 전역으로 관리는 함
   useEffect(() => {
@@ -191,21 +235,21 @@ function HomeScreen() {
     const checkAndFetchData = async () => {
       // await AsyncStorage.removeItem("todaySalaryData"); 디버깅
       try {
-        const lastFetchedData = await AsyncStorage.getItem("todaySalaryData");
-        const parsedLastFetchedData = JSON.parse(lastFetchedData);
-        if (
-          !parsedLastFetchedData ||
-          parsedLastFetchedData.lastFetchedDate !== getKoreaFormattedDate()
-        ) {
-          console.log(
-            "이전에 패치된 데이터가 없거나 지난 날짜라서 새로 단어 id를 받아옴"
-          );
-          fetchTodayWordId();
-        } else {
-          // 이미 데이터가 asyncStorage에 저장된 상태이므로 전역 상태값의 초기값으로 지정해줌
-          setTodaySalary(parsedLastFetchedData);
-          console.log("이미 word Id를 받아옴");
-        }
+        // const lastFetchedData = await AsyncStorage.getItem("todaySalaryData");
+        // const parsedLastFetchedData = JSON.parse(lastFetchedData);
+        // if (
+        //   !parsedLastFetchedData ||
+        //   parsedLastFetchedData.lastFetchedDate !== getKoreaFormattedDate()
+        // ) {
+        //   console.log(
+        //     "이전에 패치된 데이터가 없거나 지난 날짜라서 새로 단어 id를 받아옴"
+        //   );
+        fetchTodayWordId();
+        // } else {
+        //   // 이미 데이터가 asyncStorage에 저장된 상태이므로 전역 상태값의 초기값으로 지정해줌
+        //   setTodaySalary(parsedLastFetchedData);
+        //   console.log("이미 word Id를 받아옴");
+        // }
       } catch (error) {
         console.log(error);
       }
@@ -223,7 +267,12 @@ function HomeScreen() {
   }
 
   // 리렌더링 관리
-  useEffect(() => {}, [attendanceId, attendanceDetail, attendanceState]);
+  useEffect(() => {}, [
+    attendanceId,
+    attendanceDetail,
+    attendanceState,
+    todaySalary,
+  ]);
 
   return (
     <SafeAreaView style={styles.rootScreen}>

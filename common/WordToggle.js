@@ -112,7 +112,6 @@ const ToggleBtn = styled.Pressable`
 // type: 2) vocaReminder
 function WordToggle({ type, index, word, mean }) {
   const [toggle, setToggle] = useState(false);
-  console.log(type);
 
   return (
     <Container type={type} toggle={toggle}>

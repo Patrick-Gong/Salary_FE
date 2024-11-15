@@ -1,8 +1,33 @@
-import { atom } from "recoil";
+import { atom, selector } from "recoil";
 
 export const todaySalaryContent = atom({
   key: "todaySalaryContent",
-  default: {},
+  default: {
+    example: "",
+    mean: "",
+    story1: "",
+    story2: "",
+    story3: "",
+    urls: [],
+    word: "",
+    word_id: 0,
+    isSaved: false,
+  },
+});
+
+// isSaved만 추출하는 selector
+export const isSavedSelector = selector({
+  key: "isSavedSelector", // 고유한 key
+  get: ({ get }) => {
+    const content = get(todaySalaryContent); // atom 값 가져오기
+    return content.isSaved; // isSaved만 반환
+  },
+  set: ({ set }, newValue) => {
+    set(todaySalaryContent, (prevState) => ({
+      ...prevState,
+      isSaved: newValue, // isSaved만 업데이트
+    }));
+  },
 });
 
 // {"example": "\"요소비용 상승이 기업의 전체 생산비에 큰 부담을 주고 있습니다.\"",
@@ -13,3 +38,4 @@ export const todaySalaryContent = atom({
 //   ", "urls": [],
 // "word": "요소비용",
 //  "word_id": 4}
+// isSaved: true

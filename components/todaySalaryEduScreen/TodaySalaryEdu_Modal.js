@@ -13,6 +13,11 @@ import HighlightText from "react-native-highlight-underline-text";
 import { useEffect } from "react";
 import Salary_Character from "../../assets/img/signUpScreen/Salary_Character.png";
 import Fireworks from "../../assets/img/signUpScreen/Fireworks.png";
+import { useRecoilState, useRecoilValue } from "recoil";
+import {
+  isSavedSelector,
+  todaySalaryContent,
+} from "../../Recoil/todaySalaryContent";
 
 const ModalOverlay = styled.View`
   flex: 1;
@@ -50,6 +55,7 @@ const CloseButton = styled.TouchableOpacity``;
 
 const ButtonText = styled(fonts.Caption2)`
   color: ${colors.Grayscale_80};
+  text-decoration: underline;
 `;
 
 const ImgContainer = styled.View`
@@ -79,8 +85,11 @@ const FireworksRightImg = styled.Image`
   left: 124px;
 `;
 
-function TodaySalaryEdu_Modal({ closeModal }) {
+function TodaySalaryEdu_Modal({ closeModal, fetchBookMarkState }) {
+  const todaySalary = useRecoilValue(todaySalaryContent);
+
   const handleNavigateBookmark = () => {
+    fetchBookMarkState(true);
     closeModal();
     setTimeout(() => {
       navigation.goBack(); // 모달 닫은 후 화면 교체하도록
@@ -121,7 +130,7 @@ function TodaySalaryEdu_Modal({ closeModal }) {
             ></PrimaryBtn>
 
             <CloseButton onPress={handleNavigateBookmark}>
-              <ButtonText>홈 화면으로 이동</ButtonText>
+              <ButtonText>단어 저장하기</ButtonText>
             </CloseButton>
           </ModalContent>
         </TouchableWithoutFeedback>

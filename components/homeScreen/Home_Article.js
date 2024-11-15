@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import styled, { css } from "styled-components";
 import colors from "../../styles/colors";
@@ -59,6 +59,13 @@ function Home_TrendQuiz() {
   // attendanceState 관리
   const [attendaceState, setAttendanceState] =
     useRecoilState(todayAttendanceState);
+
+  useEffect(() => {
+    if (!articleState) {
+      setArticleState(true);
+      setAttendanceState((prev) => prev + 1);
+    }
+  }, []);
 
   return (
     <Container articleState={articleState}>

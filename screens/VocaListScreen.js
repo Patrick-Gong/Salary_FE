@@ -19,6 +19,8 @@ import { Ionicons } from "@expo/vector-icons"; // 북마크
 import VocaList_FlatListItem from "../components/vocaListScreen/VocaList_FlatListItem";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { BASE_URL } from "@env";
+import { useRecoilState } from "recoil";
+import { isSavedSelector } from "../Recoil/todaySalaryContent";
 
 const AdvertiseWrapper = styled.View`
   display: flex;
@@ -67,9 +69,7 @@ function VocaListScreen() {
 
   async function getData() {
     try {
-      console.log("불러오기");
       const res = await axios.get(`${BASE_URL}/wordbook`);
-      console.log("단어장 결과", res.data);
       setVocaList(res.data);
     } catch (error) {
       console.log("단어장 불러오기 오류", error);
@@ -81,7 +81,7 @@ function VocaListScreen() {
   useEffect(() => {
     // 북마크 단어장에 있는 단어를 받아옴
     getData();
-  }, [isFocused]);
+  }, [isFocused, vocaList]);
 
   useEffect(() => {
     getData();

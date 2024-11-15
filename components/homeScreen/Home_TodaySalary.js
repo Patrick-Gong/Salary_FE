@@ -25,7 +25,7 @@ const Container = styled.View`
   border-radius: 20px;
 
   ${(props) =>
-    props.doneTodaySalary
+    props.wordState
       ? css`
           background-color: ${colors.Grayscale_white};
           border: 1px solid ${colors.Grayscale_20};
@@ -42,7 +42,7 @@ const TitleContainer = styled.View`
 
 const Title = styled(fonts.H4SB)`
   ${(props) =>
-    props.doneTodaySalary
+    props.wordState
       ? css`
           color: ${colors.Grayscale_100};
         `
@@ -66,7 +66,7 @@ const InputBox = styled.View`
   justify-content: center;
 
   ${(props) =>
-    props.doneTodaySalary
+    props.wordState
       ? css`
           background-color: ${colors.Grayscale_white};
           border: 1px solid ${colors.Grayscale_10};
@@ -92,7 +92,7 @@ const AnswerDescript = styled(fonts.Body2M)`
   text-align: center;
 
   ${(props) =>
-    props.doneTodaySalary
+    props.wordState
       ? css`
           color: ${colors.Grayscale_100};
         `

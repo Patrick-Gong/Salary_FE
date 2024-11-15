@@ -109,28 +109,6 @@ LocaleConfig.defaultLocale = "custom";
 function Home_CalendarModal({ closeModal }) {
   const dayCache = useMemo(() => ({}), []);
 
-  // Custom Day Component
-  const getCachedDayComponent = (date, state) => {
-    //   0부터 5까지 랜덤 (더미 데이터)
-    const randNum = Math.floor(Math.random() * 5);
-    attendance_state = randNum;
-
-    const key = date.dateString;
-
-    if (!dayCache[key]) {
-      // 캐시되지 않은 날짜는 새로 렌더링 후 저장
-      dayCache[key] = (
-        <Home_DayAttendanceCircle
-          calendarDate={date}
-          onPress={closeModal}
-          attendance_state={attendance_state}
-          type="calendar"
-        />
-      );
-    }
-    return dayCache[key];
-  };
-
   // 커스텀 헤더를 위한 currentDate값과 변경 함수
   const [currentDate, setCurrentDate] = useState(moment());
 
@@ -163,18 +141,16 @@ function Home_CalendarModal({ closeModal }) {
               calendarHeaderStyle={{ fontSize: 16, color: "black" }}
               calendarHeaderFormat="YYYY년 MM월"
               dayComponent={({ date, state }) => {
-                if (date.month - 1 === currentDate.month())
-                  return getCachedDayComponent(date, state);
-                else
-                  return (
-                    <Home_DayAttendanceCircle
-                      empty={true}
-                      calendarDate={date}
-                      onPress={closeModal}
-                      attendance_state={0}
-                      type="calendar"
-                    />
-                  );
+                return (
+                  <Home_DayAttendanceCircle
+                    empty={date.month === currentDate.month()}
+                    calendarDate={date}
+                    onPress={closeModal}
+                    attendance_state={0}
+                    type="calendar"
+                    isToday={date.dateString === getKoreaFormattedDate()}
+                  />
+                );
               }}
               style={{ ...styles.container, width: screenWidth }}
               //   headerStyle={}

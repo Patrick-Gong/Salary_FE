@@ -154,7 +154,7 @@ function TodaySalaryScreen() {
 
         <PrimaryModal
           type="todaySalary"
-          result={tempAnsLth === tempAnswerInput}
+          result={todaySalary.word === tempAnswerInput}
           answer={todaySalary.word}
           word_id={todaySalary.word_id}
           closeModal={closeModal}
@@ -212,6 +212,7 @@ function TodaySalaryScreen() {
                   navigation.replace("TodaySalaryEdu", {
                     // params 전달
                     word_id: todaySalary.word_id,
+                    type: "todaySalary",
                   });
                   // 모달 없이 학습페이지로 바로 이동
                 }}

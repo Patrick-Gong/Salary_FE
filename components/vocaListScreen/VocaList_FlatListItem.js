@@ -6,6 +6,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { Text } from "react-native";
 import axios from "axios";
 import { BASE_URL } from "@env";
+import { useRecoilState, useRecoilValue } from "recoil";
+import {
+  isSavedSelector,
+  todaySalaryContent,
+} from "../../Recoil/todaySalaryContent";
 
 const ItemWrapper = styled.View`
   height: 60px;
@@ -35,16 +40,24 @@ const BookMarkContainer = styled.TouchableOpacity``;
 
 function VocaList_FlatListItem({ word_id, word }) {
   const [bookMark, setBookMark] = useState(true);
+  // 단어장에 todaySalary 단어가 있고, 단어장의 북마크 데이터가 바뀌면 전역 todaySalary 데이터에도 반영해야함
+  const [bookmarkTodaySalary, setbookmarkTodaySalary] =
+    useRecoilState(isSavedSelector);
+
+  const todaySalary = useRecoilValue(todaySalaryContent);
 
   async function fetchBookMarkState(tmpState) {
     if (tmpState) {
-      console.log("삭제");
       const res = await axios.delete(`${BASE_URL}/wordbook?word_id=${word_id}`);
       console.log("삭제 결과", res.data);
     } else {
       console.log("다시 저장");
       const res = await axios.post(`${BASE_URL}/wordbook?word_id=${word_id}`);
       console.log("다시 저장 결과", res.data);
+    }
+    if (word_id === todaySalary.word_id) {
+      // 오늘의 샐러리인 단어라면 북마크 전역 상태에 반영
+      setbookmarkTodaySalary(!tmpState);
     }
   }
 
