@@ -7,6 +7,9 @@ import styled, { css } from "styled-components";
 import { Ionicons } from "@expo/vector-icons";
 import moment from "moment";
 import Home_DayAttendanceCircle from "./Home_DayAttendanceCircle";
+import getFormattedDate from "../../functions/getFormattedDate";
+import getKoreaFormattedDate from "../../functions/getKoreaForamttedDate";
+import isEqualDate from "../../functions/isEqualDate";
 
 const Container = styled.View`
   flex: 1;
@@ -58,27 +61,6 @@ const Home_WeekStrip = ({ onCalendarModalOpen }) => {
   // day circle을 caching하여 로딩 속도를 줄인다.
   const dayCache = useMemo(() => ({}), []);
 
-  const getCachedDayComponent = (props) => {
-    const randNum = Math.floor(Math.random() * 5);
-    attendance_state = randNum;
-
-    const key = props.date;
-
-    // 캐싱 목록에 없는 경우
-    if (!dayCache[key]) {
-      console.log("week strip 데이터 캐싱");
-
-      dayCache[key] = (
-        <Home_DayAttendanceCircle
-          {...props}
-          onCalendarModalOpen={onCalendarModalOpen} // 날짜 선택 핸들러 전달
-        />
-      );
-    }
-
-    return dayCache[key];
-  };
-
   return (
     <Container>
       <HeaderContainer>
@@ -90,7 +72,15 @@ const Home_WeekStrip = ({ onCalendarModalOpen }) => {
       <CalendarStrip
         calendarHeaderStyle={{ height: 0, opacity: 0 }} // 헤더 숨기기
         style={styles.calendar}
-        dayComponent={(props) => getCachedDayComponent(props)}
+        dayComponent={(props) => {
+          return (
+            <Home_DayAttendanceCircle
+              {...props}
+              onCalendarModalOpen={onCalendarModalOpen} // 날짜 선택 핸들러 전달
+              isToday={isEqualDate(new Date(), new Date(props.date))}
+            />
+          );
+        }}
         scrollable
         onWeekChanged={handleWeekChange}
         startingDate={moment()} // 시작 날짜 설정

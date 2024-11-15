@@ -216,6 +216,7 @@ function VocaSearchScreen({ navigation }) {
       } catch (error) {
         console.log(error);
       }
+      console.log(`${BASE_URL}/words/recommand`);
     };
     fetchRecommendedData();
   }, []);

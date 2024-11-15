@@ -25,9 +25,16 @@ import process3 from "../assets/img/homeScreen/charac/process3.png";
 import process4 from "../assets/img/homeScreen/charac/process4.png";
 import fonts from "../styles/fonts";
 import Home_CalendarModal from "../components/homeScreen/Home_CalendarModal";
-import axios from "axios";
+import getFormattedDate from "../functions/getFormattedDate";
 import { BASE_URL } from "@env";
-import getFormattedDate from "../function/getFormattedDate";
+import axios from "axios";
+import { useRecoilState } from "recoil";
+import { todayAttendanceState } from "../Recoil/todayAttendanceState";
+import { todayAttendanceDetail } from "../Recoil/todayAttendanceDetail";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import getKoreaFormattedDate from "../functions/getKoreaForamttedDate";
+import { parse } from "react-native-svg";
+import { todaySalaryContent } from "../Recoil/todaySalaryContent";
 
 const ContentsContainer = styled.View`
   background: ${colors.bg};
@@ -86,14 +93,144 @@ function HomeScreen() {
   // 모달 관리
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // 더미 데이터
-  // 이건 전역으로 처리하는 게 좋을듯한? 나중에 API 완성되면 리팩토링 ㄱ
-  var word = "나스닥";
-  var trend = false;
-  var article = false;
+  // 오늘의 attendance state : 학습시마다 전역 상태에 반영됨.
+  const [attendanceState, setAttendanceState] =
+    useRecoilState(todayAttendanceState);
 
-  const step = 13;
+  // 오늘의 attendance id : step을 렌더링하기 위함
+  const [attendanceId, setAttendanceId] = useState(0);
 
+  // 오늘의 attendance detail : word, trend, article의 boolean 값으로 구성
+  const [attendanceDetail, setAttendanceDetail] = useRecoilState(
+    todayAttendanceDetail
+  );
+
+  // 오늘의 salary 학습 content
+  const [todaySalary, setTodaySalary] = useRecoilState(todaySalaryContent);
+
+  // 날짜 범위에 대해 AsyncStorage에 데이터를 저장하는 함수
+  // 나중에 쓸까봐 안 지움
+  // const storeAttendanceData = async () => {
+  //   // 시작 날짜와 끝 날짜 설정
+  //   const startDate = new Date("2024-10-01"); // 시작 날짜: 2024-10-01
+  //   const endDate = new Date("2024-11-14"); // 끝 날짜: 2024-11-14
+
+  //   // 날짜를 순차적으로 반복
+  //   let currentDate = new Date(startDate);
+
+  //   while (currentDate <= endDate) {
+  //     const formattedDate = getFormattedDate(currentDate); // 날짜 형식 변환
+
+  //     try {
+  //       // API 호출하여 해당 날짜의 데이터 받기
+  //       const res = await axios.get(
+  //         `${BASE_URL}/attendance/status?attendance_date=${formattedDate}`
+  //       );
+
+  //       if (res.status === 200) {
+  //         // 받은 데이터를 AsyncStorage에 저장
+  //         await AsyncStorage.setItem(
+  //           formattedDate,
+  //           JSON.stringify(res.data.attendance_state)
+  //         );
+  //         console.log(
+  //           `Data for ${formattedDate} saved successfully. : `,
+  //           "state : ",
+  //           res.data.attendance_state
+  //         );
+  //       } else {
+  //         console.log(
+  //           `Error fetching data for ${formattedDate}: ${res.status}`
+  //         );
+  //       }
+  //     } catch (error) {
+  //       console.error(`Error fetching data for ${formattedDate}:`, error);
+  //     }
+
+  //     // 날짜를 하루 증가시킴
+  //     currentDate.setDate(currentDate.getDate() + 1);
+  //   }
+  // };
+
+  // 1. 최초 렌더링 시 attendance_state를 받아와 전역 상태로 관리
+  // 이후 학습 완료시 전역으로 관리는 함
+  useEffect(() => {
+    async function fetchTodayAttendanceState() {
+      try {
+        const res = await axios.get(
+          `${BASE_URL}/attendance/status?attendance_date=${getKoreaFormattedDate()}`
+        );
+        console.log("1. attendance state: ", res.data);
+        if (res.status === 200) {
+          setAttendanceState(res.data.attendance_state); // 전역으로 저장
+          setAttendanceId(res.data.attendance_id);
+        }
+      } catch (error) {
+        console.log(
+          `${BASE_URL}/attendance/status?attendance_date=${getKoreaFormattedDate()}`
+        );
+        console.log("1. attendance state: ", error);
+      }
+    }
+
+    fetchTodayAttendanceState();
+  }, []);
+
+  // 2. 오늘 학습 과목 조회 API 받아오기
+  //굳이 매번 받아와야 할까 싶긴 한데
+  useEffect(() => {
+    async function fetchTodayAttendanceDetail() {
+      try {
+        const res = await axios.get(`${BASE_URL}/attendance/today`);
+        if (res.status === 200) {
+          setAttendanceDetail(res.data);
+          console.log("2. attendance today", res.data);
+        }
+      } catch (error) {
+        console.log("1번 에러", error);
+      }
+    }
+
+    fetchTodayAttendanceDetail();
+  }, []);
+
+  // 3. 오늘의 단어 id를 받아오기 (하루에 1번만 받아옴)
+  async function fetchTodayWordId() {
+    try {
+      const res = await axios.get(`${BASE_URL}/today-word`);
+      if (res.status === 200) {
+        console.log("새로운 word id를 받음", res.data.word_id);
+        fetchTodayWordData({ word_id: res.data.word_id }); //data를 fetch하러
+      }
+    } catch (error) {
+      console.log("2번 에러", error);
+    }
+  }
+
+  async function fetchTodayWordData({ word_id }) {
+    try {
+      const res = await axios.get(`${BASE_URL}/words?word_id=${word_id}`);
+      if (res.status === 200) {
+        await AsyncStorage.setItem(
+          "todaySalaryData",
+          JSON.stringify({
+            ...res.data,
+            lastFetchedDate: getKoreaFormattedDate(),
+          })
+        );
+        // const debug = await AsyncStorage.getItem("todaySalaryData");
+        setTodaySalary(res.data); /// 전역 상태 관리
+        // console.log("todaySalaryDaya storage 저장", {
+        //   ...res.data,
+        //   lastFetchedDate: getKoreaFormattedDate(),
+        // });
+      }
+    } catch (error) {
+      console.log("에러", error);
+    }
+  }
+
+  // 오늘의 학습 단어를 최초 1회만 받아옴
   // 첫 렌더링시 날짜별 출석률 조회를 통해 "오늘의" attendance_state를 받아온다. 이를 전역 상태에 반영해준다.
   useEffect(() => {
     async function getAttendanceStateData() {
@@ -114,13 +251,31 @@ function HomeScreen() {
 
   // focus 됐을 때에는 알아서 전역 상태 데이터를 가져옴.
   useEffect(() => {
-    //오늘 학습 과목 조회 API 받아오기
-    // "word": true,
-    // "trend": true,
-    // "article": false
+    const checkAndFetchData = async () => {
+      // await AsyncStorage.removeItem("todaySalaryData"); 디버깅
+      try {
+        // const lastFetchedData = await AsyncStorage.getItem("todaySalaryData");
+        // const parsedLastFetchedData = JSON.parse(lastFetchedData);
+        // if (
+        //   !parsedLastFetchedData ||
+        //   parsedLastFetchedData.lastFetchedDate !== getKoreaFormattedDate()
+        // ) {
+        //   console.log(
+        //     "이전에 패치된 데이터가 없거나 지난 날짜라서 새로 단어 id를 받아옴"
+        //   );
+        fetchTodayWordId();
+        // } else {
+        //   // 이미 데이터가 asyncStorage에 저장된 상태이므로 전역 상태값의 초기값으로 지정해줌
+        //   setTodaySalary(parsedLastFetchedData);
+        //   console.log("이미 word Id를 받아옴");
+        // }
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-    console.log("알맞은 전역 데이터로 리렌더링되고 있는지 확인");
-  }, [isFocused]);
+    checkAndFetchData();
+  }, []);
 
   function onCalendarModalOpen() {
     setIsModalVisible(true);
@@ -130,7 +285,14 @@ function HomeScreen() {
     setIsModalVisible(false);
   }
 
-  // api
+  // 리렌더링 관리
+  useEffect(() => {}, [
+    attendanceId,
+    attendanceDetail,
+    attendanceState,
+    todaySalary,
+  ]);
+
   return (
     <SafeAreaView style={styles.rootScreen}>
       <ScrollView automaticallyAdjustContentInsets={false}>
@@ -138,13 +300,23 @@ function HomeScreen() {
         <ProcessBarWrapper>
           <StepContainer>
             <fonts.H2M style={{ color: colors.Grayscale_100 }}>
-              STEP {step}
+              STEP {attendanceId}
             </fonts.H2M>
             <Text>학습 진행률</Text>
           </StepContainer>
           {/* progressbar */}
           <Home_AttendanceProgress />
-          <CharacWrapper source={process1} />
+          <CharacWrapper
+            source={
+              attendanceState === 5
+                ? process4
+                : attendanceState > 3 // todaySalary와 article, trend 중 한 가지 수행
+                ? process3
+                : attendanceState > 0 // 최소 하나의 학습 수행
+                ? process2
+                : process1
+            }
+          ></CharacWrapper>
         </ProcessBarWrapper>
         {/* 하단의 3가지 요소를 감싸는 Container */}
         <Shadow
@@ -155,12 +327,12 @@ function HomeScreen() {
           endColor="rgba(0, 0, 0, 0.0)" // 그림자의 끝 색상 (투명)
         >
           <ContentsContainer>
-            <Home_TodaySalary word={word} />
-            <Home_TrendQuiz trend={trend} />
+            <Home_TodaySalary />
+            <Home_TrendQuiz />
             {/* horizon */}
             <Horizon />
             {/* 아티클 */}
-            <Home_Article article={article}></Home_Article>
+            <Home_Article></Home_Article>
           </ContentsContainer>
         </Shadow>
       </ScrollView>

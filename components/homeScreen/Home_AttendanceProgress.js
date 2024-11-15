@@ -1,8 +1,19 @@
 import { useEffect, useRef } from "react";
 import { Animated, View, StyleSheet, Text } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import { useRecoilValue } from "recoil";
+import { todayAttendanceState } from "../../Recoil/todayAttendanceState";
+import colors from "../../styles/colors";
 
 function Home_AttendanceProgress({}) {
+  // 전역으로 관리되는 오늘의 attendace state를 받아옴
+  const progress = useRecoilValue(todayAttendanceState);
+
+  const outerCircleProgress = progress >= 3 ? 100 : 0;
+  const innerCircleProgress =
+    progress % 3 === 1 ? 50 : progress % 3 === 2 ? 100 : 0;
+
+  // 다 채운 상태라면 바의 색상이 변경됨
   return (
     <View
       style={{
@@ -18,8 +29,8 @@ function Home_AttendanceProgress({}) {
           <AnimatedCircularProgress
             size={285} // 크기
             width={16} // 외부 Progress Bar 너비
-            fill={75} // 외부 Progress Bar 퍼센트
-            tintColor="#DEED90" // 외부 Progress Bar 색상
+            fill={outerCircleProgress} // 외부 Progress Bar 퍼센트
+            tintColor={progress === 5 ? colors.Primary_100 : "#DEED90"} // 외부 Progress Bar 색상
             backgroundColor="#F3F4F6" // 외부 Progress Bar 배경색
             arcSweepAngle={190} // 반원 형태
             rotation={265} // 시작 위치를 위쪽으로 조정
@@ -33,8 +44,8 @@ function Home_AttendanceProgress({}) {
           <AnimatedCircularProgress
             size={218} // 크기
             width={12} // 내부 Progress Bar 너비
-            fill={50} // 내부 Progress Bar 퍼센트
-            tintColor="#DEED90" // 내부 Progress Bar 색상
+            fill={innerCircleProgress} // 내부 Progress Bar 퍼센트
+            tintColor={progress === 5 ? colors.Primary_100 : "#DEED90"} // 내부 Progress Bar 색상
             backgroundColor="#F3F4F6" // 내부 Progress Bar 배경색
             arcSweepAngle={200} // 반원 형태
             rotation={260} // 시작 위치를 위쪽으로 조정

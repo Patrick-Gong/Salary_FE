@@ -8,6 +8,7 @@ import PrimaryBtn from "../common/PrimaryBtn";
 import { useNavigation } from "@react-navigation/native";
 import VocaReminder_HeaderRigRht from "../components/vocaListScreen/VocaReminder_HeaderRight";
 import VocaReminder_remindContent from "../components/vocaListScreen/VocaReminder_remindContent";
+import { BASE_URL } from "@env";
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -43,48 +44,7 @@ function VocaReminderScreen() {
   const navigation = useNavigation();
 
   const [reminding, setReminding] = useState(false);
-  const [remindWords, setRemindWords] = useState([
-    {
-      word: "헤지",
-      mean: "한때 주식은 현장에서 직접 종이로 거래되었지만, 1971년 미국에서는 전자적으로 주식을 거래할 수 있는 새로운 시장이 열렸어요. 이 시장의 이름이 바로 나스닥(NASDAQ)입니다. 나스닥은 특히 기술 관련 주식들이 많이 상장되어 있는 시장으로, 기술주를 중심으로 한 세계에서 가장 큰 전자거래 시장이에요.",
-    },
-    {
-      word: "소득공제",
-      mean: "어쩌고 저쩌고",
-    },
-    {
-      word: "청약",
-      mean: "어쩌고 저쩌고",
-    },
-    {
-      word: "금융규제샌드박스",
-      mean: "어쩌고 저쩌고",
-    },
-    {
-      word: "수출입물가지수",
-      mean: "어쩌고 저쩌고",
-    },
-    {
-      word: "순이익",
-      mean: "어쩌고 저쩌고",
-    },
-    {
-      word: "모기지대출",
-      mean: "어쩌고 저쩌고",
-    },
-    {
-      word: "NFT",
-      mean: "어쩌고 저쩌고",
-    },
-    {
-      word: "NFTSDFSDFSDF",
-      mean: "어쩌고 저쩌고",
-    },
-    {
-      word: "NFTSFSDFS",
-      mean: "어쩌고 저쩌고",
-    },
-  ]);
+  const [remindWords, setRemindWords] = useState([]);
 
   // 클릭된 모르는 단어의 개수를 리턴
   function returnCountClicked() {
@@ -94,11 +54,11 @@ function VocaReminderScreen() {
   // 리마인드할 단어를 가져옴
   async function fetchRemindWords() {
     try {
-      //   const res = axios.get(
-      // );
-      //   console.log("결과", res);
+      const res = await axios.get(`${BASE_URL}/wordbook/reminder`);
+      console.log("리마인더 결과", res.data);
+      setRemindWords(res.data);
     } catch (error) {
-      console.log(error);
+      console.log("리마인더 오류", error);
     }
   }
 
@@ -126,8 +86,7 @@ function VocaReminderScreen() {
 
   useEffect(() => {
     // 매번 다른 리마인더 word를 받아오는지 확인 요망
-    // fetchRemindWords();
-    // setRemindWords([]);
+    fetchRemindWords();
 
     // api 요청 후 데이터 가공하여 클릭 여부를 객체의 속성으로 추가
     addClickedState({ allTrue: false });
