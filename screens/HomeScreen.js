@@ -231,6 +231,25 @@ function HomeScreen() {
   }
 
   // 오늘의 학습 단어를 최초 1회만 받아옴
+  // 첫 렌더링시 날짜별 출석률 조회를 통해 "오늘의" attendance_state를 받아온다. 이를 전역 상태에 반영해준다.
+  useEffect(() => {
+    async function getAttendanceStateData() {
+      try {
+        const res = await axios.get(
+          `${BASE_URL}/attendance/status?attendance_date=${getFormattedDate(
+            new Date()
+          )})`
+        );
+        console.log(res);
+      } catch (error) {
+        console.log(res);
+      }
+    }
+
+    getAttendanceStateData();
+  }, []);
+
+  // focus 됐을 때에는 알아서 전역 상태 데이터를 가져옴.
   useEffect(() => {
     const checkAndFetchData = async () => {
       // await AsyncStorage.removeItem("todaySalaryData"); 디버깅
