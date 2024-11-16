@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View,Pressable, Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -25,6 +25,8 @@ import VocaReminderScreen from "./screens/VocaReminderScreen";
 import VocaReminder_HeaderRight from "./components/vocaListScreen/VocaReminder_HeaderRight";
 import VocaSearchResultScreen from "./screens/VocaSearchResultScreen";
 import { RecoilRoot } from "recoil";
+import arrowImg from './assets/img/signUpScreen/ArrowBtn.png' 
+import { useNavigation } from '@react-navigation/native';
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -92,6 +94,19 @@ function BottomTabNavigator() {
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const HeaderButton = () => {
+    const navigation = useNavigation(); // Get navigation prop using useNavigation
+
+    return (
+      <Pressable onPress={() => navigation.navigate('BottomTab')}>
+        <Image
+          source={arrowImg}
+          style={styles.ArrowBtnImg}
+        />
+      </Pressable>
+    );
+  };
 
   // 폰트 불러오는 로직 추가
   // 폰트 안 불러와졌으면 loading을 해야되는데 Splash랑 충돌날까봐 일단 뺌
@@ -161,6 +176,7 @@ export default function App() {
                   headerShown: true,
                   headerBackgroundColor: colors.bg,
                   headerBackTitleVisible: false,
+                  headerLeft: () => <HeaderButton />,
                 }}
               />
               <Stack.Screen
@@ -172,6 +188,7 @@ export default function App() {
                   headerShown: true,
                   headerBackTitle: "",
                   headerBackTitleVisible: false,
+                  headerLeft: () => <HeaderButton />,
                 }}
               />
               <Stack.Screen
@@ -182,6 +199,7 @@ export default function App() {
                   headerTintColor: colors.Grayscale_100,
                   headerShown: true,
                   headerBackTitleVisible: false,
+                  headerLeft: () => <HeaderButton />
                 }}
               />
               <Stack.Screen
@@ -192,6 +210,7 @@ export default function App() {
                   headerTintColor: colors.Grayscale_100,
                   headerShown: true,
                   headerBackTitleVisible: false,
+                  headerLeft: () => <HeaderButton />
                 }}
               />
               <Stack.Screen
@@ -202,6 +221,7 @@ export default function App() {
                   headerTintColor: colors.Grayscale_100,
                   headerShown: true,
                   headerBackTitleVisible: false,
+                  headerLeft: () => <HeaderButton />
                 }}
               />
               <Stack.Screen
@@ -230,4 +250,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  ArrowBtnImg: {
+    resizeMode: "contain",
+    width: 20,
+    height: 20,
+    transform: [{scaleX:-1}]
+  }
 });
