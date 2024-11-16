@@ -65,6 +65,10 @@ const Home_WeekStrip = ({ onCalendarModalOpen }) => {
     console.log("weekstrip 렌더링");
   });
 
+  // useEffect(() => {
+  //   handleWeekChange(new Date());
+  // }, []);
+
   return (
     <Container>
       <HeaderContainer>
@@ -88,7 +92,7 @@ const Home_WeekStrip = ({ onCalendarModalOpen }) => {
         }}
         scrollable
         onWeekChanged={handleWeekChange}
-        startingDate={moment()} // 시작 날짜 설정
+        startingDate={new Date()} // 시작 날짜 설정
       />
     </Container>
   );
