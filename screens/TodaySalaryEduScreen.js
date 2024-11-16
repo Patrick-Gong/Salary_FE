@@ -6,6 +6,7 @@ import {
   ScrollView,
   ActivityIndicator,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import styled, { css } from "styled-components";
 import colors from "../styles/colors";
@@ -28,6 +29,7 @@ import {
   todaySalaryContent,
 } from "../Recoil/todaySalaryContent";
 import parseStoryString from "../functions/parseStoryString";
+import LottieView from "lottie-react-native";
 
 const RootContainer = styled.View`
   flex: 1;
@@ -140,7 +142,7 @@ const NewsContentContainer = styled.View`
 // 임시
 const NewsContentBox = styled.View`
   /* background-color: #c2c2c2; */
-  background-color: #faebd7;
+  background-color: #b0b6aa;
   border-radius: 3px;
   align-items: center;
 `;
@@ -164,6 +166,16 @@ const EduDoneContainer = styled.View`
 const EduDoneText = styled(fonts.Body2M)`
   color: #000000;
   text-align: center;
+`;
+
+const GoToNewsText = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
+`;
+const GoToNewsContainer = styled.View`
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
 `;
 
 // 이 스크린을 호출하는 경우
@@ -332,6 +344,10 @@ function TodaySalaryEduScreen({ route }) {
   // 모달 관리
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  // 임시
+  const [isTopNewsAvailable, setIsTopNewsAvailable] = useState(false);
+  const [isBottomNewsAvailable, setIsBottomNewsAvailable] = useState(false);
+
   function openModal() {
     setIsModalVisible(true);
   }
@@ -455,9 +471,26 @@ function TodaySalaryEduScreen({ route }) {
               <Title style={{ lineHeight: 20 }}>관련 뉴스 확인하기</Title>
             </NewsTitleContainer>
             <NewsContentContainer>
-              <TouchableOpacity onPress={() => link(wordData.articles[0].url)}>
+              <Pressable
+                onPressIn={() => setIsTopNewsAvailable(true)}
+                onPressOut={() => setIsTopNewsAvailable(false)}
+                onPress={() => link(wordData.articles[0].url)}
+              >
                 <NewsContentBox>
-                  <NewsText>{wordData.articles[0].title}</NewsText>
+                  {!isTopNewsAvailable ? (
+                    <NewsText>{wordData.articles[0].title}</NewsText>
+                  ) : (
+                    <GoToNewsContainer>
+                      <GoToNewsText>뉴스 보러 가기</GoToNewsText>
+                      <LottieView
+                        style={{ width: 30, height: 30, marginVertical: 30 }}
+                        source={require("../assets/animations/News.json")}
+                        autoPlay
+                        loop={true}
+                      />
+                    </GoToNewsContainer>
+                  )}
+
                   {/* <Text
                     style={{
                       fontSize: 20,
@@ -469,10 +502,28 @@ function TodaySalaryEduScreen({ route }) {
                     바로가기
                   </Text> */}
                 </NewsContentBox>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => link(wordData.articles[1].url)}>
+              </Pressable>
+              <Pressable
+                onPressIn={() => setIsBottomNewsAvailable(true)}
+                onPressOut={() => setIsBottomNewsAvailable(false)}
+                onPress={() => link(wordData.articles[1].url)}
+              >
                 <NewsContentBox>
-                  <NewsText>{wordData.articles[1].title}</NewsText>
+                  {!isBottomNewsAvailable ? (
+                    <NewsText numberOfLines={1} ellipsizeMode="tail">
+                      {wordData.articles[1].title}
+                    </NewsText>
+                  ) : (
+                    <GoToNewsContainer>
+                      <GoToNewsText>뉴스 보러 가기</GoToNewsText>
+                      <LottieView
+                        style={{ width: 30, height: 30, marginVertical: 30 }}
+                        source={require("../assets/animations/News.json")}
+                        autoPlay
+                        loop={true}
+                      />
+                    </GoToNewsContainer>
+                  )}
                   {/* <Text
                   style={{
                     fontSize: 14,
@@ -484,7 +535,7 @@ function TodaySalaryEduScreen({ route }) {
                   기사 관련 이미지(배경)
                 </Text> */}
                 </NewsContentBox>
-              </TouchableOpacity>
+              </Pressable>
             </NewsContentContainer>
           </NewsContainer>
           {/* 4. 끝까지 내려 => 모달 올리기 & 학습 완료 api 호출 */}
