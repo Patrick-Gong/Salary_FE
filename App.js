@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View,Pressable, Image } from "react-native";
+import { StyleSheet, Text, View, Pressable, Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -25,8 +25,8 @@ import VocaReminderScreen from "./screens/VocaReminderScreen";
 import VocaReminder_HeaderRight from "./components/vocaListScreen/VocaReminder_HeaderRight";
 import VocaSearchResultScreen from "./screens/VocaSearchResultScreen";
 import { RecoilRoot } from "recoil";
-import arrowImg from './assets/img/signUpScreen/ArrowBtn.png' 
-import { useNavigation } from '@react-navigation/native';
+import arrowImg from "./assets/img/signUpScreen/ArrowBtn.png";
+import { useNavigation } from "@react-navigation/native";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -99,11 +99,8 @@ export default function App() {
     const navigation = useNavigation(); // Get navigation prop using useNavigation
 
     return (
-      <Pressable onPress={() => navigation.navigate('BottomTab')}>
-        <Image
-          source={arrowImg}
-          style={styles.ArrowBtnImg}
-        />
+      <Pressable onPress={() => navigation.goBack(-1)}>
+        <Image source={arrowImg} style={styles.ArrowBtnImg} />
       </Pressable>
     );
   };
@@ -199,7 +196,7 @@ export default function App() {
                   headerTintColor: colors.Grayscale_100,
                   headerShown: true,
                   headerBackTitleVisible: false,
-                  headerLeft: () => <HeaderButton />
+                  headerLeft: () => <HeaderButton />,
                 }}
               />
               <Stack.Screen
@@ -210,7 +207,7 @@ export default function App() {
                   headerTintColor: colors.Grayscale_100,
                   headerShown: true,
                   headerBackTitleVisible: false,
-                  headerLeft: () => <HeaderButton />
+                  headerLeft: () => <HeaderButton />,
                 }}
               />
               <Stack.Screen
@@ -221,7 +218,7 @@ export default function App() {
                   headerTintColor: colors.Grayscale_100,
                   headerShown: true,
                   headerBackTitleVisible: false,
-                  headerLeft: () => <HeaderButton />
+                  headerLeft: () => <HeaderButton />,
                 }}
               />
               <Stack.Screen
@@ -254,6 +251,6 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     width: 20,
     height: 20,
-    transform: [{scaleX:-1}]
-  }
+    transform: [{ scaleX: -1 }],
+  },
 });
