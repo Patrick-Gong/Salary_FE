@@ -94,16 +94,16 @@ function VocaReminder_remindContent({
       <Container>
         <RemindContentContainer>
           {data.map((item) =>
-            item.clickState ? (
+            !item.clickState ? (
               <WordToggle
                 type="vocaReminder"
                 index={wordIndex++}
                 word={item.word}
                 mean={item.mean}
-                key={item.word_id}
+                key={item.word}
               />
             ) : (
-              <></>
+              <View key={item.word}></View>
             )
           )}
         </RemindContentContainer>

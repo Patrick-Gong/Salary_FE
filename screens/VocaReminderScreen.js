@@ -40,8 +40,8 @@ const BtnContainer = styled.View`
 `;
 
 // 단어 리마인드 screen 자체에서 리마인드 전/후에 따라 동적으로 screen을 렌더링한다.
-function VocaReminderScreen({ route, navigation }) {
-  // const navigation = useNavigation();
+function VocaReminderScreen({ route }) {
+  const navigation = useNavigation();
 
   const [reminding, setReminding] = useState(false);
   const [remindWords, setRemindWords] = useState([]);
@@ -161,7 +161,10 @@ function VocaReminderScreen({ route, navigation }) {
           type="active"
           text={!reminding ? "모두 선택했어요" : "단어 리마인드를 완료했어요"}
           onPress={() => {
-            if (reminding) navigation.navigate("BottomTab");
+            if (reminding)
+              navigation.navigate("BottomTab", {
+                screen: "VocabularyList",
+              });
             else setReminding(!reminding);
           }}
         />
