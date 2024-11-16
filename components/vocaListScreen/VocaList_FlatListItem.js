@@ -11,8 +11,9 @@ import {
   isSavedSelector,
   todaySalaryContent,
 } from "../../Recoil/todaySalaryContent";
+import { useNavigation } from "@react-navigation/native";
 
-const ItemWrapper = styled.View`
+const ItemWrapper = styled.TouchableOpacity`
   height: 60px;
   margin: 0px 50px;
   padding-right: 10px;
@@ -76,8 +77,15 @@ function VocaList_FlatListItem({ word_id, word }) {
 
     fetchBookMarkState(tmpState);
   }
+
+  const navigation = useNavigation();
   return (
-    <ItemWrapper key={word_id}>
+    <ItemWrapper
+      key={word_id}
+      onPress={() => {
+        navigation.navigate("TodaySalaryEdu", { word_id: word_id });
+      }}
+    >
       <fonts.Body1>{word}</fonts.Body1>
       <BookMarkContainer onPress={onBookmarkToggle}>
         {bookMark ? (
