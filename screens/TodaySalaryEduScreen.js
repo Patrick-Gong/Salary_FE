@@ -157,15 +157,32 @@ const NewsText = styled(fonts.Caption2)`
 
 // 섹션 4) 학습 완료와 모달
 const EduDoneContainer = styled.View`
-  padding: 50px 0px 80px;
+  padding: 50px 0px 160px;
 
   justify-content: center;
   align-items: center;
+
+  ${(props) =>
+    props.wordState
+      ? css`
+          padding: 50px 0px 100px;
+        `
+      : css`
+          padding: 100px 0px 200px;
+        `}
 `;
 
 const EduDoneText = styled(fonts.Body2M)`
   color: #000000;
   text-align: center;
+
+  ${(props) =>
+    props.wordState
+      ? css``
+      : css`
+          font-family: "Pretendard-SemiBold";
+          font-size: 16px;
+        `}
 `;
 
 const GoToNewsText = styled.Text`
@@ -540,9 +557,9 @@ function TodaySalaryEduScreen({ route }) {
           </NewsContainer>
           {/* 4. 끝까지 내려 => 모달 올리기 & 학습 완료 api 호출 */}
           {route.params.type === "todaySalary" ? (
-            <EduDoneContainer>
+            <EduDoneContainer wordState={wordState}>
               {!wordState ? <TodaySalaryEdu_ScrollDownAnim /> : <></>}
-              <EduDoneText>
+              <EduDoneText wordState={wordState}>
                 {!wordState
                   ? "끝까지 내리면 오늘의 샐러리 한조각 학습이 완료돼요!"
                   : "오늘의 학습을 완료했어요!"}
