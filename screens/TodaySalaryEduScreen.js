@@ -65,11 +65,17 @@ const MeanContainer = styled.View`
 `;
 
 const BookMarkContainer = styled.TouchableOpacity`
+  height: 60px;
+  width: 80px;
   position: absolute;
-  top: 12px;
-  right: 15px;
+  top: 0px;
+  right: 0px;
 
   gap: 3px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 // 섹션 2) 스토리텔링

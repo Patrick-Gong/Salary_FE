@@ -5,11 +5,11 @@ import styled, { css } from "styled-components";
 import colors from "../styles/colors";
 import fonts from "../styles/fonts";
 import { SimpleLineIcons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { LayoutAnimation } from "react-native";
+import { View } from "react-native";
 
 const Container = styled.TouchableOpacity`
-  width: 100%;
-
   margin-bottom: 10px;
 
   border-radius: 14px;
@@ -19,8 +19,6 @@ const Container = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
   gap: 4px;
-
-  align-self: flex-start;
 
   ${(props) =>
     props.type === "todaySalaryEdu"
@@ -113,12 +111,17 @@ const ToggleBtn = styled.View`
 function WordToggle({ type, index, word, mean }) {
   const [toggle, setToggle] = useState(false);
 
+  const toggleExpand = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
+    setToggle(!toggle);
+  };
+
   return (
     <Container
       type={type}
       toggle={toggle}
-      onPress={() => setToggle(!toggle)}
-      activeOpacity={0.95}
+      onPress={toggleExpand}
+      activeOpacity={1}
     >
       <TitleContainer type={type} toggle={toggle}>
         <WordContainer>
@@ -154,13 +157,10 @@ function WordToggle({ type, index, word, mean }) {
           )}
         </ToggleBtn>
       </TitleContainer>
-
-      {toggle ? (
+      {toggle && (
         <MeanContainer>
           <Mean type={type}> {mean}</Mean>
         </MeanContainer>
-      ) : (
-        <></>
       )}
     </Container>
   );
