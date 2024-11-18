@@ -70,7 +70,12 @@ function VocaListScreen() {
   async function getData() {
     try {
       const res = await axios.get(`${BASE_URL}/wordbook`);
-      setVocaList(res.data);
+      if (res.status === 200) {
+        const orderedDate = res.data.sort(
+          (a, b) => new Date(b.like_date) - new Date(a.like_date)
+        );
+        setVocaList(orderedDate);
+      }
     } catch (error) {
       console.log("단어장 불러오기 오류", error);
     }

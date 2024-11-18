@@ -7,7 +7,7 @@ import fonts from "../styles/fonts";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { useState } from "react";
 
-const Container = styled.View`
+const Container = styled.TouchableOpacity`
   width: 100%;
 
   margin-bottom: 10px;
@@ -98,7 +98,7 @@ const Mean = styled(fonts.Body1)`
   line-height: 28px;
 `;
 
-const ToggleBtn = styled.Pressable`
+const ToggleBtn = styled.View`
   width: 40px;
   height: 40px;
   margin-right: 10px;
@@ -114,7 +114,12 @@ function WordToggle({ type, index, word, mean }) {
   const [toggle, setToggle] = useState(false);
 
   return (
-    <Container type={type} toggle={toggle}>
+    <Container
+      type={type}
+      toggle={toggle}
+      onPress={() => setToggle(!toggle)}
+      activeOpacity={0.95}
+    >
       <TitleContainer type={type} toggle={toggle}>
         <WordContainer>
           <Title type={type}>
@@ -133,7 +138,7 @@ function WordToggle({ type, index, word, mean }) {
           {/* horizon */}
         </WordContainer>
 
-        <ToggleBtn onPress={() => setToggle(!toggle)}>
+        <ToggleBtn>
           {toggle ? (
             <SimpleLineIcons
               name="arrow-up"
