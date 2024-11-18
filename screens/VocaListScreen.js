@@ -120,9 +120,9 @@ function VocaListScreen() {
           />
         </FlatListContainer>
         <BtnContainer>
-          <fonts.Caption1 style={{ textAlign: "center" }}>
+          <fonts.Caption2 style={{ textAlign: "center" }}>
             단어를 10개 이상 저장해야 리마인드를 진행할 수 있어요.
-          </fonts.Caption1>
+          </fonts.Caption2>
           <PrimaryBtn
             type={vocaList.length >= 10 ? "active" : "deactive"}
             text="단어 리마인드 하러 가기"
