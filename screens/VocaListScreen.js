@@ -79,9 +79,9 @@ function VocaListScreen() {
   const nickname = "나야들기름";
 
   useEffect(() => {
-    // 북마크 단어장에 있는 단어를 받아옴
-    getData();
-  }, [isFocused, vocaList]);
+    // focus가 다시 되었을 때에만 다시 단어장 데이터를 받아옴.
+    if (isFocused) getData();
+  }, [isFocused]);
 
   useEffect(() => {
     getData();
