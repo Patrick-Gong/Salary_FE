@@ -317,6 +317,7 @@ function TodaySalaryEduScreen({ route }) {
           `${BASE_URL}/words?word_id=${route.params.word_id}`
         );
         if (res.status === 200) {
+          console.log(res.data.example);
           setWordData(res.data);
           setStoryTelling([
             parseStoryString(res.data.story1),
@@ -412,7 +413,9 @@ function TodaySalaryEduScreen({ route }) {
         <RootContainer>
           {/* 1. 오늘의 샐러리 한조각 */}
           <MeanAndExampleContainer>
-            <BoldTitle>오늘의 샐러리 한조각</BoldTitle>
+            {wordData.word_id === todaySalary.word_id && (
+              <BoldTitle>오늘의 샐러리 한조각</BoldTitle>
+            )}
             <MeanContainer>
               <HighlightText
                 isFixed
