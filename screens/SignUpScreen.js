@@ -220,7 +220,7 @@ function SignUpScreen({ onEnter, navigation }) {
   };
 
   useEffect(() => {
-    if (termsOfUseList.every((item) => item.approved)) {
+    if (termsOfUseList.every((item) => item.approved) || termsOfUseList.findIndex((item) => !item.approved) === 3) {
       setAllApproved(true);
     } else {
       setAllApproved(false);
