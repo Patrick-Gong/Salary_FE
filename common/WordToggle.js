@@ -92,6 +92,7 @@ const Mean = styled(fonts.Body1)`
   line-height: 28px;
   padding-left: 45px;
   padding-right: 45px;
+  padding-bottom: 15px;
   word-break: keep-all;
 `;
 
@@ -107,7 +108,8 @@ const ToggleBtn = styled.View`
 
 function WordToggle({ type, index, word, mean }) {
   const [toggle, setToggle] = useState(false);
-  const animation = useRef(new Animated.Value(0)).current; // 초기값: 0
+  const [contentHeight, setContentHeight] = useState(0); // 실제 콘텐츠 높이 저장
+  const animation = useRef(new Animated.Value(0)).current; // 초기 애니메이션 값
 
   const toggleExpand = () => {
     if (toggle) {
@@ -115,17 +117,18 @@ function WordToggle({ type, index, word, mean }) {
       Animated.timing(animation, {
         toValue: 0, // 닫힌 높이
         duration: 300,
-        useNativeDriver: false, // 높이 애니메이션은 false로 설정
-      }).start();
+        useNativeDriver: false,
+      }).start(() => {
+        setToggle(false); // 애니메이션 종료 후 상태 변경
+      });
     } else {
-      // 펼치기 애니메이션
+      setToggle(true); // 먼저 보여지도록 설정
       Animated.timing(animation, {
-        toValue: 100, // 열린 높이 (100은 예제 값, 실제 높이에 맞게 조절)
+        toValue: contentHeight, // 측정된 높이만큼 열기
         duration: 300,
         useNativeDriver: false,
       }).start();
     }
-    setToggle(!toggle); // 토글 상태 업데이트
   };
 
   return (
@@ -168,8 +171,28 @@ function WordToggle({ type, index, word, mean }) {
           )}
         </ToggleBtn>
       </TitleContainer>
-      <MeanContainer style={{ height: animation }}>
-        <Mean type={type}>{mean}</Mean>
+
+      {/* 항상 렌더링하여 높이를 측정 */}
+      <MeanContainer
+        style={{
+          height: toggle ? animation : 0, // 애니메이션 높이 설정
+          overflow: "hidden", // 내용이 넘치지 않도록 설정
+        }}
+      >
+        <View
+          style={{ opacity: 0, position: "absolute" }} // 사용자에게 보이지 않도록 설정
+          onLayout={(event) => {
+            const { height } = event.nativeEvent.layout;
+            if (contentHeight === 0) {
+              setContentHeight(height);
+            }
+          }}
+        >
+          <Mean type={type}>{mean}</Mean>
+        </View>
+
+        {/* 실제 렌더링되는 콘텐츠 */}
+        {toggle && <Mean type={type}>{mean}</Mean>}
       </MeanContainer>
     </Container>
   );
