@@ -1,17 +1,12 @@
-// 스토리텔링과 단어장에 쓰이는 토글 공통 컴포넌트
-// indexing이 필요함.. 흠??
-
 import styled, { css } from "styled-components";
 import colors from "../styles/colors";
 import fonts from "../styles/fonts";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { useRef, useState } from "react";
-import { LayoutAnimation } from "react-native";
-import { View } from "react-native";
+import { Animated, View } from "react-native";
 
 const Container = styled.TouchableOpacity`
   margin-bottom: 10px;
-
   border-radius: 14px;
   background-color: ${colors.Grayscale_90};
 
@@ -71,16 +66,17 @@ const Title = styled(fonts.H4SB)`
           color: ${colors.Grayscale_white};
         `}
 `;
+
 const WordContainer = styled.View`
   gap: 10px;
   display: flex;
   flex-direction: row;
   align-items: center;
 `;
-const MeanContainer = styled.View`
-  width: 100%;
 
-  padding: 20px 40px 30px;
+const MeanContainer = styled(Animated.View)`
+  width: 100%;
+  overflow: hidden; /* 내용이 넘치지 않도록 설정 */
 `;
 
 const Mean = styled(fonts.Body1)`
@@ -94,6 +90,9 @@ const Mean = styled(fonts.Body1)`
         `}
 
   line-height: 28px;
+  padding-left: 45px;
+  padding-right: 45px;
+  word-break: keep-all;
 `;
 
 const ToggleBtn = styled.View`
@@ -106,14 +105,27 @@ const ToggleBtn = styled.View`
   align-items: center;
 `;
 
-// type: 1) todaySalaryEdu
-// type: 2) vocaReminder
 function WordToggle({ type, index, word, mean }) {
   const [toggle, setToggle] = useState(false);
+  const animation = useRef(new Animated.Value(0)).current; // 초기값: 0
 
   const toggleExpand = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
-    setToggle(!toggle);
+    if (toggle) {
+      // 접기 애니메이션
+      Animated.timing(animation, {
+        toValue: 0, // 닫힌 높이
+        duration: 300,
+        useNativeDriver: false, // 높이 애니메이션은 false로 설정
+      }).start();
+    } else {
+      // 펼치기 애니메이션
+      Animated.timing(animation, {
+        toValue: 100, // 열린 높이 (100은 예제 값, 실제 높이에 맞게 조절)
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    }
+    setToggle(!toggle); // 토글 상태 업데이트
   };
 
   return (
@@ -138,7 +150,6 @@ function WordToggle({ type, index, word, mean }) {
             {"  "}
             {word}
           </Title>
-          {/* horizon */}
         </WordContainer>
 
         <ToggleBtn>
@@ -157,11 +168,9 @@ function WordToggle({ type, index, word, mean }) {
           )}
         </ToggleBtn>
       </TitleContainer>
-      {toggle && (
-        <MeanContainer>
-          <Mean type={type}> {mean}</Mean>
-        </MeanContainer>
-      )}
+      <MeanContainer style={{ height: animation }}>
+        <Mean type={type}>{mean}</Mean>
+      </MeanContainer>
     </Container>
   );
 }
