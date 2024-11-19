@@ -9,6 +9,7 @@ import { useNavigation } from "@react-navigation/native";
 import VocaReminder_HeaderRigRht from "../components/vocaListScreen/VocaReminder_HeaderRight";
 import VocaReminder_remindContent from "../components/vocaListScreen/VocaReminder_remindContent";
 import { BASE_URL } from "@env";
+import { Shadow } from "react-native-shadow-2";
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -136,39 +137,47 @@ function VocaReminderScreen({ route }) {
           clickedWordCount={returnCountClicked()}
         />
       </ContentContainer>
-      <BtnContainer>
-        <Pressable
-          onPress={() => {
-            addClickedState({ allTrue: false }); // clickstate를 전부 false로
-            setReminding(!reminding);
-          }}
-        >
-          {!reminding ? (
-            <fonts.Body2M
-              style={{
-                color: colors.Grayscale_80,
-                textAlign: "center",
-                textDecorationLine: "underline",
-              }}
-            >
-              모두 기억이 나지 않아요.
-            </fonts.Body2M>
-          ) : (
-            <></>
-          )}
-        </Pressable>
-        <PrimaryBtn
-          type="active"
-          text={!reminding ? "모두 선택했어요" : "단어 리마인드를 완료했어요"}
-          onPress={() => {
-            if (reminding)
-              navigation.navigate("BottomTab", {
-                screen: "VocabularyList",
-              });
-            else setReminding(!reminding);
-          }}
-        />
-      </BtnContainer>
+      <Shadow
+        distance={50}
+        startColor="rgba(255,255,255,0.5)"
+        endColor="rgba(255,255,255,0)"
+        offset={[0, 0]}
+        style={{ width: "100%" }}
+      >
+        <BtnContainer>
+          <Pressable
+            onPress={() => {
+              addClickedState({ allTrue: false }); // clickstate를 전부 false로
+              setReminding(!reminding);
+            }}
+          >
+            {!reminding ? (
+              <fonts.Body2M
+                style={{
+                  color: colors.Grayscale_80,
+                  textAlign: "center",
+                  textDecorationLine: "underline",
+                }}
+              >
+                모두 기억이 나지 않아요.
+              </fonts.Body2M>
+            ) : (
+              <></>
+            )}
+          </Pressable>
+          <PrimaryBtn
+            type="active"
+            text={!reminding ? "모두 선택했어요" : "단어 리마인드를 완료했어요"}
+            onPress={() => {
+              if (reminding)
+                navigation.navigate("BottomTab", {
+                  screen: "VocabularyList",
+                });
+              else setReminding(!reminding);
+            }}
+          />
+        </BtnContainer>
+      </Shadow>
     </Container>
   );
 }

@@ -21,6 +21,7 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { BASE_URL } from "@env";
 import { useRecoilState } from "recoil";
 import { isSavedSelector } from "../Recoil/todaySalaryContent";
+import { Shadow } from "react-native-shadow-2";
 
 const AdvertiseWrapper = styled.View`
   display: flex;
@@ -119,18 +120,26 @@ function VocaListScreen() {
             }
           />
         </FlatListContainer>
-        <BtnContainer>
-          <fonts.Caption2 style={{ textAlign: "center" }}>
-            단어를 10개 이상 저장해야 리마인드를 진행할 수 있어요.
-          </fonts.Caption2>
-          <PrimaryBtn
-            type={vocaList.length >= 10 ? "active" : "deactive"}
-            text="단어 리마인드 하러 가기"
-            onPress={() => {
-              if (vocaList.length >= 10) navigation.navigate("VocaReminder");
-            }}
-          />
-        </BtnContainer>
+        <Shadow
+          distance={100}
+          startColor="rgba(255,255,255,1)"
+          endColor="rgba(255,255,255,0)"
+          offset={[0, 0]}
+          style={{ width: "100%" }}
+        >
+          <BtnContainer>
+            <fonts.Caption2 style={{ textAlign: "center" }}>
+              단어를 10개 이상 저장해야 리마인드를 진행할 수 있어요.
+            </fonts.Caption2>
+            <PrimaryBtn
+              type={vocaList.length >= 10 ? "active" : "deactive"}
+              text="단어 리마인드 하러 가기"
+              onPress={() => {
+                if (vocaList.length >= 10) navigation.navigate("VocaReminder");
+              }}
+            />
+          </BtnContainer>
+        </Shadow>
       </View>
     );
 }
