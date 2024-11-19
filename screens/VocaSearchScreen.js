@@ -203,7 +203,7 @@ const EmptyText = styled(fonts.Body2M)`
 
 function VocaSearchScreen({ navigation }) {
   const [isFocused, setIsFocused] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const [isRecommendationDone, setIsRecommendationDone] = useState(false);
   const [recommendedList, setRecommendedList] = useState([]);
   const [inputText, setInputText] = useState("");
   const [keywordList, setKeywordList] = useState([]);
@@ -213,24 +213,24 @@ function VocaSearchScreen({ navigation }) {
       try {
         const response = await axios.get(`${BASE_URL}/words/recommand`);
         setRecommendedList(response.data);
+        setIsRecommendationDone(false);
       } catch (error) {
         console.log(error);
       }
       console.log(`${BASE_URL}/words/recommand`);
     };
     fetchRecommendedData();
-  }, []);
+  }, [isRecommendationDone]);
 
   const debouncedSearchText = useDebounce(inputText, 200);
 
   useEffect(() => {
     const fetchSearchData = async () => {
       try {
-        
         const response = await axios.get(
           `${BASE_URL}/words/search?word=${debouncedSearchText}`
         );
-        setKeywordList(response.data); 
+        setKeywordList(response.data);
       } catch (error) {
         console.log(error);
         setKeywordList([]);
@@ -251,6 +251,22 @@ function VocaSearchScreen({ navigation }) {
   const handleChangeKeyword = useCallback((text) => {
     setInputText(text.trim());
   }, []);
+
+  const handleClickRecommendedWord = (targetId) => {
+    navigation.navigate('TodaySalaryEdu', {
+      word_id: targetId,
+    });
+
+    if (recommendedList.length > 1) {
+      const updatedRecommendedList = recommendedList.filter(
+        (word) => word.word_id !== targetId
+      );
+      setRecommendedList([...updatedRecommendedList]);
+    }
+    else {
+      setIsRecommendationDone(true);
+    }
+  };
 
   const renderItem = ({ item }) => {
     const discernedText = [...item.word].map((char, index) => {
@@ -308,11 +324,7 @@ function VocaSearchScreen({ navigation }) {
                 {recommendedList.map((item) => (
                   <RecommendedBox
                     key={item.word_id}
-                    onPress={() =>
-                      navigation.navigate("TodaySalaryEdu", {
-                        word_id: item.word_id,
-                      })
-                    }
+                    onPress={() => handleClickRecommendedWord(item.word_id)}
                   >
                     <RecommendedBox_Text>{item.word}</RecommendedBox_Text>
                   </RecommendedBox>

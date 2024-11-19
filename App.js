@@ -96,7 +96,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   const HeaderButton = () => {
-    const navigation = useNavigation(); // Get navigation prop using useNavigation
+    const navigation = useNavigation(); 
 
     return (
       <Pressable onPress={() => navigation.goBack(-1)}>
