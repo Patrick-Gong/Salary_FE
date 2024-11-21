@@ -208,7 +208,8 @@ const GoToNewsContainer = styled.View`
 
 // word_id를 params로 받아 api 호출
 
-// route.params.type !== "todaySalary" 로 오늘의 단어 학습과 단어 검색 구분
+// route.params.type === "todaySalary" 로 오늘의 단어 학습 식별
+// route.params.type === "bookmark"로 단어장 통해 들어온 화면 식별
 function TodaySalaryEduScreen({ route }) {
   // 전역으로 오늘의 todaysalary 학습 상태를 관리
   const wordState = useRecoilValue(todayWordSelector);
@@ -413,8 +414,12 @@ function TodaySalaryEduScreen({ route }) {
         <RootContainer>
           {/* 1. 오늘의 샐러리 한조각 */}
           <MeanAndExampleContainer>
-            {wordData.word_id === todaySalary.word_id && (
+            {wordData.word_id === todaySalary.word_id ? (
               <BoldTitle>오늘의 샐러리 한조각</BoldTitle>
+            ) : route.params.type === "bookmark" ? (
+              <BoldTitle>단어장</BoldTitle>
+            ) : (
+              <BoldTitle>{wordData.word}에 대한 검색 결과</BoldTitle>
             )}
             <MeanContainer>
               <HighlightText
