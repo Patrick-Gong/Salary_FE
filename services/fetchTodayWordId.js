@@ -5,6 +5,7 @@ import { fetchTodayWordData } from "./fetchTodayWordData";
 export async function fetchTodayWordId() {
   try {
     const res = await axios.get(`${BASE_URL}/today-word`);
+    console.log(`${BASE_URL}/today-word`);
     if (res.status === 200) {
       console.log("새로운 word id를 받음", res.data.word_id);
       return { word_id: res.data.word_id };

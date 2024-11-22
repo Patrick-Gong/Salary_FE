@@ -19,6 +19,7 @@ import VocaReminder_remindContent from "../components/vocaListScreen/VocaReminde
 import { BASE_URL } from "@env";
 import { Shadow } from "react-native-shadow-2";
 import VocaReminder_Loader from "../components/vocaListScreen/VocaReminder_Loader";
+import VocaReminder_Button from "../components/vocaListScreen/VocaReminder_Button";
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -137,9 +138,8 @@ function VocaReminderScreen({ route }) {
             </fonts.Caption2>
           ) : (
             <fonts.Caption2>
-              ddddd 저번보다{" "}
-              <Text style={{ color: colors.text_green }}>2개</Text>의 단어를 더
-              기억하고 있어요! {"\n"}
+              저번보다 <Text style={{ color: colors.text_green }}>2개</Text>의
+              단어를 더 기억하고 있어요! {"\n"}
               체크하지 못한 단어들은 다시 한번 복습해볼까요?
             </fonts.Caption2>
           )}
@@ -181,12 +181,28 @@ function VocaReminderScreen({ route }) {
                 <></>
               )}
             </Pressable>
-            <PrimaryBtn
+            {/* <PrimaryBtn
               type="active"
               text={
                 !reminding ? "모두 선택했어요" : "단어 리마인드를 완료했어요"
               }
               onPress={() => {
+                if (reminding)
+                  navigation.navigate("BottomTab", {
+                    screen: "VocabularyList",
+                  });
+                else setReminding(!reminding);
+              }}
+            /> */}
+            <VocaReminder_Button
+              type="educate"
+              state="active"
+              text={
+                !reminding
+                  ? "해당 단어에 대해 리마인드 할게요"
+                  : "단어 리마인드를 완료했어요"
+              }
+              onClick={() => {
                 if (reminding)
                   navigation.navigate("BottomTab", {
                     screen: "VocabularyList",

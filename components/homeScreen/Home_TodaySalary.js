@@ -26,14 +26,7 @@ const Container = styled.View`
 
   border-radius: 20px;
 
-  ${(props) =>
-    props.wordState
-      ? css`
-          background-color: ${colors.Grayscale_white};
-        `
-      : css`
-          background-color: ${colors.Grayscale_80};
-        `};
+  background-color: ${colors.Grayscale_white};
 `;
 
 const TitleContainer = styled.View`
@@ -42,14 +35,7 @@ const TitleContainer = styled.View`
 `;
 
 const Title = styled(fonts.H4SB)`
-  ${(props) =>
-    props.wordState
-      ? css`
-          color: ${colors.Grayscale_100};
-        `
-      : css`
-          color: ${colors.Grayscale_white};
-        `}
+  color: ${colors.Grayscale_100};
 `;
 
 const TitleDescript = styled(fonts.Caption2)`
@@ -72,7 +58,6 @@ const InputBox = styled.View`
           background-color: ${colors.Grayscale_white};
         `
       : css`
-          background-color: ${colors.Grayscale_60};
           border: 1px solid ${colors.Grayscale_10};
         `}
 `;
@@ -92,14 +77,7 @@ const InputPlaceHolderDone = styled.Text`
 const AnswerDescript = styled(fonts.Body2M)`
   text-align: center;
 
-  ${(props) =>
-    props.wordState
-      ? css`
-          color: ${colors.Grayscale_100};
-        `
-      : css`
-          color: ${colors.Grayscale_10};
-        `}
+  color: ${colors.Grayscale_100};
 `;
 
 const BtnContainer = styled.View`

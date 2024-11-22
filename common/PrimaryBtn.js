@@ -30,7 +30,7 @@ const PrimaryPressable = styled.Pressable`
         `}
 `;
 
-const BtnText = styled(fonts.Button1)`
+const BtnText = styled(fonts.Button2)`
   ${(props) =>
     props.type === "active"
       ? css`
