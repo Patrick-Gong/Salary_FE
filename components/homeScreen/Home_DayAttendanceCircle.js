@@ -81,7 +81,6 @@ async function getStateFromStorage(
   if (date) formattedDate = getFormattedDate(new Date(date));
   else formattedDate = calendarDate.dateString;
 
-  // console.log("formattedDate", formattedDate);
   const storedState = await AsyncStorage.getItem(formattedDate);
 
   // date를 key로 저장되어 있던 state를 불러온다.
@@ -105,15 +104,20 @@ function Home_DayAttendanceCircle({
   type, // calendar면 전달
   empty, // true라면 비활성화된 circle을 전달
   isToday,
+  prevMonthData,
 }) {
   //   console.log("date", date); //date "2024-12-06T03:25:08.085Z"
   //   console.log("calendarDate.dateString", calendarDate); // 2024-11-15
+  var formattedDate;
+  if (date) formattedDate = getFormattedDate(new Date(date));
+  else formattedDate = calendarDate.dateString;
 
   const [emptyState, setEmpty] = useState(empty);
   const [attendanceState, setAttendanceState] = useState(0);
 
   // empty = compareDate(new Date(), new Date(formattedDate)); // 중복 처리임
 
+  // console.log(formattedDate, prevMonthData[formattedDate]);
   getStateFromStorage(date, calendarDate, setEmpty, setAttendanceState);
   // console.log(calendarDate, attendanceState, emptyState);
 

@@ -11,6 +11,7 @@ export const todayAttendanceState = atom({
       // 1. AsyncStorage에서 초기 값 불러오기
       const loadPersisted = async () => {
         const savedValue = await AsyncStorage.getItem(getKoreaFormattedDate());
+        console.log(getKoreaFormattedDate());
         if (savedValue != null) {
           setSelf(JSON.parse(savedValue)); // AsyncStorage 값으로 Atom 초기화
         }

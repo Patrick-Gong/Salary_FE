@@ -60,12 +60,13 @@ function Home_TrendQuiz() {
   const [attendaceState, setAttendanceState] =
     useRecoilState(todayAttendanceState);
 
-  useEffect(() => {
-    if (!articleState) {
-      setArticleState(true);
-      setAttendanceState((prev) => prev + 1);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!articleState) {
+  //     setArticleState(true);
+  //     setAttendanceState((prev) => prev + 1);
+  //     console.log("article state에 의해 1을 더함")
+  //   }
+  // }, []);
 
   return (
     <Container articleState={articleState}>
