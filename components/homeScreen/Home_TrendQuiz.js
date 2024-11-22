@@ -88,7 +88,7 @@ function Home_TrendQuiz() {
       </DesriptContainer>
 
       <PrimaryBtn
-        type="active"
+        type={trendState ? "eduDone" : "active"}
         text={trendState ? "트렌드 퀴즈 해설 보러가기" : "트렌드 퀴즈 풀기"}
         onPress={() => {
           if (!trendState) navigation.push("TodayTrendQuiz");
