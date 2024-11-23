@@ -11,7 +11,6 @@ import colors from "../styles/colors";
 import fonts from "../styles/fonts";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Advertise from "../common/assets/avt.jpg";
 import styled from "styled-components";
 import PrimaryBtn from "../common/PrimaryBtn";
 import Constants from "expo-constants";
@@ -22,23 +21,13 @@ import { BASE_URL } from "@env";
 import { useRecoilState } from "recoil";
 import { isSavedSelector } from "../Recoil/todaySalaryContent";
 import { Shadow } from "react-native-shadow-2";
-
-const AdvertiseWrapper = styled.View`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
-`;
-const AdvertiseImg = styled.Image`
-  width: 334px;
-  height: 71px;
-  flex-shrink: 0;
-  object-fit: cover;
-`;
+import VocaReminder_Button from "../components/vocaListScreen/VocaReminder_Button";
+import Info from "../assets/img/vocaListScreen/info.png";
 
 const TitleContainer = styled.View`
   width: 100%;
   padding: 30px;
+  padding-bottom: 16px;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -55,9 +44,9 @@ const BtnContainer = styled.View`
   display: flex;
   flex-direction: center;
   justify-content: center;
-  gap: 8px;
+  gap: 4px;
 
-  padding: 20px 30px;
+  padding: 0px 15px 30px 15px;
 `;
 
 // * 전역상태 닉네임 받아와서 띄울 필요 있음
@@ -97,9 +86,6 @@ function VocaListScreen() {
     return (
       <View style={styles.rootScreen}>
         <StatusBar style="dark" />
-        <AdvertiseWrapper>
-          <AdvertiseImg source={Advertise} />
-        </AdvertiseWrapper>
         <TitleContainer>
           <fonts.H4SB style={{ color: "3a3a3a" }}>
             {nickname}의 단어장
@@ -108,6 +94,38 @@ function VocaListScreen() {
             저장한 단어들의 목록이에요. 다시 학습해보세요!
           </fonts.Caption2>
         </TitleContainer>
+        <BtnContainer>
+          <VocaReminder_Button
+            type="preview"
+            state={vocaList.length >= 10 ? "active" : "deactive"}
+            text={"저장된 단어들로 리마인드 학습을 해볼까요?"}
+            onClick={() => {
+              if (vocaList.length >= 10) navigation.navigate("VocaReminder");
+            }}
+          />
+          {vocaList.length < 10 && (
+            <View
+              style={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              <Image
+                source={Info}
+                style={{ objectFit: "cover", width: 11, height: 11.5 }}
+              />
+              <fonts.Caption2
+                style={{ textAlign: "center", color: colors.Grayscale_60 }}
+              >
+                단어를 10개 이상 저장해야 리마인드를 진행할 수 있어요.
+              </fonts.Caption2>
+            </View>
+          )}
+        </BtnContainer>
         <FlatListContainer>
           <FlatList
             data={vocaList}
@@ -126,20 +144,7 @@ function VocaListScreen() {
           endColor="rgba(255,255,255,0)"
           offset={[0, 0]}
           style={{ width: "100%" }}
-        >
-          <BtnContainer>
-            <fonts.Caption2 style={{ textAlign: "center" }}>
-              단어를 10개 이상 저장해야 리마인드를 진행할 수 있어요.
-            </fonts.Caption2>
-            <PrimaryBtn
-              type={vocaList.length >= 10 ? "active" : "deactive"}
-              text="단어 리마인드 하러 가기"
-              onPress={() => {
-                if (vocaList.length >= 10) navigation.navigate("VocaReminder");
-              }}
-            />
-          </BtnContainer>
-        </Shadow>
+        ></Shadow>
       </View>
     );
 }

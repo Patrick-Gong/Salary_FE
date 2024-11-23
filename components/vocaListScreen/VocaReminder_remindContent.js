@@ -6,12 +6,27 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  StyleSheet,
+  Image,
 } from "react-native";
 import fonts from "../../styles/fonts";
 import colors from "../../styles/colors";
 import WordToggle from "../../common/WordToggle";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import Svg, {
+  Defs,
+  Rect,
+  Filter,
+  FeOffset,
+  FeGaussianBlur,
+  FeFlood,
+  FeComposite,
+  FeMerge,
+  FeMergeNode,
+} from "react-native-svg";
+import { Shadow } from "react-native-shadow-2";
+import InsetFrame from "../../assets/img/vocaListScreen/insetFrame.png";
 
 const Container = styled.View`
   width: 100%;
@@ -40,7 +55,6 @@ const RemindContentContainer = styled.ScrollView`
 
 const WordBtnElement = styled.Pressable`
   border-radius: 15px;
-  border: 2px solid ${colors.Primary_80};
   align-self: flex-start;
   padding: 5px 12px;
   margin: 6px;
@@ -48,13 +62,30 @@ const WordBtnElement = styled.Pressable`
   ${(props) =>
     props.clickState
       ? css`
-          background-color: ${colors.Primary_80};
+          border: 2px solid rgba(232, 232, 232, 0.4);
         `
-      : css``}
+      : css`
+          background-color: ${colors.Secondary_100};
+          border: 2px solid ${colors.Primary_80};
+        `}
 `;
 
-const WordBtnText = styled(fonts.Body1)`
+const WordBtnText = styled(fonts.Body2R)`
   color: "#000000";
+
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; /* 125% */
+
+  z-index: 2;
+
+  ${(props) =>
+    props.clickState
+      ? css`
+          color: #717171;
+        `
+      : css``}
 `;
 
 // data={remindWords}
@@ -69,6 +100,15 @@ function VocaReminder_remindContent({
   const navigation = useNavigation();
   let content;
 
+  // inset shadow를 동적으로 적용
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+  // 동적으로 Container의 크기를 구함
+  const handleLayout = (event) => {
+    const { width, height } = event.nativeEvent.layout;
+    setDimensions({ width, height });
+  };
+
   // 0개 고른 경우 렌더링 방지
   if (reminding && clickedWordCount === 0) {
     navigation.goBack(-1);
@@ -81,8 +121,11 @@ function VocaReminder_remindContent({
               onPress={() => onClick({ word: item.word })}
               clickState={item.clickState}
               key={item.word}
+              onLayout={handleLayout}
             >
-              <WordBtnText key={item.word}>{item.word}</WordBtnText>
+              <WordBtnText clickState={item.clickState} key={item.word}>
+                {item.word}
+              </WordBtnText>
             </WordBtnElement>
           ))}
         </ReminderContainer>

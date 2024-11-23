@@ -19,7 +19,14 @@ import HighlightText from "react-native-highlight-underline-text";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { todayWordSelector } from "../Recoil/todayAttendanceDetail";
 import axios from "axios";
-import { BASE_URL } from "@env";
+import {
+  BASE_URL,
+  BUCKET_NAME,
+  BUCKET_REGION,
+  BUCKET_DIRECTORY,
+  S3_ACCESSKEY,
+  S3_SECRETKEY,
+} from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { todayAttendanceState } from "../Recoil/todayAttendanceState";
 import WordToggle from "../common/WordToggle";
@@ -385,6 +392,25 @@ function TodaySalaryEduScreen({ route }) {
   const link = (url) => {
     Linking.openURL(url);
   };
+
+  // 뉴스 사진 관리
+  // useEffect(() => {
+  //   const AWS = require("aws-sdk");
+  //   const s3 = new AWS.S3({
+  //     region: BUCKET_REGION,
+  //     accessKeyId: S3_ACCESSKEY,
+  //     secretAccessKey: S3_SECRETKEY,
+  //   });
+
+  //   const params = {
+  //     Bucket: BUCKET_NAME,
+  //     Key: "20230222_03_03.jpg",
+  //     Expires: 60,
+  //   };
+
+  //   const url = s3.getSignedUrl("getObject", params);
+  //   console.log(url);
+  // }, []);
 
   if (!loading || isModalVisible)
     return (

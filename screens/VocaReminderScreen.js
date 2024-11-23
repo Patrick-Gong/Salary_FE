@@ -134,7 +134,8 @@ function VocaReminderScreen({ route }) {
           )}
           {!reminding ? (
             <fonts.Caption2 style={{ color: "#000000" }}>
-              기억나는 단어를 모두 선택해주세요.
+              기억나는 단어를 모두 선택해주세요.{"\n"}
+              선택하지 않은 단어에 대해 리마인드가 진행돼요.
             </fonts.Caption2>
           ) : (
             <fonts.Caption2>
