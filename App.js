@@ -60,7 +60,14 @@ const tabScreensProps = [
 
 function BottomTabNavigator() {
   return (
-    <BottomTab.Navigator>
+    <BottomTab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarStyle: {
+          backgroundColor: "#f3f4f6",
+          paddingTop: 5,
+        },
+      })}
+    >
       {tabScreensProps.map((item) => (
         <BottomTab.Screen
           key={item.screenName}
@@ -96,7 +103,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   const HeaderButton = () => {
-    const navigation = useNavigation(); 
+    const navigation = useNavigation();
 
     return (
       <Pressable onPress={() => navigation.goBack(-1)}>
