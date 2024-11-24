@@ -105,6 +105,9 @@ function TodaySalaryScreen() {
   const [tempAnswerInput, setTempAnswerInput] = useState("");
   const [answerInputLth, setAnswerInputLth] = useState(0);
 
+  // 띄어쓰기 상관없이 글자수에 따라 n개의 ref를 갖게 됨,
+  const inputRefs = useRef([]); // 각 TextInput의 참조 저장
+
   // 모달 관리
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -139,6 +142,7 @@ function TodaySalaryScreen() {
   function answerInputHandler(enteredAnswer) {
     setTempAnswerInput(enteredAnswer);
     setAnswerInputLth(enteredAnswer.length);
+    console.log(enteredAnswer.length);
   }
 
   return (
@@ -189,6 +193,23 @@ function TodaySalaryScreen() {
                   ref={inputRef}
                   returnKeyType="done" // enter 키 누르면 제출되도록
                 ></InputAnswer>
+                {/* <View style={styles.container}>
+                  {values.map((value, index) => (
+                    <TextInput
+                      key={index}
+                      style={styles.input}
+                      ref={(el) => (inputRefs.current[index] = el)} // ref 저장
+                      value={value} // 상태 값 적용
+                      onChangeText={(text) => {
+                        if (text.length === 1) {
+                          handleFocusNext(index, text); // 값 설정 후 다음으로 이동
+                        }
+                      }}
+                      maxLength={2} // 한 글자만 입력 가능
+                      keyboardType="default"
+                    />
+                  ))}
+                </View> */}
                 <InputHint>
                   {answerInputLth}/{tempAnsLth}자
                 </InputHint>
@@ -230,13 +251,18 @@ function TodaySalaryScreen() {
 export default TodaySalaryScreen;
 
 const styles = StyleSheet.create({
-  rootScreen: {
-    flex: 1,
-    width: "100%",
-    backgroundColor: colors.Grayscale_white,
+  container: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  shadowContainer: {
-    width: "100%",
-    flex: 1,
+  input: {
+    width: 50,
+    height: 50,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    textAlign: "center",
+    marginHorizontal: 5,
+    fontSize: 20,
   },
 });

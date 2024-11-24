@@ -75,7 +75,7 @@ function Home_TrendQuiz() {
           <DoneMarker
             source={articleState ? ellipse_done : ellipse_yet}
           ></DoneMarker>
-          <Title>아티클</Title>
+          <Title>뉴스</Title>
         </TitleContainer>
         <TitleDescript>
           {articleState

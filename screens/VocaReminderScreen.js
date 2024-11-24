@@ -167,37 +167,10 @@ function VocaReminderScreen({ route }) {
                 addClickedState({ allTrue: false }); // clickstate를 전부 false로
                 setReminding(!reminding);
               }}
-            >
-              {!reminding ? (
-                <fonts.Body2M
-                  style={{
-                    color: colors.Grayscale_80,
-                    textAlign: "center",
-                    textDecorationLine: "underline",
-                  }}
-                >
-                  모두 기억이 나지 않아요.
-                </fonts.Body2M>
-              ) : (
-                <></>
-              )}
-            </Pressable>
-            {/* <PrimaryBtn
-              type="active"
-              text={
-                !reminding ? "모두 선택했어요" : "단어 리마인드를 완료했어요"
-              }
-              onPress={() => {
-                if (reminding)
-                  navigation.navigate("BottomTab", {
-                    screen: "VocabularyList",
-                  });
-                else setReminding(!reminding);
-              }}
-            /> */}
+            ></Pressable>
             <VocaReminder_Button
               type="educate"
-              state="active"
+              state={returnCountClicked() !== 0 ? "active" : "deactive"}
               text={
                 !reminding
                   ? "해당 단어에 대해 리마인드 할게요"

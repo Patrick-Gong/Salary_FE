@@ -394,23 +394,23 @@ function TodaySalaryEduScreen({ route }) {
   };
 
   // 뉴스 사진 관리
-  // useEffect(() => {
-  //   const AWS = require("aws-sdk");
-  //   const s3 = new AWS.S3({
-  //     region: BUCKET_REGION,
-  //     accessKeyId: S3_ACCESSKEY,
-  //     secretAccessKey: S3_SECRETKEY,
-  //   });
+  useEffect(() => {
+    const AWS = require("aws-sdk");
+    const s3 = new AWS.S3({
+      region: BUCKET_REGION,
+      accessKeyId: S3_ACCESSKEY,
+      secretAccessKey: S3_SECRETKEY,
+    });
 
-  //   const params = {
-  //     Bucket: BUCKET_NAME,
-  //     Key: "20230222_03_03.jpg",
-  //     Expires: 60,
-  //   };
+    const params = {
+      Bucket: BUCKET_NAME,
+      Key: "20230222_03_03.jpg",
+      Expires: 60,
+    };
 
-  //   const url = s3.getSignedUrl("getObject", params);
-  //   console.log(url);
-  // }, []);
+    const url = s3.getSignedUrl("getObject", params);
+    console.log(url);
+  }, []);
 
   if (!loading || isModalVisible)
     return (
