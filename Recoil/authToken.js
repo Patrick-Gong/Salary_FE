@@ -25,6 +25,7 @@ export const authToken = atom({
     ({ setSelf, onSet }) => {
       loadToken().then((token) => {
         if (token) setSelf(token);
+        
       });
 
       onSet((newToken) => {

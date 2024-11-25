@@ -7,12 +7,14 @@ import SignInCharacter from '../assets/img/signInScreen/SignInCharacter.png';
 import SignInText_SALARY from '../assets/img/signInScreen/SignInText_SALARY.png';
 import GoogleLoginBtn from '../assets/img/signInScreen/GoogleLoginBtn.png';
 import ShowPassword from '../assets/img/signInScreen/ShowPassword.png';
+import HidePassword from '../assets/img/signInScreen/HidePassword.png';
 import fonts from '../styles/fonts';
 import colors from '../styles/colors';
 import axios from 'axios';
 import { BASE_URL } from '@env';
 import { useSetRecoilState } from 'recoil';
 import { authToken } from '../Recoil/authToken';
+import CompleteBtn from '../components/signUpScreen/CompleteBtn';
 
 const ViewContainer = styled.View`
   flex: 1;
@@ -138,7 +140,7 @@ const IdLoginTitle_ShadowImage = styled.Image`
 const LoginInputContainer = styled.View`
   width: 100%;
   gap: 11px;
-  margin-top: 95px;
+  margin: 95px 0px 50px;
 `;
 
 const PasswordView = styled.View`
@@ -204,13 +206,24 @@ function SignInScreen({ onEnter, navigation }) {
 
   const handleLogIn = async () => {
     try {
-      const res = await axios.post(`${BASE_URL}/login`, {
-        loginId: userLogin.id,
-        password: userLogin.pw,
-      });
-      if (res.data.Authorization) {
-        console.log(res.data.Authorization);
-        setAuthToken(res.data.Authorization);
+      console.log(userLogin);
+      const res = await axios.post(
+        `${BASE_URL}/login`,
+        {
+          loginId: userLogin.id,
+          password: userLogin.pw,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
+      console.log(res.headers);
+      if (res.headers.authorization) {
+        console.log(res.headers.authorization);
+        setAuthToken(res.headers.authorization);
+        onEnter();
       }
     } catch (error) {
       console.log(error);
@@ -266,6 +279,7 @@ function SignInScreen({ onEnter, navigation }) {
               <PasswordInput
                 ref={pwRef}
                 placeholder="비밀번호"
+                placeholderTextColor={colors.Grayscale_40}
                 returnKeyType="done"
                 value={userLogin.pw}
                 onChangeText={(pw) => setUserLogin((prev) => ({ ...prev, pw }))}
@@ -275,21 +289,18 @@ function SignInScreen({ onEnter, navigation }) {
                 <PasswordPressable
                   onPress={() => setIsPasswordSecure(!isPasswordSecure)}
                 >
-                  <ShowPasswordImg source={ShowPassword} />
+                  <ShowPasswordImg
+                    source={isPasswordSecure ? ShowPassword : HidePassword}
+                  />
                 </PasswordPressable>
               )}
             </PasswordView>
           </LoginInputContainer>
-          <LoginCompleteBtn
-            isInputFull={userLogin.id.length > 0 && userLogin.pw.length > 0}
+          <CompleteBtn
             onPress={handleLogIn}
-          >
-            <LoginCompleteBtnText
-              isInputFull={userLogin.id.length > 0 && userLogin.pw.length > 0}
-            >
-              로그인 완료하기
-            </LoginCompleteBtnText>
-          </LoginCompleteBtn>
+            isInputFull={userLogin.id.length > 0 && userLogin.pw.length > 0}
+            text="로그인 완료하기"
+          />
         </>
       )}
     </ViewContainer>
