@@ -95,14 +95,17 @@ const SignUpBtnContainer = styled.View`
   width: 100%;
   margin-top: 40px;
   align-items: center;
-  gap: 10px;
 `;
 
 const SignUpSubText = styled(fonts.Caption2)`
   color: ${colors.Grayscale_60};
 `;
 
-const SignUpBtn = styled.Text`
+const SignUpBtn = styled.Pressable`
+  padding: 10px;
+`;
+
+const SignUpBtnText = styled.Text`
   color: ${colors.Grayscale_white};
   font-size: 14px;
   font-weight: 600;
@@ -227,6 +230,13 @@ function SignInScreen({ onEnter, navigation }) {
       }
     } catch (error) {
       console.log(error);
+      if (error.status === 401) {
+        console.log('등록되지 않은 회원정보입니다.');
+      } else {
+        console.log(
+          '알 수 없는 오류가 발생했습니다. 샐러리 고객센터(1234-0000)로 문의해주세요.'
+        );
+      }
     }
   };
 
@@ -255,7 +265,7 @@ function SignInScreen({ onEnter, navigation }) {
           <SignUpBtnContainer>
             <SignUpSubText>아직 계정이 없으신가요?</SignUpSubText>
             <SignUpBtn onPress={() => navigation.navigate('SignUp')}>
-              회원가입
+              <SignUpBtnText>회원가입</SignUpBtnText>
             </SignUpBtn>
           </SignUpBtnContainer>
         </>
@@ -297,7 +307,11 @@ function SignInScreen({ onEnter, navigation }) {
             </PasswordView>
           </LoginInputContainer>
           <CompleteBtn
-            onPress={handleLogIn}
+            onPress={
+              userLogin.id.length > 0 && userLogin.pw.length > 0
+                ? handleLogIn
+                : null
+            }
             isInputFull={userLogin.id.length > 0 && userLogin.pw.length > 0}
             text="로그인 완료하기"
           />
