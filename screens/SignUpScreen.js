@@ -15,6 +15,7 @@ import fonts from "../styles/fonts";
 import colors from "../styles/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useDebounce from "../hooks/useDebounce";
+import ConfirmingModal from "../components/signUpScreen/ConfirmingModal";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -90,7 +91,8 @@ const SignUpView = styled.View`
 `;
 
 const AlertText = styled(fonts.Caption1)`
-  color: ${(props) => props.state === "invalid" ? colors.Warning_100 : colors.Grayscale_white};
+  color: ${(props) =>
+    props.state === "invalid" ? colors.Warning_100 : colors.Grayscale_white};
   font-weight: 500;
 `;
 
@@ -238,6 +240,7 @@ const WelcomeText = styled.Text`
   font-size: 26px;
   font-weight: 500;
   max-width: 300px;
+  text-align: center;
 `;
 
 function SignUpScreen({ onEnter, navigation }) {
@@ -252,7 +255,8 @@ function SignUpScreen({ onEnter, navigation }) {
     InitializedTermsOfUseList
   );
   const [allApproved, setAllApproved] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [firstModalVisible, setFirstModalVisible] = useState(false);
+  const [secondModalVisible, setSecondModalVisible] = useState(false);
   const [screenStage, setScreenStage] = useState(1);
   const [signUpData, setSignUpData] = useState({
     loginId: "",
@@ -352,7 +356,7 @@ function SignUpScreen({ onEnter, navigation }) {
   }, [screenStage]);
 
   const goToDetail = () => {
-    setModalVisible(!modalVisible);
+    setFirstModalVisible(!firstModalVisible);
     setScreenStage(2);
   };
 
@@ -389,7 +393,9 @@ function SignUpScreen({ onEnter, navigation }) {
     if (pw.length > 0 && signUpData.password === pw) {
       dispatch({ type: "VALID_INPUT", item: "subPassword" });
       dispatch({ type: "VALID_INPUT", item: "password" });
-    } else if (pw.length > 0) { dispatch({ type: "PASSWORD_DISCORD" })}
+    } else if (pw.length > 0) {
+      dispatch({ type: "PASSWORD_DISCORD" });
+    }
   };
 
   const handleChangeNickname = (nickname) => {
@@ -410,13 +416,10 @@ function SignUpScreen({ onEnter, navigation }) {
     signUpData.password.length > 0 &&
     signUpData.password === subPassword;
 
-  const isSecondCorrect = 
+  const isSecondCorrect =
     signUpData.nickname.length > 0 &&
-    signUpData.age > 0 && 
-    signUpData.gender.length > 0
-
-  console.log("인풋 상태: ", state);
-  console.log("회원가입 데이터: ", signUpData);
+    signUpData.age > 0 &&
+    signUpData.gender.length > 0;
 
   return (
     <ViewContainer>
@@ -427,7 +430,7 @@ function SignUpScreen({ onEnter, navigation }) {
           <Modal
             animationType="slide"
             transparent={true}
-            visible={modalVisible}
+            visible={firstModalVisible}
           >
             <ModalBackdrop>
               <ModalView>
@@ -473,7 +476,9 @@ function SignUpScreen({ onEnter, navigation }) {
               }
               state={state.loginId}
             />
-            <AlertText state={state.loginId}>이미 사용 중인 아이디입니다.</AlertText>
+            <AlertText state={state.loginId}>
+              이미 사용 중인 아이디입니다.
+            </AlertText>
             <PwContainer>
               <InputLabel>PW</InputLabel>
               <Input
@@ -490,13 +495,14 @@ function SignUpScreen({ onEnter, navigation }) {
                 returnKeyType="done"
                 value={subPassword}
                 onChangeText={(pw) => handleChangeSubPassword(pw)}
-                
                 state={state.subPassword}
               />
-              <AlertText state={state.subPassword}>비밀번호가 일치하지 않습니다.</AlertText>
+              <AlertText state={state.subPassword}>
+                비밀번호가 일치하지 않습니다.
+              </AlertText>
             </PwContainer>
             <CompleteBtn
-              onPress={() => setModalVisible(true)}
+              onPress={() => setFirstModalVisible(true)}
               isInputFull={isFirstCorrect}
               text="다음 단계로"
             />
@@ -504,56 +510,70 @@ function SignUpScreen({ onEnter, navigation }) {
         </>
       )}
       {screenStage === 2 && (
-        <SignUpView>
-          <InputContainer>
-            <HeaderText>회원가입</HeaderText>
-            <InputLabel>닉네임</InputLabel>
-            <NickNameInput
-              onChangeText={(nickname) => handleChangeNickname(nickname)}
-              value={signUpData.nickname}
-              placeholder="서비스에서 사용할 닉네임을 입력해주세요."
-              placeholderTextColor={colors.Grayscale_40}
-              state={state.nickname}
-            />
-            <InputLabel>나이</InputLabel>
-            <AgeInputContainer>
-              <AgeInput
-                onChangeText={(age) => handleChangeAge(age)}
-                value={signUpData.age}
-                inputMode="numeric"
-                maxLength={3}
-                onSubmitEditing={Keyboard.dismiss}
-                returnKeyType="done"
-                state={state.age}
+        <>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={secondModalVisible}
+          >
+            <ConfirmingModal onHide={() => setSecondModalVisible(false)} onWelcome={handleSubmit} nickname={signUpData.nickname} />
+          </Modal>
+
+          <SignUpView>
+            <InputContainer>
+              <HeaderText>회원가입</HeaderText>
+              <InputLabel>닉네임</InputLabel>
+              <NickNameInput
+                onChangeText={(nickname) => handleChangeNickname(nickname)}
+                value={signUpData.nickname}
+                placeholder="서비스에서 사용할 닉네임을 입력해주세요."
+                placeholderTextColor={colors.Grayscale_40}
+                state={state.nickname}
               />
-              <AgeInputText>세</AgeInputText>
-            </AgeInputContainer>
-            <InputLabel>성별</InputLabel>
-            <GenderInputContainer>
-              <GenderBtn
-                onPress={() =>
-                  setSignUpData((prev) => ({ ...prev, gender: "남" }))
-                }
-                isSelected={signUpData.gender === "남"}
-              >
-                <GenderBtnText isSelected={signUpData.gender === "남"}>
-                  남성
-                </GenderBtnText>
-              </GenderBtn>
-              <GenderBtn
-                onPress={() =>
-                  setSignUpData((prev) => ({ ...prev, gender: "여" }))
-                }
-                isSelected={signUpData.gender === "여"}
-              >
-                <GenderBtnText isSelected={signUpData.gender === "여"}>
-                  여성
-                </GenderBtnText>
-              </GenderBtn>
-            </GenderInputContainer>
-            <CompleteBtn onPress={isSecondCorrect ? handleSubmit : null} isInputFull={isSecondCorrect} text="샐러리 시작하기"/>
-          </InputContainer>
-        </SignUpView>
+              <InputLabel>나이</InputLabel>
+              <AgeInputContainer>
+                <AgeInput
+                  onChangeText={(age) => handleChangeAge(age)}
+                  value={signUpData.age}
+                  inputMode="numeric"
+                  maxLength={3}
+                  onSubmitEditing={Keyboard.dismiss}
+                  returnKeyType="done"
+                  state={state.age}
+                />
+                <AgeInputText>세</AgeInputText>
+              </AgeInputContainer>
+              <InputLabel>성별</InputLabel>
+              <GenderInputContainer>
+                <GenderBtn
+                  onPress={() =>
+                    setSignUpData((prev) => ({ ...prev, gender: "남" }))
+                  }
+                  isSelected={signUpData.gender === "남"}
+                >
+                  <GenderBtnText isSelected={signUpData.gender === "남"}>
+                    남성
+                  </GenderBtnText>
+                </GenderBtn>
+                <GenderBtn
+                  onPress={() =>
+                    setSignUpData((prev) => ({ ...prev, gender: "여" }))
+                  }
+                  isSelected={signUpData.gender === "여"}
+                >
+                  <GenderBtnText isSelected={signUpData.gender === "여"}>
+                    여성
+                  </GenderBtnText>
+                </GenderBtn>
+              </GenderInputContainer>
+              <CompleteBtn
+                onPress={() => setSecondModalVisible(true)}
+                isInputFull={isSecondCorrect}
+                text="샐러리 시작하기"
+              />
+            </InputContainer>
+          </SignUpView>
+        </>
       )}
       {screenStage === 3 && (
         <WelcomeContainer>
@@ -562,7 +582,10 @@ function SignUpScreen({ onEnter, navigation }) {
             <FireworksRightImg source={Fireworks} />
           </ImgContainer>
           <CompleteText>가입 완료!</CompleteText>
-          <WelcomeText>{signUpData.nickname}님, 환영해요</WelcomeText>
+          <WelcomeText>
+            {signUpData.nickname}님,{" "}
+            {signUpData.nickname.length > 7 ? "\n" : ""} 환영해요
+          </WelcomeText>
         </WelcomeContainer>
       )}
     </ViewContainer>
