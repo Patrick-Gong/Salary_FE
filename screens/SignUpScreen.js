@@ -1,15 +1,21 @@
-import { useState, useRef, useEffect } from "react";
-import styled from "styled-components/native";
-import { StatusBar } from "expo-status-bar";
-import { Dimensions } from "react-native";
+import { useState, useRef, useEffect, useReducer } from 'react';
+import styled from 'styled-components/native';
+import { StatusBar } from 'expo-status-bar';
+import { Dimensions, Keyboard } from 'react-native';
 
-import TermsOfUseBtn from "../components/TermsOfUseBtn";
-import CheckBtn_Off from "../assets/img/signUpScreen/CheckBtn_Off.png";
-import CheckBtn_On from "../assets/img/signUpScreen/CheckBtn_On.png";
-import Salary_Character from "../assets/img/signUpScreen/Salary_Character.png";
-import Fireworks from "../assets/img/signUpScreen/Fireworks.png";
+import TermsOfUseBtn from '../components/signUpScreen/TermsOfUseBtn';
+import CompleteBtn from '../components/signUpScreen/CompleteBtn';
+import CheckBtn_Off from '../assets/img/signUpScreen/CheckBtn_Off.png';
+import CheckBtn_On from '../assets/img/signUpScreen/CheckBtn_On.png';
+import Salary_Character from '../assets/img/signUpScreen/Salary_Character.png';
+import Fireworks from '../assets/img/signUpScreen/Fireworks.png';
+import axios from 'axios';
+import { BASE_URL } from '@env';
+import fonts from '../styles/fonts';
+import colors from '../styles/colors';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const windowWidth = Dimensions.get("window").width;
+const windowWidth = Dimensions.get('window').width;
 
 const ViewContainer = styled.SafeAreaView`
   flex: 1;
@@ -20,7 +26,7 @@ const Modal = styled.Modal``;
 
 const ModalBackdrop = styled.View`
   flex: 1;
-  background-color: "rgba(0, 0, 0, 0.7)";
+  background-color: 'rgba(0, 0, 0, 0.7)';
   justify-content: flex-end;
 `;
 
@@ -68,26 +74,40 @@ const GoToNextBtn = styled.Pressable`
   width: 100%;
   height: 45px;
   border-radius: 10px;
-  background-color: ${(props) => (!props.allApproved ? "#eff4d2" : "#d7ff01")};
+  background-color: ${(props) => (!props.allApproved ? '#eff4d2' : '#d7ff01')};
 `;
 
 const GoToNextBtnText = styled.Text`
   font-size: 16px;
   font-weight: 600;
-  color: ${(props) => (props.allApproved ? "#313131" : "#a0a0a0")};
+  color: ${(props) => (props.allApproved ? '#313131' : '#a0a0a0')};
 `;
 
 const SignUpView = styled.View`
   flex: 1;
-  align-items: center;
-  justify-content: center;
+  padding: 0px 35px;
 `;
 
-const InputContainer = styled.View`
-  flex: 1;
-  align-items: flex-start;
-  margin-top: 180px;
+const PwContainer = styled.View`
+  margin: 30px 0px 100px;
 `;
+const InputLabel = styled(fonts.Body2R)`
+  color: #000;
+`;
+
+const Input = styled.TextInput`
+  border-radius: 5px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: ${colors.Grayscale_10};
+  width: 100%;
+  height: 40px;
+  padding: 9px 0px 9px 22px;
+  align-items: center;
+  margin-top: 4px;
+`;
+
+const InputContainer = styled.View``;
 
 const NickNameLabel = styled.Text`
   font-size: 15px;
@@ -95,18 +115,64 @@ const NickNameLabel = styled.Text`
   margin-top: 48px;
 `;
 
-const NickNameInput = styled.TextInput`
-  padding-left: 22px;
-  margin-top: 10px;
-  border-radius: 5px;
-  border: 2px solid ${(props) => (props.focused ? "#d7ff01" : "#e8e8e8")};
-  width: 320px;
-  height: 40px;
+const NickNameInput = styled(Input)`
+  margin-bottom: 30px;
 `;
 
 const HeaderText = styled.Text`
   font-size: 30px;
   font-weight: 800;
+  margin: 48px 0px;
+`;
+
+const AgeInputContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 30px;
+  margin-top: 4px;
+`;
+
+const AgeInput = styled.TextInput`
+  border-radius: 5px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: ${colors.Grayscale_10};
+  width: 60px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4px;
+  padding: 0px 16px;
+`;
+
+const AgeInputText = styled.Text`
+  color: #000;
+  font-size: 15px;
+  font-weight: 500;
+  margin-left: 11px;
+`;
+
+const GenderInputContainer = styled.View`
+  width: 100%;
+  flex-direction: row;
+  margin-top: 4px;
+  justify-content: space-between;
+`;
+
+const GenderBtn = styled.Pressable`
+  border-radius: 5px;
+  background-color: ${(props) =>
+    props.isSelected ? colors.Primary_100 : colors.button_deactive};
+  width: 150px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+`;
+
+const GenderBtnText = styled(fonts.Button1)`
+  font-weight: 600;
+  color: ${(props) =>
+    props.isSelected ? colors.Grayscale_90 : colors.Grayscale_40};
 `;
 
 const SubmitInputBtn = styled.Pressable`
@@ -178,29 +244,70 @@ const WelcomeText = styled.Text`
 
 function SignUpScreen({ onEnter, navigation }) {
   const InitializedTermsOfUseList = [
-    { id: "#1", approved: false, text: "(필수) 서비스 이용약관" },
-    { id: "#2", approved: false, text: "(필수) 개인정보수집 및 이용 동의" },
-    { id: "#3", approved: false, text: "(필수) 개인정보 제 3자 정보제공 동의" },
-    { id: "#4", approved: false, text: "(선택) 수신 알림 서비스 동의" },
+    { id: '#1', approved: false, text: '(필수) 서비스 이용약관' },
+    { id: '#2', approved: false, text: '(필수) 개인정보수집 및 이용 동의' },
+    { id: '#3', approved: false, text: '(필수) 개인정보 제 3자 정보제공 동의' },
+    { id: '#4', approved: false, text: '(선택) 수신 알림 서비스 동의' },
   ];
+
+  const DummyData = {
+    loginId: 'test20',
+    username: 'test20',
+    password: '0000',
+    age: 12,
+    gender: '남',
+    nickname: 'testname',
+  };
 
   const [termsOfUseList, setTermsOfUseList] = useState(
     InitializedTermsOfUseList
   );
   const [allApproved, setAllApproved] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
-  const [nickname, setNickname] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  // const [isFocused, setIsFocused] = useState(false);
+  // const [nickname, setNickname] = useState('');
+  const [screenStage, setScreenStage] = useState(1);
+  const [signUpData, setSignUpData] = useState({
+    loginId: '',
+    username: '',
+    password: '',
+    age: null,
+    gender: '',
+    nickname: '',
+  });
+  const [subPassword, setSubPassword] = useState('');
 
-  const handleSubmit = () => {
+  // 인풋 검증 로직
+
+  // const [state, dispatch] = useReducer((prev, action) => {switch (action.type) {
+  //   case "EMPTY_ID" :
+  //     return {
+
+  //     }
+  //   case "EMPTY_PW" :
+  //   case "EMPTY_SUBPW" :
+  //   case "PASSWORD_DISCORD" :
+
+  // }}, { loginId: "", });
+
+  const handleSubmit = async () => {
     // if (event.target.value.trim()) {
     //   setNickname(event.target.value);
     // } else {
     //   alert('텍스트를 입력하지 않았습니다.');
     // }
-    setIsSubmitted(true);
-    console.log(nickname);
+    // setIsSubmitted(true);
+    try {
+      const res = await axios.post(`${BASE_URL}/join`, signUpData);
+      console.log(res.data);
+      if (res.data) {
+        setScreenStage(3);
+        await AsyncStorage.setItem("Nickname", signUpData.nickname)
+      }
+      
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleSeparateCheck = (approvedId) => {
@@ -220,7 +327,10 @@ function SignUpScreen({ onEnter, navigation }) {
   };
 
   useEffect(() => {
-    if (termsOfUseList.every((item) => item.approved) || termsOfUseList.findIndex((item) => !item.approved) === 3) {
+    if (
+      termsOfUseList.every((item) => item.approved) ||
+      termsOfUseList.findIndex((item) => !item.approved) === 3
+    ) {
       setAllApproved(true);
     } else {
       setAllApproved(false);
@@ -228,31 +338,27 @@ function SignUpScreen({ onEnter, navigation }) {
   }, [termsOfUseList]);
 
   useEffect(() => {
-    if (isSubmitted)
+    if (screenStage === 3)
       setTimeout(() => {
-        onEnter();
+        navigation.navigate('SignIn');
       }, 3000);
-  }, [isSubmitted]);
+  }, [screenStage]);
 
-  useEffect(() => {
-      setTimeout(() => {
-        setModalVisible(true)
-      }, 200);
-  }, []);
+  const goToDetail = () => {
+    setModalVisible(!modalVisible);
+    setScreenStage(2);
+  };
 
   return (
     <ViewContainer>
       <StatusBar style="dark" />
-      {!isSubmitted ? (
+
+      {screenStage === 1 && (
         <>
           <Modal
             animationType="slide"
             transparent={true}
             visible={modalVisible}
-            // onRequestClose={() => {
-            //   Alert.alert('Modal has been closed.');
-            //   setModalVisible(!modalVisible);
-            // }}
           >
             <ModalBackdrop>
               <ModalView>
@@ -273,9 +379,7 @@ function SignUpScreen({ onEnter, navigation }) {
                   ))}
                   <GoToNextBtn
                     allApproved={allApproved}
-                    onPress={
-                      allApproved ? () => setModalVisible(!modalVisible) : null
-                    }
+                    onPress={allApproved ? goToDetail : null}
                   >
                     <GoToNextBtnText allApproved={allApproved}>
                       다음 단계로 넘어갈게요
@@ -286,31 +390,112 @@ function SignUpScreen({ onEnter, navigation }) {
             </ModalBackdrop>
           </Modal>
           <SignUpView>
-            <InputContainer>
-              <HeaderText>회원가입</HeaderText>
-              <NickNameLabel>닉네임</NickNameLabel>
-              <NickNameInput
-                onFocus={() => setIsFocused(true)}
-                onSubmitEditing={() => setIsFocused(false)}
-                onChangeText={setNickname}
-                value={nickname}
-                focused={isFocused}
-                placeholder="서비스에서 사용할 닉네임을 입력해주세요."
+            <HeaderText>회원가입</HeaderText>
+
+            <InputLabel>ID</InputLabel>
+            <Input
+              placeholder="아이디 입력"
+              placeholderTextColor={colors.Grayscale_40}
+              returnKeyType="done"
+              value={signUpData.loginId}
+              onChangeText={(id) =>
+                setSignUpData((prev) => ({ ...prev, loginId: id }))
+              }
+            />
+            <PwContainer>
+              <InputLabel>PW</InputLabel>
+              <Input
+                placeholder="비밀번호 입력"
+                placeholderTextColor={colors.Grayscale_40}
+                returnKeyType="next"
+                value={signUpData.password}
+                onChangeText={(pw) =>
+                  setSignUpData((prev) => ({ ...prev, password: pw }))
+                }
               />
-              <SubmitInputBtn onPress={handleSubmit}>
-                <SubmitText>샐러리 시작하기</SubmitText>
-              </SubmitInputBtn>
-            </InputContainer>
+              <Input
+                placeholder="비밀번호 확인"
+                placeholderTextColor={colors.Grayscale_40}
+                returnKeyType="done"
+                value={subPassword}
+                onChangeText={setSubPassword}
+              />
+            </PwContainer>
+            <CompleteBtn
+              onPress={() => setModalVisible(true)}
+              isInputFull={
+                signUpData.loginId.length > 0 &&
+                signUpData.password.length > 0 &&
+                signUpData.password === subPassword
+              }
+              text="다음 단계로"
+            />
           </SignUpView>
         </>
-      ) : (
+      )}
+      {screenStage === 2 && (
+        <SignUpView>
+          <InputContainer>
+            <HeaderText>회원가입</HeaderText>
+            <InputLabel>닉네임</InputLabel>
+            <NickNameInput
+              onChangeText={(nickname) =>
+                setSignUpData((prev) => ({ ...prev, nickname: nickname }))
+              }
+              value={signUpData.nickname}
+              placeholder="서비스에서 사용할 닉네임을 입력해주세요."
+              placeholderTextColor={colors.Grayscale_40}
+            />
+            <InputLabel>나이</InputLabel>
+            <AgeInputContainer>
+              <AgeInput
+                onChangeText={(age) =>
+                  setSignUpData((prev) => ({ ...prev, age: age }))
+                }
+                value={signUpData.age}
+                inputMode="numeric"
+                onSubmitEditing={Keyboard.dismiss}
+                returnKeyType="done"
+              />
+              <AgeInputText>세</AgeInputText>
+            </AgeInputContainer>
+            <InputLabel>성별</InputLabel>
+            <GenderInputContainer>
+              <GenderBtn
+                onPress={() =>
+                  setSignUpData((prev) => ({ ...prev, gender: '남' }))
+                }
+                isSelected={signUpData.gender === '남'}
+              >
+                <GenderBtnText isSelected={signUpData.gender === '남'}>
+                  남성
+                </GenderBtnText>
+              </GenderBtn>
+              <GenderBtn
+                onPress={() =>
+                  setSignUpData((prev) => ({ ...prev, gender: '여' }))
+                }
+                isSelected={signUpData.gender === '여'}
+              >
+                <GenderBtnText isSelected={signUpData.gender === '여'}>
+                  여성
+                </GenderBtnText>
+              </GenderBtn>
+            </GenderInputContainer>
+            <SubmitInputBtn onPress={handleSubmit}>
+              <SubmitText>샐러리 시작하기</SubmitText>
+            </SubmitInputBtn>
+          </InputContainer>
+        </SignUpView>
+      )}
+      {screenStage === 3 && (
         <WelcomeContainer>
           <ImgContainer>
             <CharacterImg source={Salary_Character} />
             <FireworksRightImg source={Fireworks} />
           </ImgContainer>
           <CompleteText>가입 완료!</CompleteText>
-          <WelcomeText>{nickname}님, 환영해요</WelcomeText>
+          <WelcomeText>{signUpData.nickname}님, 환영해요</WelcomeText>
         </WelcomeContainer>
       )}
     </ViewContainer>

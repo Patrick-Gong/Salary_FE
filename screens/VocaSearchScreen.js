@@ -206,7 +206,7 @@ function VocaSearchScreen({ navigation }) {
   const [isRecommendationDone, setIsRecommendationDone] = useState(false);
   const [recommendedList, setRecommendedList] = useState([]);
   const [inputText, setInputText] = useState("");
-  const [keywordList, setKeywordList] = useState([]);
+  const [keywordList, setKeywordList] = useState([]);  
 
   useEffect(() => {
     const fetchRecommendedData = async () => {
