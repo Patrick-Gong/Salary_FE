@@ -19,6 +19,7 @@ const colors = {
   bg: "#F3F4F6",
   text_green: "#96C71A",
   button_deactive: "#EFF4D2",
+  Warning_100: "#F34B4B",
 };
 
 export default colors;
