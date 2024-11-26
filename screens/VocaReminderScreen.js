@@ -19,6 +19,7 @@ import VocaReminder_remindContent from "../components/vocaListScreen/VocaReminde
 import { BASE_URL } from "@env";
 import { Shadow } from "react-native-shadow-2";
 import VocaReminder_Loader from "../components/vocaListScreen/VocaReminder_Loader";
+import VocaReminder_Button from "../components/vocaListScreen/VocaReminder_Button";
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -133,13 +134,13 @@ function VocaReminderScreen({ route }) {
           )}
           {!reminding ? (
             <fonts.Caption2 style={{ color: "#000000" }}>
-              기억나는 단어를 모두 선택해주세요.
+              기억나는 단어를 모두 선택해주세요.{"\n"}
+              선택하지 않은 단어에 대해 리마인드가 진행돼요.
             </fonts.Caption2>
           ) : (
             <fonts.Caption2>
-              ddddd 저번보다{" "}
-              <Text style={{ color: colors.text_green }}>2개</Text>의 단어를 더
-              기억하고 있어요! {"\n"}
+              저번보다 <Text style={{ color: colors.text_green }}>2개</Text>의
+              단어를 더 기억하고 있어요! {"\n"}
               체크하지 못한 단어들은 다시 한번 복습해볼까요?
             </fonts.Caption2>
           )}
@@ -166,27 +167,16 @@ function VocaReminderScreen({ route }) {
                 addClickedState({ allTrue: false }); // clickstate를 전부 false로
                 setReminding(!reminding);
               }}
-            >
-              {!reminding ? (
-                <fonts.Body2M
-                  style={{
-                    color: colors.Grayscale_80,
-                    textAlign: "center",
-                    textDecorationLine: "underline",
-                  }}
-                >
-                  모두 기억이 나지 않아요.
-                </fonts.Body2M>
-              ) : (
-                <></>
-              )}
-            </Pressable>
-            <PrimaryBtn
-              type="active"
+            ></Pressable>
+            <VocaReminder_Button
+              type="educate"
+              state={returnCountClicked() !== 0 ? "active" : "deactive"}
               text={
-                !reminding ? "모두 선택했어요" : "단어 리마인드를 완료했어요"
+                !reminding
+                  ? "해당 단어에 대해 리마인드 할게요"
+                  : "단어 리마인드를 완료했어요"
               }
-              onPress={() => {
+              onClick={() => {
                 if (reminding)
                   navigation.navigate("BottomTab", {
                     screen: "VocabularyList",

@@ -90,7 +90,10 @@ function VocaList_FlatListItem({ word_id, word }) {
     <ItemWrapper
       key={word_id}
       onPress={() => {
-        navigation.navigate("TodaySalaryEdu", { word_id: word_id });
+        navigation.navigate("TodaySalaryEdu", {
+          word_id: word_id,
+          type: "bookmark",
+        });
       }}
     >
       <fonts.Body1>{word}</fonts.Body1>

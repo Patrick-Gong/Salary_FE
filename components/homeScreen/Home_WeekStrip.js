@@ -10,6 +10,7 @@ import Home_DayAttendanceCircle from "./Home_DayAttendanceCircle";
 import getFormattedDate from "../../functions/getFormattedDate";
 import getKoreaFormattedDate from "../../functions/getKoreaForamttedDate";
 import isEqualDate from "../../functions/isEqualDate";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Container = styled.View`
   flex: 1;
@@ -45,7 +46,11 @@ const calculateWeekOfMonth = (date) => {
 };
 
 const Home_WeekStrip = ({ onCalendarModalOpen }) => {
+  // 오늘 기준 이전 30일에 대한 formatted date 배열
+  const [prevMonthData, SetPrevMonthData] = useState([]);
+
   const [headerText, setHeaderText] = useState("");
+  const [calendarData, setCalendarData] = useState({});
 
   // week이 바뀌면 알맞게 헤더를 업데이트한다.
   const handleWeekChange = (date) => {
@@ -58,16 +63,48 @@ const Home_WeekStrip = ({ onCalendarModalOpen }) => {
     setHeaderText(`${year}년 ${month}월 ${week}주차`);
   };
 
-  // day circle을 caching하여 로딩 속도를 줄인다.
-  const dayCache = useMemo(() => ({}), []);
+  // 오늘 기준 한 달 전의 날짜 데이터
+  function getPastMonthDates() {
+    const today = new Date();
+    const dates = [];
+
+    for (let i = 0; i < 30; i++) {
+      const date = new Date();
+      date.setDate(today.getDate() - i); // i일 전의 날짜
+      dates.push(date.toISOString().split("T")[0]); // "YYYY-MM-DD" 형식으로 저장
+    }
+
+    return dates;
+  }
+
+  // console.log(getPastMonthDates());
+  // 출력: ["2024-11-21", "2024-11-20", ..., "2024-10-23"]
+
+  async function getPastMonthData() {
+    const dates = getPastMonthDates();
+
+    try {
+      const storedData = await AsyncStorage.multiGet(dates);
+
+      // 데이터를 객체 형태로 변환
+      const pastMonthData = storedData.reduce((acc, [key, value]) => {
+        acc[key] = value ? JSON.parse(value) : null;
+        return acc;
+      }, {});
+
+      return pastMonthData;
+    } catch (error) {
+      console.error("Error fetching data from AsyncStorage:", error);
+      return {};
+    }
+  }
 
   useEffect(() => {
-    console.log("weekstrip 렌더링");
-  });
+    // handleWeekChange(new Date());
+    getPastMonthData().then((data) => SetPrevMonthData(data));
+  }, []);
 
-  // useEffect(() => {
-  //   handleWeekChange(new Date());
-  // }, []);
+  useEffect(() => {});
 
   return (
     <Container>
@@ -85,6 +122,7 @@ const Home_WeekStrip = ({ onCalendarModalOpen }) => {
           return (
             <Home_DayAttendanceCircle
               {...props}
+              prevMonthData={prevMonthData}
               onCalendarModalOpen={onCalendarModalOpen} // 날짜 선택 핸들러 전달
               isToday={isEqualDate(new Date(), new Date(props.date))}
             />

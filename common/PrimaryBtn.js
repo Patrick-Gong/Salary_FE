@@ -21,13 +21,16 @@ const PrimaryPressable = styled.Pressable`
       ? css`
           background-color: ${colors.button_deactive};
         `
+      : props.type === "eduDone"
+      ? css`
+          background-color: ${colors.Grayscale_80};
+        `
       : css`
-          /* 버튼 컬러가 일단은 3가지로 보이는데.. 나중에 더 보이면  */
           background-color: #bfc2b0;
         `}
 `;
 
-const BtnText = styled(fonts.Button1)`
+const BtnText = styled(fonts.Button2)`
   ${(props) =>
     props.type === "active"
       ? css`
@@ -37,10 +40,16 @@ const BtnText = styled(fonts.Button1)`
       ? css`
           color: ${colors.Grayscale_40};
         `
-      : css``}
+      : props.type === "eduDone"
+      ? css`
+          color: ${colors.Grayscale_10};
+        `
+      : css`
+          background-color: #bfc2b0;
+        `}
 `;
 
-// type: active, deactive, hover
+// type: active, deactive, hover, edudone
 // text : 버튼의 txt
 // onPress: 클릭 이벤트 핸들러
 const PrimaryBtn = ({ type, text, onPress }) => {
