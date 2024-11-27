@@ -1,20 +1,20 @@
-import styled from 'styled-components/native';
-import { StatusBar } from 'expo-status-bar';
-import { Pressable, TouchableOpacity } from 'react-native';
-import { useRef, useState } from 'react';
+import styled from "styled-components/native";
+import { StatusBar } from "expo-status-bar";
+import { Pressable, TouchableOpacity } from "react-native";
+import { useRef, useState } from "react";
 
-import SignInCharacter from '../assets/img/signInScreen/SignInCharacter.png';
-import SignInText_SALARY from '../assets/img/signInScreen/SignInText_SALARY.png';
-import GoogleLoginBtn from '../assets/img/signInScreen/GoogleLoginBtn.png';
-import ShowPassword from '../assets/img/signInScreen/ShowPassword.png';
-import HidePassword from '../assets/img/signInScreen/HidePassword.png';
-import fonts from '../styles/fonts';
-import colors from '../styles/colors';
-import axios from 'axios';
-import { BASE_URL } from '@env';
-import { useSetRecoilState } from 'recoil';
-import { authToken } from '../Recoil/authToken';
-import CompleteBtn from '../components/signUpScreen/CompleteBtn';
+import SignInCharacter from "../assets/img/signInScreen/SignInCharacter.png";
+import SignInText_SALARY from "../assets/img/signInScreen/SignInText_SALARY.png";
+import GoogleLoginBtn from "../assets/img/signInScreen/GoogleLoginBtn.png";
+import ShowPassword from "../assets/img/signInScreen/ShowPassword.png";
+import HidePassword from "../assets/img/signInScreen/HidePassword.png";
+import fonts from "../styles/fonts";
+import colors from "../styles/colors";
+import axios from "axios";
+import { BASE_URL } from "@env";
+import { useSetRecoilState } from "recoil";
+import { authToken } from "../Recoil/authToken";
+import CompleteBtn from "../components/signUpScreen/CompleteBtn";
 
 const ViewContainer = styled.View`
   flex: 1;
@@ -202,14 +202,14 @@ const LoginCompleteBtnText = styled(fonts.Body1)`
 
 function SignInScreen({ onEnter, navigation }) {
   const [isIdLogin, setIsIdLogin] = useState(false);
-  const [userLogin, setUserLogin] = useState({ id: '', pw: '' });
+  const [userLogin, setUserLogin] = useState({ id: "", pw: "" });
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const pwRef = useRef();
   const setAuthToken = useSetRecoilState(authToken);
 
   const handleLogIn = async () => {
     try {
-      console.log(userLogin);
+      console.log("유저 로그인", userLogin);
       const res = await axios.post(
         `${BASE_URL}/login`,
         {
@@ -218,23 +218,22 @@ function SignInScreen({ onEnter, navigation }) {
         },
         {
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            "Content-Type": "application/x-www-form-urlencoded",
           },
         }
       );
-      console.log(res.headers);
+      console.log("헤더", res.headers.authorization);
       if (res.headers.authorization) {
-        console.log(res.headers.authorization);
+        console.log("authorization ", res.headers.authorization);
         setAuthToken(res.headers.authorization);
         onEnter();
       }
     } catch (error) {
-      console.log(error);
       if (error.status === 401) {
-        console.log('등록되지 않은 회원정보입니다.');
+        console.log("등록되지 않은 회원정보입니다.");
       } else {
         console.log(
-          '알 수 없는 오류가 발생했습니다. 샐러리 고객센터(1234-0000)로 문의해주세요.'
+          "알 수 없는 오류가 발생했습니다. 샐러리 고객센터(1234-0000)로 문의해주세요."
         );
       }
     }
@@ -264,7 +263,7 @@ function SignInScreen({ onEnter, navigation }) {
           </LoginBtnContainer>
           <SignUpBtnContainer>
             <SignUpSubText>아직 계정이 없으신가요?</SignUpSubText>
-            <SignUpBtn onPress={() => navigation.navigate('SignUp')}>
+            <SignUpBtn onPress={() => navigation.navigate("SignUp")}>
               <SignUpBtnText>회원가입</SignUpBtnText>
             </SignUpBtn>
           </SignUpBtnContainer>
