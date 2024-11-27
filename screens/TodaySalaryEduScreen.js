@@ -271,7 +271,7 @@ function TodaySalaryEduScreen({ route }) {
         const res = await axios.post(
           `${BASE_URL}/wordbook?word_id=${wordData.word_id}`,
           {},
-          { headers: {Authorization: token }}
+          { headers: { Authorization: token } }
         );
         setBookMark(true);
         if (wordData.word_id === todaySalary.word_id)
@@ -295,7 +295,7 @@ function TodaySalaryEduScreen({ route }) {
           setBookmarkTodaySalary(false); //오늘의 샐러리와 일치할 때에만
         if (res.status === 200) console.log("북마크 삭제 완료");
       } catch (error) {
-        console.log("북마크 삭제 에러:" , error);
+        console.log("북마크 삭제 에러:", error);
       }
     }
     // }
@@ -306,9 +306,18 @@ function TodaySalaryEduScreen({ route }) {
       const res = await axios.post(
         `${BASE_URL}/today-word/update-status?word_id=${wordData.word_id}`,
         {},
-        { headers: { Authorization: token }}
+        { headers: { Authorization: token } }
       );
       console.log("단어 학습 완료 api post", res.status);
+      const resSeed = await axios.patch(
+        `${BASE_URL}/seed/update`,
+        {
+          seed_earned: 5,
+          seed_used: 0,
+        },
+        { headers: { Authorization: token } }
+      );
+      console.log("시드 patch", resSeed.data.status);
       return true;
     } catch (error) {
       console.log(error);

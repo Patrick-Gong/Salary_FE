@@ -136,6 +136,15 @@ function TodayTrendSolutionScreen({ navigation, route }) {
           },
         }
       );
+      const resSeed = await axios.patch(
+        `${BASE_URL}/seed/update`,
+        {
+          seed_earned: 5,
+          seed_used: 0,
+        },
+        { headers: { Authorization: token } }
+      );
+      console.log("시드 patch", resSeed.data.status);
       if (!trendState) {
         setTrendState(true);
         setAttendanceState((prev) => prev + 1); // attendance state에 1을 더해주어 알맞게 상태 관리
