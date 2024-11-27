@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { todayTrendSelector } from "../Recoil/todayAttendanceDetail";
 import { todayAttendanceState } from "../Recoil/todayAttendanceState";
+import { authToken } from "../Recoil/authToken";
 
 const ViewContainer = styled.SafeAreaView`
   background-color: white;
@@ -121,11 +122,19 @@ function TodayTrendSolutionScreen({ navigation, route }) {
   const setTrendState = useSetRecoilState(todayTrendSelector);
   const [attendanceState, setAttendanceState] =
     useRecoilState(todayAttendanceState);
+  // 토큰 추가
+  const token = useRecoilValue(authToken);
 
   const handleFinishStudy = async () => {
     try {
       const res = await axios.post(
-        `${BASE_URL}/trend-quiz/update-status?trend=${true}`
+        `${BASE_URL}/trend-quiz/update-status?trend=${true}`,
+        {},
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
       );
       if (!trendState) {
         setTrendState(true);

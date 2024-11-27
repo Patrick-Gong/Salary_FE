@@ -18,11 +18,12 @@ import { Ionicons } from "@expo/vector-icons"; // 북마크
 import VocaList_FlatListItem from "../components/vocaListScreen/VocaList_FlatListItem";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { BASE_URL } from "@env";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { isSavedSelector } from "../Recoil/todaySalaryContent";
 import { Shadow } from "react-native-shadow-2";
 import VocaReminder_Button from "../components/vocaListScreen/VocaReminder_Button";
 import Info from "../assets/img/vocaListScreen/info.png";
+import { authToken } from "../Recoil/authToken";
 
 const TitleContainer = styled.View`
   width: 100%;
@@ -56,10 +57,16 @@ function VocaListScreen() {
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   const [vocaList, setVocaList] = useState();
+  // 토큰 추가
+  const token = useRecoilValue(authToken);
 
   async function getData() {
     try {
-      const res = await axios.get(`${BASE_URL}/wordbook`);
+      const res = await axios.get(`${BASE_URL}/wordbook`, {
+        headers: {
+          Authorization: token,
+        },
+      });
       if (res.status === 200) {
         const orderedDate = res.data.sort(
           (a, b) => new Date(b.like_date) - new Date(a.like_date)

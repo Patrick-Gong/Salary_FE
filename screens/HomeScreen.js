@@ -28,7 +28,7 @@ import Home_CalendarModal from "../components/homeScreen/Home_CalendarModal";
 import getFormattedDate from "../functions/getFormattedDate";
 import { BASE_URL } from "@env";
 import axios from "axios";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { todayAttendanceState } from "../Recoil/todayAttendanceState";
 import { todayAttendanceDetail } from "../Recoil/todayAttendanceDetail";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -39,6 +39,7 @@ import { fetchTodayAttendanceState } from "../services/fetchTodayAttendanceState
 import { fetchTodayAttendanceDetail } from "../services/fetchTodayAttendanceDetail";
 import { fetchTodayWordId } from "../services/fetchTodayWordId";
 import { fetchTodayWordData } from "../services/fetchTodayWordData";
+import { authToken } from "../Recoil/authToken";
 
 const ContentsContainer = styled.View`
   background: ${colors.bg};
@@ -110,6 +111,9 @@ function HomeScreen() {
   // 오늘의 salary 학습 content
   const [todaySalary, setTodaySalary] = useRecoilState(todaySalaryContent);
 
+  // 토큰 추가
+  const token = useRecoilValue(authToken);
+
   // 날짜 범위에 대해 AsyncStorage에 데이터를 저장하는 함수
   // 나중에 쓸까봐 안 지움
   // const storeAttendanceData = async () => {
@@ -169,7 +173,7 @@ function HomeScreen() {
           console.log(
             "이전에 패치된 데이터가 없거나 지난 날짜라서 새로 단어 id를 받아옴"
           );
-          fetchTodayWordId().then((fetchedData) => {
+          fetchTodayWordId(token).then((fetchedData) => {
             fetchTodayWordData(fetchedData).then((fetchedWordData) => {
               setTodaySalary(fetchedWordData);
             });
@@ -186,12 +190,12 @@ function HomeScreen() {
 
     setLoading(true);
     // 1. 최초 렌더링 시 attendance_state를 받아와 전역 상태로 관리
-    fetchTodayAttendanceState().then((fetchedData) =>
+    fetchTodayAttendanceState(token).then((fetchedData) =>
       setAttendanceState(fetchedData)
     );
 
     // 2. 오늘 학습 과목 조회 API 받아와 전역 상태로 set
-    fetchTodayAttendanceDetail().then((fetchedData) =>
+    fetchTodayAttendanceDetail(token).then((fetchedData) =>
       setAttendanceDetail(fetchedData)
     );
     checkAndFetchData().then(() => {

@@ -11,6 +11,8 @@ import useDebounce from "../hooks/useDebounce";
 import axios from "axios";
 import { BASE_URL } from "@env";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import { useRecoilValue } from "recoil";
+import { authToken } from "../Recoil/authToken";
 
 const ViewContainer = styled.SafeAreaView`
   flex: 1;
@@ -206,18 +208,22 @@ function VocaSearchScreen({ navigation }) {
   const [isRecommendationDone, setIsRecommendationDone] = useState(false);
   const [recommendedList, setRecommendedList] = useState([]);
   const [inputText, setInputText] = useState("");
-  const [keywordList, setKeywordList] = useState([]);  
+  const [keywordList, setKeywordList] = useState([]);
+
+  // 토큰 추가
+  const token = useRecoilValue(authToken);
 
   useEffect(() => {
     const fetchRecommendedData = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/words/recommand`);
+        const response = await axios.get(`${BASE_URL}/words/recommand`, {
+          headers: { Authorization: token },
+        });
         setRecommendedList(response.data);
         setIsRecommendationDone(false);
       } catch (error) {
         console.log(error);
       }
-      console.log(`${BASE_URL}/words/recommand`);
     };
     fetchRecommendedData();
   }, [isRecommendationDone]);
@@ -253,7 +259,7 @@ function VocaSearchScreen({ navigation }) {
   }, []);
 
   const handleClickRecommendedWord = (targetId) => {
-    navigation.navigate('TodaySalaryEdu', {
+    navigation.navigate("TodaySalaryEdu", {
       word_id: targetId,
     });
 
@@ -262,8 +268,7 @@ function VocaSearchScreen({ navigation }) {
         (word) => word.word_id !== targetId
       );
       setRecommendedList([...updatedRecommendedList]);
-    }
-    else {
+    } else {
       setIsRecommendationDone(true);
     }
   };

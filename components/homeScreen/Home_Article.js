@@ -51,7 +51,7 @@ const DoneMarker = styled.Image`
   object-fit: cover;
 `;
 
-function Home_TrendQuiz() {
+function Home_Article() {
   // detailState 관리
   const articleState = useRecoilValue(todayArticleSelector);
   const setArticleState = useSetRecoilState(todayArticleSelector);
@@ -88,4 +88,4 @@ function Home_TrendQuiz() {
   );
 }
 
-export default Home_TrendQuiz;
+export default Home_Article;

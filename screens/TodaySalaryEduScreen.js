@@ -37,6 +37,7 @@ import {
 } from "../Recoil/todaySalaryContent";
 import parseStoryString from "../functions/parseStoryString";
 import LottieView from "lottie-react-native";
+import { authToken } from "../Recoil/authToken";
 
 const RootContainer = styled.View`
   flex: 1;
@@ -238,6 +239,9 @@ function TodaySalaryEduScreen({ route }) {
   // 단어 저장 상태를 관리
   const [bookMark, setBookMark] = useState(false);
 
+  // 토큰 추가
+  const token = useRecoilValue(authToken);
+
   // 알맞게 렌더링되도록 함
   useEffect(() => {}, [
     wordData,
@@ -265,26 +269,33 @@ function TodaySalaryEduScreen({ route }) {
       // tmpState로 바꾸겠다
       try {
         const res = await axios.post(
-          `${BASE_URL}/wordbook?word_id=${wordData.word_id}`
+          `${BASE_URL}/wordbook?word_id=${wordData.word_id}`,
+          {},
+          { headers: {Authorization: token }}
         );
         setBookMark(true);
         if (wordData.word_id === todaySalary.word_id)
           setBookmarkTodaySalary(true); // 오늘의 샐러리와 일치할 때에만
         if (res.status === 200) console.log("북마크 등록 완료");
       } catch (error) {
-        console.log(error);
+        console.log("북마크 추가 에러:", error);
       }
     } else {
       try {
         const res = await axios.delete(
-          `${BASE_URL}/wordbook?word_id=${wordData.word_id}`
+          `${BASE_URL}/wordbook?word_id=${wordData.word_id}`,
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
         );
         setBookMark(false);
         if (wordData.word_id === todaySalary.word_id)
           setBookmarkTodaySalary(false); //오늘의 샐러리와 일치할 때에만
         if (res.status === 200) console.log("북마크 삭제 완료");
       } catch (error) {
-        console.log(error);
+        console.log("북마크 삭제 에러:" , error);
       }
     }
     // }
@@ -293,7 +304,9 @@ function TodaySalaryEduScreen({ route }) {
   async function postWordAttendance() {
     try {
       const res = await axios.post(
-        `${BASE_URL}/today-word/update-status?word_id=${wordData.word_id}`
+        `${BASE_URL}/today-word/update-status?word_id=${wordData.word_id}`,
+        {},
+        { headers: { Authorization: token }}
       );
       console.log("단어 학습 완료 api post", res.status);
       return true;

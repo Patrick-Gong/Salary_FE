@@ -231,7 +231,7 @@ function SignInScreen({ onEnter, navigation }) {
     } catch (error) {
       console.log(error);
       if (error.status === 401) {
-        console.log('등록되지 않은 회원정보입니다.');
+        alert('등록되지 않은 회원정보입니다.');
       } else {
         console.log(
           '알 수 없는 오류가 발생했습니다. 샐러리 고객센터(1234-0000)로 문의해주세요.'
