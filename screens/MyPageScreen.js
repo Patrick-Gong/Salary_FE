@@ -211,7 +211,7 @@ function MyPageScreen() {
             </Text>
           </View>
           <fonts.H2M>{totalSeed.toLocaleString()}개</fonts.H2M>
-          <BtnContainer>
+          <BtnContainer onPress={() => navigation.navigate("SeedHistory")}>
             <fonts.Caption2>적립/사용내역 </fonts.Caption2>
             <Ionicons name="chevron-forward-outline" size={12}></Ionicons>
           </BtnContainer>
@@ -221,7 +221,7 @@ function MyPageScreen() {
       {/* 메뉴 영역 */}
       <GrayContainer>
         <BoxesContainer>
-          <Box>
+          <Box onPress={() => navigation.navigate("SeedCharge")}>
             <BoxText>
               <fonts.Body1 style={{ color: "#121212" }}>
                 시드 충전소
@@ -252,7 +252,7 @@ function MyPageScreen() {
           </Box>
         </BoxesContainer>
         <ListsContainer>
-          <ListItem>
+          <ListItem onPress={() => navigation.navigate("NicknameChange")}>
             <ListTextContainer>
               <Ionicons
                 name="person-outline"

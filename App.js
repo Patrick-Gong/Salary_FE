@@ -27,6 +27,9 @@ import VocaSearchResultScreen from "./screens/VocaSearchResultScreen";
 import { RecoilRoot } from "recoil";
 import arrowImg from "./assets/img/signUpScreen/ArrowBtn.png";
 import { useNavigation } from "@react-navigation/native";
+import MyPageSeedChargeScreen from "./screens/MyPageSeedChargeScreen";
+import MyPageSeedHistoryScreen from "./screens/MyPageSeedHistoryScreen";
+import MyPageNicknameChangeScreen from "./screens/MyPageNicknameChangeScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -237,6 +240,41 @@ export default function App() {
                   headerShown: true,
                   headerBackTitleVisible: false,
                   headerRight: () => <VocaReminder_HeaderRight />,
+                }}
+              />
+              <Stack.Screen
+                name="SeedCharge"
+                component={MyPageSeedChargeScreen}
+                options={{
+                  headerTitle: "시드 충전소",
+                  headerTintColor: colors.Grayscale_20,
+                  headerShown: true,
+                  headerBackTitleVisible: false,
+                  headerStyle: {
+                    backgroundColor: colors.Grayscale_90,
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="SeedHistory"
+                component={MyPageSeedHistoryScreen}
+                options={{
+                  headerTitle: "단어 리마인드",
+                  headerTintColor: colors.Grayscale_20,
+                  headerShown: true,
+                  headerBackTitleVisible: false,
+                  headerStyle: {
+                    backgroundColor: colors.Grayscale_90,
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="NicknameChange"
+                component={MyPageNicknameChangeScreen}
+                options={{
+                  headerTitle: "",
+                  headerShown: true,
+                  headerBackTitleVisible: false,
                 }}
               />
             </>
