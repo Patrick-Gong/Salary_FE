@@ -44,6 +44,8 @@ const TextContainer = styled.View`
   position: absolute;
   top: 35%;
   left: 30px;
+
+  z-index: 7;
 `;
 
 const NickNameContainer = styled.View`
@@ -66,11 +68,13 @@ const CharacterImg = styled.Image`
   position: absolute;
   top: 35%;
   right: 0%;
+
+  z-index: 5;
 `;
 
 const BtnContainer = styled.Pressable`
   width: 100px;
-  height: 30px;
+  height: 60px;
 
   display: flex;
   flex-direction: row;
@@ -172,6 +176,7 @@ function MyPageScreen() {
   // const nickname = AsyncStorage.getItem("Nickname");
   const nickname = "들기름";
   const [totalSeed, setTotalSeed] = useState(0);
+  const [attendanceLogs, setAttendanceLogs] = useState([]);
   const isFocused = useIsFocused();
 
   const navigation = useNavigation();
@@ -192,6 +197,24 @@ function MyPageScreen() {
       );
       console.log("seed fetch 결과: ", data);
       setTotalSeed(data.total_seed);
+      setAttendanceLogs(data.attendance_logs); // 초기에는 이번 달의 데이터로
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchMonthSeed = async (month) => {
+    try {
+      const { data } = axios.get(
+        `${BASE_URL}/seed?date=${new Date().getFullYear()}-${month}`,
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZDEyMzQiLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzMyNzAyMzA2LCJleHAiOjE3MzI3MzgzMDZ9.41jfPotNB-kwKAnA80vaRRN8WqayEN__djD5dmY9S2g",
+          },
+        }
+      );
+      setAttendanceLogs(data.attendance_logs); // 선택된 달의 로그 데이터로
     } catch (error) {
       console.log(error);
     }
@@ -225,11 +248,13 @@ function MyPageScreen() {
           </View>
           <fonts.H2M>{totalSeed.toLocaleString()}개</fonts.H2M>
           <BtnContainer
-            onPress={() =>
+            onPress={() => {
               navigation.navigate("SeedHistory", {
                 totalSeed: totalSeed,
-              })
-            }
+                attendanceLogs: attendanceLogs,
+                fetchMonthSeed: fetchMonthSeed,
+              });
+            }}
           >
             <fonts.Caption2>적립/사용내역 </fonts.Caption2>
             <Ionicons name="chevron-forward-outline" size={12}></Ionicons>

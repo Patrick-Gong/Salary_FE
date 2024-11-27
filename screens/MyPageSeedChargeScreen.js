@@ -78,7 +78,7 @@ const AbsoluteText = styled.View`
 `;
 
 const GrayContainer = styled.View`
-  /* background-color: ${colors.bg}; */
+  background-color: ${colors.bg};
   width: 100%;
   flex: 1;
   padding: 12px;
