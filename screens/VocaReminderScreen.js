@@ -20,6 +20,8 @@ import { BASE_URL } from "@env";
 import { Shadow } from "react-native-shadow-2";
 import VocaReminder_Loader from "../components/vocaListScreen/VocaReminder_Loader";
 import VocaReminder_Button from "../components/vocaListScreen/VocaReminder_Button";
+import { useRecoilValue } from "recoil";
+import { authToken } from "../Recoil/authToken";
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -58,6 +60,9 @@ function VocaReminderScreen({ route }) {
   const [remindWords, setRemindWords] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // 토큰 추가
+  const token = useRecoilValue(authToken);
+
   // 클릭된 모르는 단어의 개수를 리턴
   function returnCountClicked() {
     return remindWords.filter((item) => !item.clickState).length;
@@ -66,7 +71,9 @@ function VocaReminderScreen({ route }) {
   // 리마인드할 단어를 가져옴
   async function fetchRemindWords() {
     try {
-      const res = await axios.get(`${BASE_URL}/wordbook/reminder`);
+      const res = await axios.get(`${BASE_URL}/wordbook/reminder`, {
+        headers: { Authorization: token },
+      });
       console.log("리마인더 결과", res.data);
       setRemindWords(res.data);
     } catch (error) {

@@ -2,9 +2,11 @@ import axios from "axios";
 import { BASE_URL } from "@env";
 import { fetchTodayWordData } from "./fetchTodayWordData";
 
-export async function fetchTodayWordId() {
+export async function fetchTodayWordId(token) {
   try {
-    const res = await axios.get(`${BASE_URL}/today-word`);
+    const res = await axios.get(`${BASE_URL}/today-word`, {
+      headers: { Authorization: token },
+    });
     console.log(`${BASE_URL}/today-word`);
     if (res.status === 200) {
       console.log("새로운 word id를 받음", res.data.word_id);

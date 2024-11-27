@@ -2,10 +2,11 @@ import axios from "axios";
 import getKoreaFormattedDate from "../functions/getKoreaForamttedDate";
 import { BASE_URL } from "@env";
 
-export async function fetchTodayAttendanceState() {
+export async function fetchTodayAttendanceState(token) {
   try {
     const res = await axios.get(
-      `${BASE_URL}/attendance/status?attendance_date=${getKoreaFormattedDate()}`
+      `${BASE_URL}/attendance/status?attendance_date=${getKoreaFormattedDate()}`,
+      { headers: { Authorization: token } }
     );
     console.log("1. attendance state: ", res.data);
     if (res.status === 200) {

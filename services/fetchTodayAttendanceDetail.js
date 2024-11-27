@@ -1,9 +1,12 @@
 import axios from "axios";
 import { BASE_URL } from "@env";
 
-export async function fetchTodayAttendanceDetail() {
+export async function fetchTodayAttendanceDetail(token) {
   try {
-    const res = await axios.get(`${BASE_URL}/attendance/today`);
+    const res = await axios.get(`${BASE_URL}/attendance/today`, {
+      headers: { Authorization: token },
+    });
+    
     if (res.status === 200) {
       console.log("2. attendance today", res.data);
       return res.data;

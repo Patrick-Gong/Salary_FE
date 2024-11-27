@@ -12,6 +12,7 @@ import {
   todaySalaryContent,
 } from "../../Recoil/todaySalaryContent";
 import { useNavigation } from "@react-navigation/native";
+import { authToken } from "../../Recoil/authToken";
 
 const ItemWrapper = styled.TouchableOpacity`
   height: 60px;
@@ -53,12 +54,19 @@ function VocaList_FlatListItem({ word_id, word }) {
     useRecoilState(isSavedSelector);
 
   const todaySalary = useRecoilValue(todaySalaryContent);
+  // 토큰 추가
+  const token = useRecoilValue(authToken);
 
   async function fetchBookMarkState(tmpState) {
     if (tmpState) {
       try {
         const res = await axios.delete(
-          `${BASE_URL}/wordbook?word_id=${word_id}`
+          `${BASE_URL}/wordbook?word_id=${word_id}`,
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
         );
         console.log("삭제 결과", res.data);
       } catch (error) {
@@ -66,7 +74,15 @@ function VocaList_FlatListItem({ word_id, word }) {
       }
     } else {
       try {
-        const res = await axios.post(`${BASE_URL}/wordbook?word_id=${word_id}`);
+        const res = await axios.post(
+          `${BASE_URL}/wordbook?word_id=${word_id}`,
+          {},
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
         console.log("다시 저장 결과", res.data);
       } catch (error) {
         console.log(error);

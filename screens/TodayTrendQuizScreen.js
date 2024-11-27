@@ -163,7 +163,7 @@ function TodayTrendQuizScreen() {
   const fetchTrendQuizData = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/trend-quiz`);
-      console.log(res.data);
+      console.log("트렌드 퀴즈 데이터 페칭 데이터: ", res.data);
       setTrendQuizData(res.data);
       await AsyncStorage.setItem(
         "todayTrendQuizData",
@@ -171,7 +171,7 @@ function TodayTrendQuizScreen() {
       );
       await AsyncStorage.setItem("lastFetchedDate", getKoreaFormattedDate());
     } catch (error) {
-      console.log(error);
+      console.log("트렌드 퀴즈 가져오기: ", error);
     }
   };
 
@@ -224,6 +224,8 @@ function TodayTrendQuizScreen() {
       setAnswersState(shuffle(InitialAnswers));
     }
   }, [trendQuizData]);
+
+  console.log("answerState: ",answersState)
 
   const handleSelectAnswer = (targetedIndex) => {
     let updatedAnswersState;

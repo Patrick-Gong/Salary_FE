@@ -230,6 +230,7 @@ function SignInScreen({ onEnter, navigation }) {
       }
     } catch (error) {
       if (error.status === 401) {
+        alert('등록되지 않은 회원정보입니다.');
         console.log("등록되지 않은 회원정보입니다.");
       } else {
         console.log(
