@@ -53,12 +53,12 @@ const DoneMarker = styled.Image`
 
 function Home_Article() {
   // detailState 관리
-  const articleState = useRecoilValue(todayArticleSelector);
-  const setArticleState = useSetRecoilState(todayArticleSelector);
+  // const articleState = useRecoilValue(todayArticleSelector);
+  // const setArticleState = useSetRecoilState(todayArticleSelector);
 
-  // attendanceState 관리
-  const [attendaceState, setAttendanceState] =
-    useRecoilState(todayAttendanceState);
+  // // attendanceState 관리
+  // const [attendaceState, setAttendanceState] =
+  //   useRecoilState(todayAttendanceState);
 
   // useEffect(() => {
   //   if (!articleState) {
@@ -67,6 +67,8 @@ function Home_Article() {
   //     console.log("article state에 의해 1을 더함")
   //   }
   // }, []);
+
+  const articleState = false;
 
   return (
     <Container articleState={articleState}>

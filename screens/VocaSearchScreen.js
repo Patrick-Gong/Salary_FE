@@ -219,6 +219,7 @@ function VocaSearchScreen({ navigation }) {
         const response = await axios.get(`${BASE_URL}/words/recommand`, {
           headers: { Authorization: token },
         });
+        const response = await axios.get(`${BASE_URL}/words/recommand`, {});
         setRecommendedList(response.data);
         setIsRecommendationDone(false);
       } catch (error) {

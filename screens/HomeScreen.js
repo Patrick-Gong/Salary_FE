@@ -218,7 +218,7 @@ function HomeScreen() {
     return (
       <SafeAreaView style={styles.rootScreen}>
         <ScrollView automaticallyAdjustContentInsets={false}>
-          <Home_WeekStrip onCalendarModalOpen={onCalendarModalOpen} />
+          {/* <Home_WeekStrip onCalendarModalOpen={onCalendarModalOpen} /> */}
           <ProcessBarWrapper>
             <StepContainer>
               <fonts.H2M style={{ color: colors.Grayscale_100 }}>
@@ -249,8 +249,8 @@ function HomeScreen() {
             endColor="rgba(0, 0, 0, 0.0)" // 그림자의 끝 색상 (투명)
           >
             <ContentsContainer>
-              <Home_TodaySalary />
-              <Home_TrendQuiz />
+              {/* <Home_TodaySalary />
+              <Home_TrendQuiz /> */}
               {/* horizon */}
               <Horizon />
               {/* 아티클 */}
