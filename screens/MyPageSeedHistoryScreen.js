@@ -1,6 +1,7 @@
 import { Text } from "react-native";
 
-function MyPageSeedHistoryScreen() {
+// route.params.totalSeed 사용
+function MyPageSeedHistoryScreen({ route }) {
   return <Text>HistoryScreen</Text>;
 }
 

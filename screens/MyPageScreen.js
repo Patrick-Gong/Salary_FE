@@ -177,11 +177,24 @@ function MyPageScreen() {
   const navigation = useNavigation();
 
   const fetchSeed = async () => {
-    console.log("seed fetch");
-    // const { data } = await axios.get(`${BASE_URL}/seed`);
-    // console.log("seed fetch 결과: ", data);
-    // setTotalSeed(data.total_seed);
-    setTotalSeed(10000);
+    try {
+      console.log("seed fetch");
+      const { data } = await axios.get(
+        `${BASE_URL}/seed?date=${new Date().getFullYear()}-${
+          new Date().getMonth() + 1
+        }`,
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZDEyMzQiLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzMyNzAyMzA2LCJleHAiOjE3MzI3MzgzMDZ9.41jfPotNB-kwKAnA80vaRRN8WqayEN__djD5dmY9S2g",
+          },
+        }
+      );
+      console.log("seed fetch 결과: ", data);
+      setTotalSeed(data.total_seed);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -211,7 +224,13 @@ function MyPageScreen() {
             </Text>
           </View>
           <fonts.H2M>{totalSeed.toLocaleString()}개</fonts.H2M>
-          <BtnContainer onPress={() => navigation.navigate("SeedHistory")}>
+          <BtnContainer
+            onPress={() =>
+              navigation.navigate("SeedHistory", {
+                totalSeed: totalSeed,
+              })
+            }
+          >
             <fonts.Caption2>적립/사용내역 </fonts.Caption2>
             <Ionicons name="chevron-forward-outline" size={12}></Ionicons>
           </BtnContainer>
@@ -221,7 +240,13 @@ function MyPageScreen() {
       {/* 메뉴 영역 */}
       <GrayContainer>
         <BoxesContainer>
-          <Box onPress={() => navigation.navigate("SeedCharge")}>
+          <Box
+            onPress={() =>
+              navigation.navigate("SeedCharge", {
+                totalSeed: totalSeed,
+              })
+            }
+          >
             <BoxText>
               <fonts.Body1 style={{ color: "#121212" }}>
                 시드 충전소
@@ -247,7 +272,10 @@ function MyPageScreen() {
               ></Ionicons>
             </BoxText>
             <View>
-              <BoxImg source={TmpShopping} />
+              <BoxImg
+                source={TmpShopping}
+                style={{ width: 150, height: 100 }}
+              />
             </View>
           </Box>
         </BoxesContainer>
@@ -304,12 +332,3 @@ function MyPageScreen() {
 }
 
 export default MyPageScreen;
-
-const styles = StyleSheet.create({
-  rootScreen: {
-    flex: 1,
-    width: "100%",
-    display: "flex",
-    justifyContent: "flex-start",
-  },
-});

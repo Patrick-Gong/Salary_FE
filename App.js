@@ -24,12 +24,14 @@ import fonts from "./styles/fonts";
 import VocaReminderScreen from "./screens/VocaReminderScreen";
 import VocaReminder_HeaderRight from "./components/vocaListScreen/VocaReminder_HeaderRight";
 import VocaSearchResultScreen from "./screens/VocaSearchResultScreen";
-import { RecoilRoot } from "recoil";
+import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil";
 import arrowImg from "./assets/img/signUpScreen/ArrowBtn.png";
 import { useNavigation } from "@react-navigation/native";
 import MyPageSeedChargeScreen from "./screens/MyPageSeedChargeScreen";
 import MyPageSeedHistoryScreen from "./screens/MyPageSeedHistoryScreen";
 import MyPageNicknameChangeScreen from "./screens/MyPageNicknameChangeScreen";
+import HeaderLeftBtn from "./common/HeaderLftBtn";
+import { authToken } from "./Recoil/authToken";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -126,6 +128,7 @@ export default function App() {
   function handleLogIn() {
     setIsLoggedIn(true);
     console.log("메인으로 갑니다");
+    console.log(authTok);
   }
 
   useEffect(() => {
@@ -239,6 +242,7 @@ export default function App() {
                   headerTintColor: colors.Grayscale_100,
                   headerShown: true,
                   headerBackTitleVisible: false,
+                  headerLeft: () => <HeaderLeftBtn theme="light" />,
                   headerRight: () => <VocaReminder_HeaderRight />,
                 }}
               />
@@ -253,19 +257,21 @@ export default function App() {
                   headerStyle: {
                     backgroundColor: colors.Grayscale_90,
                   },
+                  headerLeft: () => <HeaderLeftBtn theme="light" />,
                 }}
               />
               <Stack.Screen
                 name="SeedHistory"
                 component={MyPageSeedHistoryScreen}
                 options={{
-                  headerTitle: "단어 리마인드",
+                  headerTitle: "시드 내역",
                   headerTintColor: colors.Grayscale_20,
                   headerShown: true,
                   headerBackTitleVisible: false,
                   headerStyle: {
                     backgroundColor: colors.Grayscale_90,
                   },
+                  headerLeft: () => <HeaderLeftBtn theme="light" />,
                 }}
               />
               <Stack.Screen
@@ -275,6 +281,7 @@ export default function App() {
                   headerTitle: "",
                   headerShown: true,
                   headerBackTitleVisible: false,
+                  headerLeft: () => <HeaderLeftBtn theme="dark" />,
                 }}
               />
             </>

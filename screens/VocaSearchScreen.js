@@ -206,12 +206,17 @@ function VocaSearchScreen({ navigation }) {
   const [isRecommendationDone, setIsRecommendationDone] = useState(false);
   const [recommendedList, setRecommendedList] = useState([]);
   const [inputText, setInputText] = useState("");
-  const [keywordList, setKeywordList] = useState([]);  
+  const [keywordList, setKeywordList] = useState([]);
 
   useEffect(() => {
     const fetchRecommendedData = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/words/recommand`);
+        const response = await axios.get(`${BASE_URL}/words/recommand`, {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZDEyMzQiLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzMyNzAxMzc4LCJleHAiOjE3MzI3MzczNzh9.iehYL629oc4FvCFrvqcLru9X-fAt8XyzvJ2o5GTosmU",
+          },
+        });
         setRecommendedList(response.data);
         setIsRecommendationDone(false);
       } catch (error) {
@@ -253,7 +258,7 @@ function VocaSearchScreen({ navigation }) {
   }, []);
 
   const handleClickRecommendedWord = (targetId) => {
-    navigation.navigate('TodaySalaryEdu', {
+    navigation.navigate("TodaySalaryEdu", {
       word_id: targetId,
     });
 
@@ -262,8 +267,7 @@ function VocaSearchScreen({ navigation }) {
         (word) => word.word_id !== targetId
       );
       setRecommendedList([...updatedRecommendedList]);
-    }
-    else {
+    } else {
       setIsRecommendationDone(true);
     }
   };
