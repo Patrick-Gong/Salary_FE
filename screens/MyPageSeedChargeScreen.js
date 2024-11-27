@@ -11,6 +11,7 @@ import GradientBtm from "../assets/img/myPageScreen/GradientBtm.png";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
+import Toast from "../common/Toast";
 
 const BlackContainer = styled.View`
   background-color: ${colors.Grayscale_90};
@@ -246,11 +247,7 @@ function MyPageSeedChargeScreen({ route }) {
         animationType="slide"
         onRequestClose={() => setModal(false)}
       >
-        <ModalContainer>
-          <ModalContent>
-            <ModalText>준비 중인 서비스입니다.</ModalText>
-          </ModalContent>
-        </ModalContainer>
+        <Toast text="준비 중인 서비스입니다." />
       </Modal>
     </>
   );

@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Image,
   TouchableWithoutFeedback,
+  Modal,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../styles/colors";
@@ -22,6 +23,7 @@ import { useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import arrow from "../assets/img/homeScreen/articleArrow.png";
 import { Ionicons } from "@expo/vector-icons";
+import Toast from "../common/Toast";
 
 const GreenContainer = styled.View`
   background-color: ${colors.Secondary_100};
@@ -181,6 +183,16 @@ function MyPageScreen() {
 
   const navigation = useNavigation();
 
+  // 토스트 관리
+  const [modal, setModal] = useState(false);
+
+  function openModal() {
+    setModal(true);
+    setTimeout(() => {
+      setModal(false);
+    }, 2000);
+  }
+
   const fetchSeed = async () => {
     try {
       console.log("seed fetch");
@@ -226,6 +238,14 @@ function MyPageScreen() {
 
   return (
     <>
+      <Modal
+        visible={modal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setModal(false)}
+      >
+        <Toast text="준비 중인 서비스입니다." />
+      </Modal>
       <GreenContainer>
         <StatusBar style="dark" />
         {/* 연두색 영역 */}
@@ -285,7 +305,7 @@ function MyPageScreen() {
             <BoxImg source={Shopping} />
           </Box>
 
-          <Box state={"disabled"}>
+          <Box state={"disabled"} onPress={() => openModal()}>
             <BoxText>
               <fonts.Body1 style={{ color: "#121212" }}>
                 챌린지 바로가기
@@ -320,7 +340,7 @@ function MyPageScreen() {
               color={"#a0a0a0"}
             ></Ionicons>
           </ListItem>
-          <ListItem>
+          <ListItem onPress={() => openModal()}>
             <ListTextContainer>
               <Ionicons
                 name="help-circle-outline"
@@ -335,7 +355,7 @@ function MyPageScreen() {
               color={"#a0a0a0"}
             ></Ionicons>
           </ListItem>
-          <ListItem>
+          <ListItem onPress={() => openModal()}>
             <ListTextContainer>
               <Ionicons
                 name="reader-outline"
