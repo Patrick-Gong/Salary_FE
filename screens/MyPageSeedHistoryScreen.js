@@ -293,7 +293,7 @@ function MyPageSeedHistoryScreen({ route }) {
         </View>
         <DateSelector>
           {/* {dateSelected.year}년 {dateSelected.month}월 */}
-          <fonts.Body2M style={{ color: "#ffffff" }}>9월</fonts.Body2M>{" "}
+          <fonts.Body2M style={{ color: "#ffffff" }}>9월 </fonts.Body2M>
           <Ionicons name="chevron-down-outline" size={15} color={"#ffffff"} />
         </DateSelector>
       </BlackContainer>
