@@ -199,13 +199,7 @@ function MyPageScreen() {
       const { data } = await axios.get(
         `${BASE_URL}/seed?date=${new Date().getFullYear()}-${
           new Date().getMonth() + 1
-        }`,
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZDEyMzQiLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzMyNzAyMzA2LCJleHAiOjE3MzI3MzgzMDZ9.41jfPotNB-kwKAnA80vaRRN8WqayEN__djD5dmY9S2g",
-          },
-        }
+        }`
       );
       console.log("seed fetch 결과: ", data);
       setTotalSeed(data.total_seed);
@@ -218,13 +212,7 @@ function MyPageScreen() {
   const fetchMonthSeed = async (month) => {
     try {
       const { data } = axios.get(
-        `${BASE_URL}/seed?date=${new Date().getFullYear()}-${month}`,
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZDEyMzQiLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzMyNzAyMzA2LCJleHAiOjE3MzI3MzgzMDZ9.41jfPotNB-kwKAnA80vaRRN8WqayEN__djD5dmY9S2g",
-          },
-        }
+        `${BASE_URL}/seed?date=${new Date().getFullYear()}-${month}`
       );
       setAttendanceLogs(data.attendance_logs); // 선택된 달의 로그 데이터로
     } catch (error) {

@@ -211,12 +211,7 @@ function VocaSearchScreen({ navigation }) {
   useEffect(() => {
     const fetchRecommendedData = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/words/recommand`, {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiYWJjZDEyMzQiLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzMyNzAxMzc4LCJleHAiOjE3MzI3MzczNzh9.iehYL629oc4FvCFrvqcLru9X-fAt8XyzvJ2o5GTosmU",
-          },
-        });
+        const response = await axios.get(`${BASE_URL}/words/recommand`, {});
         setRecommendedList(response.data);
         setIsRecommendationDone(false);
       } catch (error) {
