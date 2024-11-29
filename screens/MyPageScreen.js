@@ -24,6 +24,8 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import arrow from "../assets/img/homeScreen/articleArrow.png";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "../common/Toast";
+import { useRecoilValue } from "recoil";
+import { authToken } from "../Recoil/authToken";
 
 const GreenContainer = styled.View`
   background-color: ${colors.Secondary_100};
@@ -183,6 +185,8 @@ function MyPageScreen() {
 
   const navigation = useNavigation();
 
+  const token = useRecoilValue(authToken);
+
   // 토스트 관리
   const [modal, setModal] = useState(false);
 
@@ -199,7 +203,8 @@ function MyPageScreen() {
       const { data } = await axios.get(
         `${BASE_URL}/seed?date=${new Date().getFullYear()}-${
           new Date().getMonth() + 1
-        }`
+        }`,
+        { headers: { Authorization: token } }
       );
       console.log("seed fetch 결과: ", data);
       setTotalSeed(data.total_seed);
