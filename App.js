@@ -128,7 +128,7 @@ export default function App() {
   function handleLogIn() {
     setIsLoggedIn(true);
     console.log("메인으로 갑니다");
-    console.log(authTok);
+    console.log(authToken);
   }
 
   useEffect(() => {

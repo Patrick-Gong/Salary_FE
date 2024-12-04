@@ -113,6 +113,7 @@ function HomeScreen() {
 
   // 토큰 추가
   const token = useRecoilValue(authToken);
+  console.log("홈스크린에서 token값: ", token);
 
   // 날짜 범위에 대해 AsyncStorage에 데이터를 저장하는 함수
   // 나중에 쓸까봐 안 지움

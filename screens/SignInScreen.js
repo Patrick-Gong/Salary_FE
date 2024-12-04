@@ -1,7 +1,7 @@
 import styled from "styled-components/native";
 import { StatusBar } from "expo-status-bar";
 import { Pressable, TouchableOpacity } from "react-native";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 import SignInCharacter from "../assets/img/signInScreen/SignInCharacter.png";
 import SignInText_SALARY from "../assets/img/signInScreen/SignInText_SALARY.png";
@@ -12,7 +12,7 @@ import fonts from "../styles/fonts";
 import colors from "../styles/colors";
 import axios from "axios";
 import { BASE_URL } from "@env";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { authToken } from "../Recoil/authToken";
 import CompleteBtn from "../components/signUpScreen/CompleteBtn";
 
@@ -205,7 +205,9 @@ function SignInScreen({ onEnter, navigation }) {
   const [userLogin, setUserLogin] = useState({ id: "", pw: "" });
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const pwRef = useRef();
-  const setAuthToken = useSetRecoilState(authToken);
+  const [token, setToken] = useRecoilState(authToken);
+
+  console.log(token);
 
   const handleLogIn = async () => {
     try {
@@ -224,13 +226,13 @@ function SignInScreen({ onEnter, navigation }) {
       );
       console.log("헤더", res.headers.authorization);
       if (res.headers.authorization) {
-        console.log("authorization ", res.headers.authorization);
-        setAuthToken(res.headers.authorization);
+        console.log("로그인 직후 받아온 토큰값: ", res.headers.authorization);
+        setToken(res.headers.authorization);
         onEnter();
       }
     } catch (error) {
       if (error.status === 401) {
-        alert('등록되지 않은 회원정보입니다.');
+        alert("등록되지 않은 회원정보입니다.");
         console.log("등록되지 않은 회원정보입니다.");
       } else {
         console.log(
@@ -239,6 +241,12 @@ function SignInScreen({ onEnter, navigation }) {
       }
     }
   };
+
+  // console.log("SignIn에서 토큰: ", token);
+  // useEffect(() => {
+  //   if (token.includes("Bearer"))
+  //   onEnter();
+  // }, [token]);
 
   return (
     <ViewContainer>
