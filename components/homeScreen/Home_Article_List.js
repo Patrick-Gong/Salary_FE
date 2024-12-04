@@ -6,7 +6,7 @@ import {
   ImageBackground,
   Image,
   Pressable,
-  Linking
+  Linking,
 } from "react-native";
 import styled from "styled-components";
 import articleArrow from "../../assets/img/homeScreen/articleArrow.png";
@@ -47,43 +47,42 @@ function Home_Article_List() {
       const res = await axios.get(`${BASE_URL}/shorts`);
       setFetchedData(res.data);
     } catch (error) {
-      console.log(error);
+      console.log("뉴스 불러오는 중 나타난 에러: ", error);
     }
   };
+  useEffect(() => {
+    getNewsData();
+  }, []);
 
   // 뉴스 사진 관리
   useEffect(() => {
-    // 뉴스 데이터 가져오기
-    getNewsData();
-    console.log("가져온 뉴스 데이터: ", fetchedData);
-    
-    // 뉴스 데이터에 AI 이미지 추가하기
-    const AWS = require("aws-sdk");
-    const s3 = new AWS.S3({
-      region: BUCKET_REGION,
-      accessKeyId: S3_ACCESSKEY,
-      secretAccessKey: S3_SECRETKEY,
-    });
+    if (fetchedData.length > 0) {
 
-    const imageUrlList = [];
-    aiImgList.forEach((element, index) => {
-      const params = {
-        Bucket: BUCKET_NAME,
-        Key: element,
-        Expires: 3600,
-      };
+      // 뉴스 데이터에 AI 이미지 추가하기
+      const AWS = require("aws-sdk");
+      const s3 = new AWS.S3({
+        region: BUCKET_REGION,
+        accessKeyId: S3_ACCESSKEY,
+        secretAccessKey: S3_SECRETKEY,
+      });
 
-      imageUrlList[index] = { source: s3.getSignedUrl("getObject", params) };
-    });
-    console.log(imageUrlList);
-    const updatedData = fetchedData.map((item, index) => ({
-      ...item,
-      ...imageUrlList[index],
-    }));
-    console.log("mergerArray: ", updatedData);
-    setMergedArray(updatedData);
-    
-  }, []);
+      const imageUrlList = [];
+      aiImgList.forEach((element, index) => {
+        const params = {
+          Bucket: BUCKET_NAME,
+          Key: element,
+          Expires: 3600,
+        };
+
+        imageUrlList[index] = { source: s3.getSignedUrl("getObject", params) };
+      });
+      const updatedData = fetchedData.map((item, index) => ({
+        ...item,
+        ...imageUrlList[index],
+      }));
+      setMergedArray(updatedData);
+    }
+  }, [fetchedData]);
 
   const handlePress = async (url) => {
     try {
@@ -115,12 +114,10 @@ function Home_Article_List() {
     }
   }, [isArticleWatched]);
 
-  console.log("합쳐진 데이터: ", mergedArray);
-
   const renderItem = ({ item }) => (
     <Pressable onPress={() => handlePress(item.url)}>
       <ImageBackground
-        source={{ uri: item.source}} // S3에서 이미지 받아오기
+        source={{ uri: item.source }} // S3에서 이미지 받아오기
         style={styles.item}
         imageStyle={styles.image}
       >
