@@ -152,104 +152,14 @@ function DaySalaryHistoryItem({ todaySalaryHistory }) {
 
 // route.params.totalSeed 사용
 // route.params.logs 배열 사용
-// route.params.fetchMonthSeed 사용해서 특정 달의 데이터를 불러옴
+// route.params.fetchMonthSeed 사용해서 특정 달의 데이터를 불러옴 (파라미터로 year, month) 전달
 function MyPageSeedHistoryScreen({ route }) {
-  const [dateSelected, setDateSelected] = useState({});
+  const [dateSelected, setDateSelected] = useState(""); // YYYY-MM 형식으로 관리함
   // 선택된 년/월을 관리함
 
   console.log(route.params.attendanceLogs);
 
   const tmpAttendanceLogs = [
-    {
-      attendance_date: "2024-09-01",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-02",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-03",
-      today_seed: 0,
-      today_seed_earned: 0,
-      today_seed_used: 0,
-    },
-    {
-      attendance_date: "2024-09-01",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-02",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-03",
-      today_seed: 0,
-      today_seed_earned: 0,
-      today_seed_used: 0,
-    },
-    {
-      attendance_date: "2024-09-01",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-02",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-03",
-      today_seed: 0,
-      today_seed_earned: 0,
-      today_seed_used: 0,
-    },
-    {
-      attendance_date: "2024-09-01",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-02",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-03",
-      today_seed: 0,
-      today_seed_earned: 0,
-      today_seed_used: 0,
-    },
-    {
-      attendance_date: "2024-09-01",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-02",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-03",
-      today_seed: 0,
-      today_seed_earned: 0,
-      today_seed_used: 0,
-    },
     {
       attendance_date: "2024-09-01",
       today_seed: 5,

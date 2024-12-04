@@ -271,7 +271,13 @@ function TodaySalaryEduScreen({ route }) {
         const res = await axios.post(
           `${BASE_URL}/wordbook?word_id=${wordData.word_id}`,
           {},
-          { headers: { Authorization: token } }
+          // { headers: { Authorization: token } }
+          {
+            headers: {
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiQWExMjM0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczMzA1NzgwMSwiZXhwIjoxNzMzMDkzODAxfQ.HmY0Tq8Ro1RoT75q7JJhpl311QfqPg22BGuRVkMGx7Y",
+            },
+          }
         );
         setBookMark(true);
         if (wordData.word_id === todaySalary.word_id)
@@ -433,6 +439,10 @@ function TodaySalaryEduScreen({ route }) {
     const url = s3.getSignedUrl("getObject", params);
     console.log(url);
   }, []);
+
+  useEffect(() => {
+    console.log(search);
+  }, [search]);
 
   if (!loading || isModalVisible)
     return (

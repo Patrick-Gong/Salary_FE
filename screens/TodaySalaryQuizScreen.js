@@ -207,9 +207,7 @@ function TodaySalaryScreen() {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   function openModal() {
-    setTimeout(() => {
-      setIsModalVisible(true);
-    }, 3000);
+    setIsModalVisible(true);
   }
 
   function closeModal() {

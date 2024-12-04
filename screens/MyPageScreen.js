@@ -202,9 +202,14 @@ function MyPageScreen() {
       console.log("seed fetch");
       const { data } = await axios.get(
         `${BASE_URL}/seed?date=${new Date().getFullYear()}-${
-          new Date().getMonth() + 1
+          new Date().getMonth() - 1
         }`,
-        { headers: { Authorization: token } }
+        // { headers: { Authorization: token } }
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiQWExMjM0Iiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTczMzA1NzgwMSwiZXhwIjoxNzMzMDkzODAxfQ.HmY0Tq8Ro1RoT75q7JJhpl311QfqPg22BGuRVkMGx7Y`,
+          },
+        }
       );
       console.log("seed fetch 결과: ", data);
       setTotalSeed(data.total_seed);
@@ -214,11 +219,9 @@ function MyPageScreen() {
     }
   };
 
-  const fetchMonthSeed = async (month) => {
+  const fetchMonthSeed = async ({ year, month }) => {
     try {
-      const { data } = axios.get(
-        `${BASE_URL}/seed?date=${new Date().getFullYear()}-${month}`
-      );
+      const { data } = axios.get(`${BASE_URL}/seed?date=${year}-${month}`);
       setAttendanceLogs(data.attendance_logs); // 선택된 달의 로그 데이터로
     } catch (error) {
       console.log(error);
