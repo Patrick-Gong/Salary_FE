@@ -227,7 +227,7 @@ function SignInScreen({ onEnter, navigation }) {
       console.log("헤더", res.headers.authorization);
       if (res.headers.authorization) {
         console.log("로그인 직후 받아온 토큰값: ", res.headers.authorization);
-        await setToken(res.headers.authorization);
+        setToken(res.headers.authorization);
         onEnter();
       }
     } catch (error) {
