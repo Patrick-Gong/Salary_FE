@@ -198,7 +198,7 @@ function MyPageScreen() {
     }, 2000);
   }
 
-  const fetchSeed = async () => {
+  async function fetchSeed() {
     try {
       const res = await axios.get(
         `${BASE_URL}/seed?date=${new Date().getFullYear()}-${
@@ -211,9 +211,9 @@ function MyPageScreen() {
     } catch (error) {
       console.log(error);
     }
-  };
+  }
 
-  const fetchMonthSeed = async ({ year, month }) => {
+  async function fetchMonthSeed({ year, month }) {
     try {
       console.log(year, month);
       const res = await axios.get(`${BASE_URL}/seed?date=${year}-${month}`, {
@@ -224,7 +224,11 @@ function MyPageScreen() {
     } catch (error) {
       console.log(error);
     }
-  };
+  }
+
+  function handleLogout() {
+    console.log("로그아웃 버튼 클릭");
+  }
 
   useEffect(() => {
     if (isFocused) fetchSeed();
@@ -358,6 +362,21 @@ function MyPageScreen() {
                   color={"#a0a0a0"}
                 ></Ionicons>
                 <fonts.Body2M>앱 정보</fonts.Body2M>
+              </ListTextContainer>
+              <Ionicons
+                name="chevron-forward-outline"
+                size={16}
+                color={"#a0a0a0"}
+              ></Ionicons>
+            </ListItem>
+            <ListItem onPress={handleLogout}>
+              <ListTextContainer>
+                <Ionicons
+                  name="power-outline"
+                  size={20}
+                  color={"#a0a0a0"}
+                ></Ionicons>
+                <fonts.Body2M>로그아웃</fonts.Body2M>
               </ListTextContainer>
               <Ionicons
                 name="chevron-forward-outline"
