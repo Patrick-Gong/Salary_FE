@@ -12,6 +12,9 @@ import {
   todayAttendanceDetail,
 } from "../../Recoil/todayAttendanceDetail";
 import { todayAttendanceState } from "../../Recoil/todayAttendanceState";
+import axios from "axios";
+import { BASE_URL } from "@env";
+import { authToken } from "../../Recoil/authToken";
 
 const Container = styled.View`
   flex: 1;
@@ -52,23 +55,50 @@ const DoneMarker = styled.Image`
 `;
 
 function Home_Article() {
+  // token 추가
+  const token = useRecoilValue(authToken);
+
   // detailState 관리
-  // const articleState = useRecoilValue(todayArticleSelector);
-  // const setArticleState = useSetRecoilState(todayArticleSelector);
+  const articleState = useRecoilValue(todayArticleSelector);
+  const setArticleState = useSetRecoilState(todayArticleSelector);
 
-  // // attendanceState 관리
-  // const [attendaceState, setAttendanceState] =
-  //   useRecoilState(todayAttendanceState);
+  // attendanceState 관리
+  const [attendaceState, setAttendanceState] =
+    useRecoilState(todayAttendanceState);
 
-  // useEffect(() => {
-  //   if (!articleState) {
-  //     setArticleState(true);
-  //     setAttendanceState((prev) => prev + 1);
-  //     console.log("article state에 의해 1을 더함")
-  //   }
-  // }, []);
+  async function postAritcleAttendance() {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/shorts/update-status?article=true`,
+        {},
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+      console.log("뉴스 학습 완료 api post", res.data.status);
+      const resSeed = await axios.patch(
+        `${BASE_URL}/seed/update`,
+        {
+          seed_earned: 5,
+          seed_used: 0,
+        },
+        { headers: { Authorization: token } }
+      );
+      console.log("시드 patch", resSeed.data.status);
+      return true;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  const articleState = false;
+  function handleDoneTodayArticle() {
+    if (postAritcleAttendance() && !articleState) {
+      setArticleState(true); // 전역 상태
+      setAttendanceState((prev) => prev + 1);
+    }
+  }
 
   return (
     <Container articleState={articleState}>
@@ -85,7 +115,7 @@ function Home_Article() {
             : "오늘 핫한 아티클 읽고 추가 시드 받아가기"}
         </TitleDescript>
       </DesriptContainer>
-      <Home_Article_List />
+      <Home_Article_List handleDoneTodayArticle={handleDoneTodayArticle} />
     </Container>
   );
 }

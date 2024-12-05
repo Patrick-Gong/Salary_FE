@@ -23,7 +23,7 @@ import { authToken } from "../../Recoil/authToken";
 import { useRecoilValue } from "recoil";
 import { useFocusEffect } from "@react-navigation/native";
 
-function Home_Article_List() {
+function Home_Article_List({ handleDoneTodayArticle }) {
   const [fetchedData, setFetchedData] = useState([]);
   const [isArticleWatched, setIsArticleWatched] = useState(false);
   const token = useRecoilValue(authToken);
@@ -57,7 +57,6 @@ function Home_Article_List() {
   // 뉴스 사진 관리
   useEffect(() => {
     if (fetchedData.length > 0) {
-
       // 뉴스 데이터에 AI 이미지 추가하기
       const AWS = require("aws-sdk");
       const s3 = new AWS.S3({
@@ -90,6 +89,7 @@ function Home_Article_List() {
       if (supported) {
         await Linking.openURL(url);
         if (!isArticleWatched) {
+          handleDoneTodayArticle();
           setIsArticleWatched(true);
         }
       } else {

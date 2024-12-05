@@ -250,8 +250,8 @@ function HomeScreen() {
             endColor="rgba(0, 0, 0, 0.0)" // 그림자의 끝 색상 (투명)
           >
             <ContentsContainer>
-              {/* <Home_TodaySalary /> */}
-              {/* <Home_TrendQuiz /> */}
+              <Home_TodaySalary />
+              <Home_TrendQuiz />
               {/* horizon */}
               <Horizon />
               {/* 아티클 */}
