@@ -28,7 +28,7 @@ import Home_CalendarModal from "../components/homeScreen/Home_CalendarModal";
 import getFormattedDate from "../functions/getFormattedDate";
 import { BASE_URL } from "@env";
 import axios from "axios";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { todayAttendanceState } from "../Recoil/todayAttendanceState";
 import { todayAttendanceDetail } from "../Recoil/todayAttendanceDetail";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -40,6 +40,7 @@ import { fetchTodayAttendanceDetail } from "../services/fetchTodayAttendanceDeta
 import { fetchTodayWordId } from "../services/fetchTodayWordId";
 import { fetchTodayWordData } from "../services/fetchTodayWordData";
 import { authToken } from "../Recoil/authToken";
+import { nicknameState } from "../Recoil/nicknameState";
 
 const ContentsContainer = styled.View`
   background: ${colors.bg};
@@ -114,6 +115,7 @@ function HomeScreen() {
   // 토큰 추가
   const token = useRecoilValue(authToken);
   console.log("홈스크린에서 token값: ", token);
+  const setNickname = useSetRecoilState(nicknameState);
 
   // 날짜 범위에 대해 AsyncStorage에 데이터를 저장하는 함수
   // 나중에 쓸까봐 안 지움
@@ -203,6 +205,22 @@ function HomeScreen() {
       setLoading(false);
     });
   }, []);
+
+  // 닉네임 가져오기
+  useEffect(() => {
+    const fetchNickname = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/auth/nickname`, {
+          headers: { Authorization: token },
+        });
+        console.log("홈스크린에서 닉네임 조회", res.data);
+        setNickname(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchNickname();
+  }, [token]);
 
   function onCalendarModalOpen() {
     setIsModalVisible(true);

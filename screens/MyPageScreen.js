@@ -26,6 +26,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Toast from "../common/Toast";
 import { useRecoilValue } from "recoil";
 import { authToken } from "../Recoil/authToken";
+import { nicknameState } from "../Recoil/nicknameState";
 
 const GreenContainer = styled.View`
   background-color: ${colors.Secondary_100};
@@ -178,7 +179,6 @@ const ListTextContainer = styled.View`
 
 function MyPageScreen() {
   // const nickname = AsyncStorage.getItem("Nickname");
-  const nickname = "들기름";
   const [totalSeed, setTotalSeed] = useState(0);
   const [attendanceLogs, setAttendanceLogs] = useState([]);
   const isFocused = useIsFocused();
@@ -186,6 +186,7 @@ function MyPageScreen() {
   const navigation = useNavigation();
 
   const token = useRecoilValue(authToken);
+  const nickname = useRecoilValue(nicknameState);
 
   // 토스트 관리
   const [modal, setModal] = useState(false);
@@ -256,7 +257,7 @@ function MyPageScreen() {
               <NickName>{nickname}</NickName>
             </NickNameContainer>
             <Text style={{ ...fonts.Body2R, color: "#121212" }}>
-              님이 보유한 시드
+              {nickname}님이 보유한 시드
             </Text>
           </View>
           <fonts.H2M>{totalSeed.toLocaleString()}개</fonts.H2M>
@@ -348,14 +349,14 @@ function MyPageScreen() {
               color={"#a0a0a0"}
             ></Ionicons>
           </ListItem>
-          <ListItem onPress={() => openModal()}>
+          <ListItem onPress={() => AsyncStorage.removeItem('authToken')}>
             <ListTextContainer>
               <Ionicons
                 name="reader-outline"
                 size={20}
                 color={"#a0a0a0"}
               ></Ionicons>
-              <fonts.Body2M>앱 정보</fonts.Body2M>
+              <fonts.Body2M>앱 정보(현재 토큰 삭제)</fonts.Body2M>
             </ListTextContainer>
             <Ionicons
               name="chevron-forward-outline"

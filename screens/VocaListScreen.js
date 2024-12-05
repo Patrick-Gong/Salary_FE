@@ -24,6 +24,7 @@ import { Shadow } from "react-native-shadow-2";
 import VocaReminder_Button from "../components/vocaListScreen/VocaReminder_Button";
 import Info from "../assets/img/vocaListScreen/info.png";
 import { authToken } from "../Recoil/authToken";
+import { nicknameState } from "../Recoil/nicknameState";
 
 const TitleContainer = styled.View`
   width: 100%;
@@ -59,6 +60,7 @@ function VocaListScreen() {
   const [vocaList, setVocaList] = useState();
   // 토큰 추가
   const token = useRecoilValue(authToken);
+  const nickname = useRecoilValue(nicknameState);
 
   async function getData() {
     try {
@@ -77,8 +79,6 @@ function VocaListScreen() {
       console.log("단어장 불러오기 오류", error);
     }
   }
-
-  const nickname = "나야들기름";
 
   useEffect(() => {
     // focus가 다시 되었을 때에만 다시 단어장 데이터를 받아옴.
