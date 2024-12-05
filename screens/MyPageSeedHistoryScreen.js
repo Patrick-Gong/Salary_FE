@@ -231,7 +231,9 @@ function MyPageSeedHistoryScreen({ route }) {
       setAttendanceLogs(res.data.attendance_logs); // 선택된 달의 로그 데이터로
       setPreviewDate(dateSelected);
     } catch (error) {
+      setAttendanceLogs([]);
       console.log(error);
+      setPreviewDate(dateSelected);
     }
   };
 
@@ -319,10 +321,12 @@ function MyPageSeedHistoryScreen({ route }) {
               width: "100%",
               display: "flex",
               alignItems: "center",
-              marginTop: 10,
+              marginTop: 40,
             }}
           >
-            <Text>데이터가 없습니다.</Text>
+            <Text style={{ color: colors.Grayscale_60 }}>
+              데이터가 없습니다.
+            </Text>
           </View>
         )}
       </GrayContainer>
