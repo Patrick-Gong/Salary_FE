@@ -6,7 +6,11 @@ export async function fetchTodayAttendanceState(token) {
   try {
     const res = await axios.get(
       `${BASE_URL}/attendance/status?attendance_date=${getKoreaFormattedDate()}`,
-      { headers: { Authorization: token } }
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
     );
     console.log("1. attendance state: ", res.data);
     if (res.status === 200) {

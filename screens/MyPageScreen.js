@@ -181,6 +181,7 @@ function MyPageScreen() {
   // const nickname = AsyncStorage.getItem("Nickname");
   const [totalSeed, setTotalSeed] = useState(0);
   const [attendanceLogs, setAttendanceLogs] = useState([]);
+
   const isFocused = useIsFocused();
 
   const navigation = useNavigation();
@@ -198,176 +199,196 @@ function MyPageScreen() {
     }, 2000);
   }
 
-  const fetchSeed = async () => {
+  async function fetchSeed() {
     try {
-      console.log("seed fetch");
-      const { data } = await axios.get(
+      const res = await axios.get(
         `${BASE_URL}/seed?date=${new Date().getFullYear()}-${
-          new Date().getMonth() + 1
+          new Date().getMonth() + 1 // 일단 이번 달로 요청
         }`,
         { headers: { Authorization: token } }
       );
-      console.log("seed fetch 결과: ", data);
-      setTotalSeed(data.total_seed);
-      setAttendanceLogs(data.attendance_logs); // 초기에는 이번 달의 데이터로
+      setTotalSeed(res.data.total_seed);
+      setAttendanceLogs(res.data.attendance_logs); // 초기에는 이번 달의 데이터로
     } catch (error) {
       console.log(error);
     }
-  };
+  }
 
-  const fetchMonthSeed = async (month) => {
+  async function fetchMonthSeed({ year, month }) {
     try {
-      const { data } = axios.get(
-        `${BASE_URL}/seed?date=${new Date().getFullYear()}-${month}`
-      );
-      setAttendanceLogs(data.attendance_logs); // 선택된 달의 로그 데이터로
+      console.log(year, month);
+      const res = await axios.get(`${BASE_URL}/seed?date=${year}-${month}`, {
+        headers: { Authorization: token },
+      });
+      console.log(res.data);
+      setAttendanceLogs(res.data.attendance_logs); // 선택된 달의 로그 데이터로
     } catch (error) {
       console.log(error);
     }
-  };
+  }
+
+  function handleLogout() {
+    console.log("로그아웃 버튼 클릭");
+  }
 
   useEffect(() => {
     if (isFocused) fetchSeed();
-  }, [isFocused]);
+  }, [isFocused, attendanceLogs]);
 
-  return (
-    <>
-      <Modal
-        visible={modal}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setModal(false)}
-      >
-        <Toast text="준비 중인 서비스입니다." />
-      </Modal>
-      <GreenContainer>
-        <StatusBar style="dark" />
-        {/* 연두색 영역 */}
-        <TextContainer>
-          <Image source={DollarIcn} style={{ width: 35, height: 35 }} />
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 3,
-            }}
-          >
-            <NickNameContainer>
-              <NickName>{nickname}</NickName>
-            </NickNameContainer>
-            <Text style={{ ...fonts.Body2R, color: "#121212" }}>
-              {nickname}님이 보유한 시드
-            </Text>
-          </View>
-          <fonts.H2M>{totalSeed.toLocaleString()}개</fonts.H2M>
-          <BtnContainer
-            onPress={() => {
-              navigation.navigate("SeedHistory", {
-                totalSeed: totalSeed,
-                attendanceLogs: attendanceLogs,
-                fetchMonthSeed: fetchMonthSeed,
-              });
-            }}
-          >
-            <fonts.Caption2>적립/사용내역 </fonts.Caption2>
-            <Ionicons name="chevron-forward-outline" size={12}></Ionicons>
-          </BtnContainer>
-        </TextContainer>
-        <CharacterImg source={Character} />
-      </GreenContainer>
-      {/* 메뉴 영역 */}
-      <GrayContainer>
-        <BoxesContainer>
-          <Box
-            onPress={() =>
-              navigation.navigate("SeedCharge", {
-                totalSeed: totalSeed,
-              })
-            }
-          >
-            <BoxText>
-              <fonts.Body1 style={{ color: "#121212" }}>
-                시드 충전소
-              </fonts.Body1>
-              <Ionicons
-                name="chevron-forward-outline"
-                size={20}
-                color={"#d0d0d0"}
-              ></Ionicons>
-            </BoxText>
-            <BoxImg source={Shopping} />
-          </Box>
-
-          <Box state={"disabled"} onPress={() => openModal()}>
-            <BoxText>
-              <fonts.Body1 style={{ color: "#121212" }}>
-                챌린지 바로가기
-              </fonts.Body1>
-              <Ionicons
-                name="chevron-forward-outline"
-                size={20}
-                color={"#111111"}
-              ></Ionicons>
-            </BoxText>
-            <View>
-              <BoxImg
-                source={TmpShopping}
-                style={{ width: 150, height: 100 }}
-              />
+  if (totalSeed !== null)
+    return (
+      <>
+        <Modal
+          visible={modal}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setModal(false)}
+        >
+          <Toast text="준비 중인 서비스입니다." />
+        </Modal>
+        <GreenContainer>
+          <StatusBar style="dark" />
+          {/* 연두색 영역 */}
+          <TextContainer>
+            <Image source={DollarIcn} style={{ width: 35, height: 35 }} />
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 3,
+              }}
+            >
+              <NickNameContainer>
+                <NickName>{nickname}</NickName>
+              </NickNameContainer>
+              <Text style={{ ...fonts.Body2R, color: "#121212" }}>
+                님이 보유한 시드
+              </Text>
             </View>
-          </Box>
-        </BoxesContainer>
-        <ListsContainer>
-          <ListItem onPress={() => navigation.navigate("NicknameChange")}>
-            <ListTextContainer>
+            <fonts.H2M>{totalSeed.toLocaleString()}개</fonts.H2M>
+            <BtnContainer
+              onPress={() => {
+                navigation.navigate("SeedHistory", {
+                  totalSeed: totalSeed,
+                  attendanceLogs: attendanceLogs,
+                  fetchMonthSeed: fetchMonthSeed,
+                });
+              }}
+            >
+              <fonts.Caption2>적립/사용내역 </fonts.Caption2>
+              <Ionicons name="chevron-forward-outline" size={12}></Ionicons>
+            </BtnContainer>
+          </TextContainer>
+          <CharacterImg source={Character} />
+        </GreenContainer>
+        {/* 메뉴 영역 */}
+        <GrayContainer>
+          <BoxesContainer>
+            <Box
+              onPress={() =>
+                navigation.navigate("SeedCharge", {
+                  totalSeed: totalSeed,
+                })
+              }
+            >
+              <BoxText>
+                <fonts.Body1 style={{ color: "#121212" }}>
+                  시드 충전소
+                </fonts.Body1>
+                <Ionicons
+                  name="chevron-forward-outline"
+                  size={20}
+                  color={"#d0d0d0"}
+                ></Ionicons>
+              </BoxText>
+              <BoxImg source={Shopping} />
+            </Box>
+
+            <Box state={"disabled"} onPress={() => openModal()}>
+              <BoxText>
+                <fonts.Body1 style={{ color: "#121212" }}>
+                  챌린지 바로가기
+                </fonts.Body1>
+                <Ionicons
+                  name="chevron-forward-outline"
+                  size={20}
+                  color={"#111111"}
+                ></Ionicons>
+              </BoxText>
+              <View>
+                <BoxImg
+                  source={TmpShopping}
+                  style={{ width: 150, height: 100 }}
+                />
+              </View>
+            </Box>
+          </BoxesContainer>
+          <ListsContainer>
+            <ListItem onPress={() => navigation.navigate("NicknameChange")}>
+              <ListTextContainer>
+                <Ionicons
+                  name="person-outline"
+                  size={20}
+                  color={"#a0a0a0"}
+                ></Ionicons>
+                <fonts.Body2M>닉네임 수정</fonts.Body2M>
+              </ListTextContainer>
               <Ionicons
-                name="person-outline"
-                size={20}
+                name="chevron-forward-outline"
+                size={16}
                 color={"#a0a0a0"}
               ></Ionicons>
-              <fonts.Body2M>닉네임 수정</fonts.Body2M>
-            </ListTextContainer>
-            <Ionicons
-              name="chevron-forward-outline"
-              size={16}
-              color={"#a0a0a0"}
-            ></Ionicons>
-          </ListItem>
-          <ListItem onPress={() => openModal()}>
-            <ListTextContainer>
+            </ListItem>
+            <ListItem onPress={() => openModal()}>
+              <ListTextContainer>
+                <Ionicons
+                  name="help-circle-outline"
+                  size={20}
+                  color={"#a0a0a0"}
+                ></Ionicons>
+                <fonts.Body2M>자주 묻는 질문</fonts.Body2M>
+              </ListTextContainer>
               <Ionicons
-                name="help-circle-outline"
-                size={20}
+                name="chevron-forward-outline"
+                size={16}
                 color={"#a0a0a0"}
               ></Ionicons>
-              <fonts.Body2M>자주 묻는 질문</fonts.Body2M>
-            </ListTextContainer>
-            <Ionicons
-              name="chevron-forward-outline"
-              size={16}
-              color={"#a0a0a0"}
-            ></Ionicons>
-          </ListItem>
-          <ListItem onPress={() => AsyncStorage.removeItem('authToken')}>
-            <ListTextContainer>
+            </ListItem>
+            <ListItem onPress={() => openModal()}>
+              <ListTextContainer>
+                <Ionicons
+                  name="reader-outline"
+                  size={20}
+                  color={"#a0a0a0"}
+                ></Ionicons>
+                <fonts.Body2M>앱 정보</fonts.Body2M>
+              </ListTextContainer>
               <Ionicons
-                name="reader-outline"
-                size={20}
+                name="chevron-forward-outline"
+                size={16}
                 color={"#a0a0a0"}
               ></Ionicons>
-              <fonts.Body2M>앱 정보(현재 토큰 삭제)</fonts.Body2M>
-            </ListTextContainer>
-            <Ionicons
-              name="chevron-forward-outline"
-              size={16}
-              color={"#a0a0a0"}
-            ></Ionicons>
-          </ListItem>
-        </ListsContainer>
-      </GrayContainer>
-    </>
-  );
+            </ListItem>
+            <ListItem onPress={handleLogout}>
+              <ListTextContainer>
+                <Ionicons
+                  name="power-outline"
+                  size={20}
+                  color={"#a0a0a0"}
+                ></Ionicons>
+                <fonts.Body2M>로그아웃</fonts.Body2M>
+              </ListTextContainer>
+              <Ionicons
+                name="chevron-forward-outline"
+                size={16}
+                color={"#a0a0a0"}
+              ></Ionicons>
+            </ListItem>
+          </ListsContainer>
+        </GrayContainer>
+      </>
+    );
 }
 
 export default MyPageScreen;

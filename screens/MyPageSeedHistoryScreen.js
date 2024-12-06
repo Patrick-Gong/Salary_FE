@@ -1,11 +1,25 @@
-import { Text, View, Image } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Modal,
+  Easing,
+  Animated,
+  TouchableOpacity,
+} from "react-native";
 import styled from "styled-components";
 import colors from "../styles/colors";
 import fonts from "../styles/fonts";
 import DollarIcn from "../assets/img/myPageScreen/dollar.png";
-import { useRef, useState } from "react";
-import { Animated } from "react-native";
+import { useEffect, useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import PrimaryBtn from "../common/PrimaryBtn";
+import DatePicker from "../components/myPageScreen/DatePicker";
+import axios from "axios";
+import { BASE_URL } from "@env";
+import { useRecoilValue } from "recoil";
+import { authToken } from "../Recoil/authToken";
 
 const BlackContainer = styled.View`
   background-color: ${colors.Grayscale_90};
@@ -77,17 +91,44 @@ const DateSelector = styled.Pressable`
   justify-content: flex-end;
   align-items: center;
   gap: 6px;
+  padding-top: 20px;
+  padding-bottom: 5px;
 
   width: 100%;
   padding-right: 40px;
   margin-bottom: 10px;
 `;
 
+const Overlay = styled.TouchableOpacity`
+  flex: 1;
+  background-color: rgba(0, 0, 0, 0.3);
+`;
+
+const TitleContainer = styled.View`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+`;
+
+const Title = styled(fonts.H4SB)`
+  color: #000000;
+`;
+
+const CloseBtnContainer = styled.Pressable`
+  padding: 20px;
+
+  display: flex;
+  justify-content: flex-start;
+`;
+
 function DaySalaryHistoryItem({ todaySalaryHistory }) {
   const [toggle, setToggle] = useState(false);
-  const [contentHeight, setContentHeight] = useState(0);
   const animation = useRef(new Animated.Value(0)).current;
 
+  // 토글 관리
   const toggleExpand = () => {
     if (toggle) {
       // 접기 애니메이션
@@ -108,13 +149,17 @@ function DaySalaryHistoryItem({ todaySalaryHistory }) {
     }
   };
 
+  useEffect(() => {}, []);
+
   return (
     <ItemContainer onPress={toggleExpand} activeOpacity={1}>
       <TodaySeedContainer>
         <fonts.Body1>{todaySalaryHistory.attendance_date}</fonts.Body1>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
           <fonts.Body1 style={{ color: colors.text_green }}>
-            + {todaySalaryHistory.today_seed} {" 개"}
+            +{" "}
+            {todaySalaryHistory.today_seed ? todaySalaryHistory.today_seed : 0}{" "}
+            {" 개"}
           </fonts.Body1>
           {toggle ? (
             <Ionicons name="chevron-up-outline" size={15} />
@@ -134,13 +179,19 @@ function DaySalaryHistoryItem({ todaySalaryHistory }) {
             <TodayHistory>
               <fonts.Body2M>적립</fonts.Body2M>
               <fonts.Body2M>
-                {todaySalaryHistory.today_seed_earned} {"개"}
+                {todaySalaryHistory.today_seed_earned
+                  ? todaySalaryHistory.today_seed_earned
+                  : 0}{" "}
+                {"개"}
               </fonts.Body2M>
             </TodayHistory>
             <TodayHistory>
               <fonts.Body2M>사용</fonts.Body2M>
               <fonts.Body2M>
-                {todaySalaryHistory.today_seed_used} {"개"}
+                {todaySalaryHistory.today_seed_used
+                  ? todaySalaryHistory.today_seed_used
+                  : 0}{" "}
+                {"개"}
               </fonts.Body2M>
             </TodayHistory>
           </TodayHistorys>
@@ -151,124 +202,81 @@ function DaySalaryHistoryItem({ todaySalaryHistory }) {
 }
 
 // route.params.totalSeed 사용
-// route.params.logs 배열 사용
-// route.params.fetchMonthSeed 사용해서 특정 달의 데이터를 불러옴
+// route.params.attendanceLogs 배열 사용
 function MyPageSeedHistoryScreen({ route }) {
-  const [dateSelected, setDateSelected] = useState({});
-  // 선택된 년/월을 관리함
+  const token = useRecoilValue(authToken);
 
-  console.log(route.params.attendanceLogs);
+  // 이 화면에서 관리하는 attendanceLogs
+  const [attendanceLogs, setAttendanceLogs] = useState(
+    route.params.attendanceLogs
+  );
 
-  const tmpAttendanceLogs = [
-    {
-      attendance_date: "2024-09-01",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-02",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-03",
-      today_seed: 0,
-      today_seed_earned: 0,
-      today_seed_used: 0,
-    },
-    {
-      attendance_date: "2024-09-01",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-02",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-03",
-      today_seed: 0,
-      today_seed_earned: 0,
-      today_seed_used: 0,
-    },
-    {
-      attendance_date: "2024-09-01",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-02",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-03",
-      today_seed: 0,
-      today_seed_earned: 0,
-      today_seed_used: 0,
-    },
-    {
-      attendance_date: "2024-09-01",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-02",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-03",
-      today_seed: 0,
-      today_seed_earned: 0,
-      today_seed_used: 0,
-    },
-    {
-      attendance_date: "2024-09-01",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-02",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-03",
-      today_seed: 0,
-      today_seed_earned: 0,
-      today_seed_used: 0,
-    },
-    {
-      attendance_date: "2024-09-01",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-02",
-      today_seed: 5,
-      today_seed_earned: 10,
-      today_seed_used: -5,
-    },
-    {
-      attendance_date: "2024-09-03",
-      today_seed: 0,
-      today_seed_earned: 0,
-      today_seed_used: 0,
-    },
-  ];
+  // date picker에서 선택된 년/월을 관리함
+  const [dateSelected, setDateSelected] = useState({
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+  }); // YYYY-MM 형식으로 관리함
+
+  // 완료하기 버튼이 눌렸을 때의 preview를 관리함
+  const [previewDate, setPreviewDate] = useState({
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+  }); // YYYY-MM 형식으로 관리함
+
+  const fetchMonthSeed = async ({ year, month }) => {
+    try {
+      const res = await axios.get(`${BASE_URL}/seed?date=${year}-${month}`, {
+        headers: { Authorization: token },
+      });
+      setAttendanceLogs(res.data.attendance_logs); // 선택된 달의 로그 데이터로
+      setPreviewDate(dateSelected);
+    } catch (error) {
+      setAttendanceLogs([]);
+      console.log(error);
+      setPreviewDate(dateSelected);
+    }
+  };
+
+  // datepicker 모달 관리
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
+  const translateY = useRef(new Animated.Value(300)).current; // 초기 위치
+
+  function handleDatePickerOpen() {
+    openModal();
+  }
+
+  const openModal = () => {
+    setDatePickerOpen(true);
+    Animated.timing(translateY, {
+      toValue: 0, // 모달이 화면에 올라올 위치
+      duration: 300,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const closeModal = () => {
+    Animated.timing(translateY, {
+      toValue: 300, // 모달이 화면에서 내려갈 위치
+      duration: 300,
+      easing: Easing.in(Easing.ease),
+      useNativeDriver: true,
+    }).start(() => setDatePickerOpen(false));
+  };
+
+  // dateSelected 값이 바뀌고 완료 버튼이 눌릴 때마다 해당 월의 데이터를 호출
+  function handleDatePicked() {
+    fetchMonthSeed({
+      year: dateSelected.year,
+      month: dateSelected.month,
+    });
+    Animated.timing(translateY, {
+      toValue: 300, // 모달이 화면에서 내려갈 위치
+      duration: 300,
+      easing: Easing.in(Easing.ease),
+      useNativeDriver: true,
+    }).start(() => setDatePickerOpen(false));
+  }
 
   return (
     <>
@@ -291,19 +299,89 @@ function MyPageSeedHistoryScreen({ route }) {
             {Number(route.params.totalSeed).toLocaleString()} 개
           </fonts.H2M>
         </View>
-        <DateSelector>
-          {/* {dateSelected.year}년 {dateSelected.month}월 */}
-          <fonts.Body2M style={{ color: "#ffffff" }}>9월 </fonts.Body2M>
-          <Ionicons name="chevron-down-outline" size={15} color={"#ffffff"} />
+        <DateSelector onPress={handleDatePickerOpen}>
+          <fonts.Body2M style={{ color: "#ffffff" }}>
+            {previewDate.year}년 {previewDate.month}월
+          </fonts.Body2M>
+          {datePickerOpen ? (
+            <Ionicons name="chevron-up-outline" size={15} color={"#ffffff"} />
+          ) : (
+            <Ionicons name="chevron-down-outline" size={15} color={"#ffffff"} />
+          )}
         </DateSelector>
       </BlackContainer>
       <GrayContainer>
-        {tmpAttendanceLogs.map((item, index) => (
-          <DaySalaryHistoryItem key={index} todaySalaryHistory={item} />
-        ))}
+        {attendanceLogs.length !== 0 ? (
+          attendanceLogs.map((item, index) => (
+            <DaySalaryHistoryItem key={index} todaySalaryHistory={item} />
+          ))
+        ) : (
+          <View
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              marginTop: 40,
+            }}
+          >
+            <Text style={{ color: colors.Grayscale_60 }}>
+              데이터가 없습니다.
+            </Text>
+          </View>
+        )}
       </GrayContainer>
+      <Modal
+        transparent
+        visible={datePickerOpen}
+        animationType="none"
+        onRequestClose={closeModal}
+      >
+        <Overlay
+          style={styles.overlay}
+          activeOpacity={1}
+          onPress={closeModal}
+        ></Overlay>
+        <Animated.View
+          style={[styles.modalContainer, { transform: [{ translateY }] }]}
+        >
+          <TitleContainer>
+            <Title>날짜 선택</Title>
+            <CloseBtnContainer onPress={closeModal}>
+              <Ionicons name="close-outline" color="#717171" size={30} />
+            </CloseBtnContainer>
+          </TitleContainer>
+          <DatePicker
+            dateSelected={dateSelected}
+            setDateSelected={setDateSelected}
+          />
+          <PrimaryBtn
+            type="active"
+            text="완료하기"
+            onPress={handleDatePicked}
+          />
+        </Animated.View>
+      </Modal>
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  modalContainer: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    flex: 1,
+    backgroundColor: "#ffffff",
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    paddingHorizontal: 35,
+    paddingBottom: 30,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+});
 
 export default MyPageSeedHistoryScreen;
