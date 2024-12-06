@@ -12,6 +12,11 @@ import colors from "../styles/colors";
 import styled, { css } from "styled-components";
 import { useEffect, useState } from "react";
 import PrimaryBtn from "../common/PrimaryBtn";
+import axios from "axios";
+import { BASE_URL } from "@env";
+import { useSetRecoilState, useRecoilValue } from "recoil";
+import { nicknameState } from "../Recoil/nicknameState";
+import { authToken } from "../Recoil/authToken";
 
 const Container = styled.View`
   width: 100%;
@@ -65,14 +70,24 @@ const Input = styled.TextInput`
 
 function MyPageNicknameChangeScreen() {
   const [text, setText] = useState("");
+  const setNickname = useSetRecoilState(nicknameState);
+  const token = useRecoilValue(authToken);
 
   useEffect(() => {
     console.log(text);
   }, [text]);
+  console.log(token);
 
   const handleNicknameChange = async () => {
     try {
-      console.log(text, "로 변경");
+      const res = await axios.patch(
+        `${BASE_URL}/auth/nickname?nickname=${text}`,
+        {},
+        { headers: { Authorization: token } }
+      );
+      console.log("닉네임 수정 api 작동했는가: ", res);
+
+      setNickname(text);
       // axios 닉네임 변경 호출
     } catch (error) {
       console.log(error);

@@ -38,6 +38,7 @@ import {
 import parseStoryString from "../functions/parseStoryString";
 import LottieView from "lottie-react-native";
 import { authToken } from "../Recoil/authToken";
+import { nicknameState } from "../Recoil/nicknameState";
 
 const RootContainer = styled.View`
   flex: 1;
@@ -241,6 +242,7 @@ function TodaySalaryEduScreen({ route }) {
 
   // 토큰 추가
   const token = useRecoilValue(authToken);
+  const nickname = useRecoilValue(nicknameState);
 
   // 알맞게 렌더링되도록 함
   useEffect(() => {}, [
@@ -465,7 +467,7 @@ function TodaySalaryEduScreen({ route }) {
             {wordData.word_id === todaySalary.word_id ? (
               <BoldTitle>오늘의 샐러리 한조각</BoldTitle>
             ) : route.params.type === "bookmark" ? (
-              <BoldTitle>단어장</BoldTitle>
+              <BoldTitle>{nickname}님의 단어장</BoldTitle>
             ) : (
               <BoldTitle>{wordData.word}에 대한 검색 결과</BoldTitle>
             )}
