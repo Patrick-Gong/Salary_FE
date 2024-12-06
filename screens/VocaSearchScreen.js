@@ -13,6 +13,7 @@ import { BASE_URL } from "@env";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { useRecoilValue } from "recoil";
 import { authToken } from "../Recoil/authToken";
+import { nicknameState} from "../Recoil/nicknameState";
 
 const ViewContainer = styled.SafeAreaView`
   flex: 1;
@@ -209,9 +210,11 @@ function VocaSearchScreen({ navigation }) {
   const [recommendedList, setRecommendedList] = useState([]);
   const [inputText, setInputText] = useState("");
   const [keywordList, setKeywordList] = useState([]);
+  const nickname = useRecoilValue(nicknameState);
 
   // 토큰 추가
   const token = useRecoilValue(authToken);
+  console.log("단어검색에서 토큰값: ", token);
 
   useEffect(() => {
     const fetchRecommendedData = async () => {
@@ -323,7 +326,7 @@ function VocaSearchScreen({ navigation }) {
             </CenteredView>
             <RecommendationContainer>
               <RecommendationTitle>
-                나야 들기름님,{"\n"}이 단어들은 알고 있나요?
+                {nickname}님,{"\n"}이 단어들은 알고 있나요?
               </RecommendationTitle>
               <RecommendedBoxContainer>
                 {recommendedList.map((item) => (

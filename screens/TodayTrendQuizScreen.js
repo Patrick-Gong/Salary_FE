@@ -11,6 +11,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import getKoreaFormattedDate from "../functions/getKoreaForamttedDate";
 import LottieView from 'lottie-react-native';
 import fonts from '../styles/fonts';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { authToken } from "../Recoil/authToken";
+import { todayTrendSelector } from "../Recoil/todayAttendanceDetail";
+import { todayAttendanceState } from "../Recoil/todayAttendanceState";
 
 const ViewContainer = styled.SafeAreaView`
   background-color: white;
@@ -159,6 +163,9 @@ function TodayTrendQuizScreen() {
   const [trendQuizData, setTrendQuizData] = useState({});
   const [answersState, setAnswersState] = useState([]);
   const [isAbleToSubmit, setIsAbleToSubmit] = useState(false);
+  const token = useRecoilValue(authToken);
+  const [trendState, setTrendState] = useRecoilState(todayTrendSelector);
+  const setAttendanceState = useSetRecoilState(todayAttendanceState);
 
   const fetchTrendQuizData = async () => {
     try {
@@ -273,6 +280,44 @@ function TodayTrendQuizScreen() {
   useEffect(() => {
     setIsModalVisible(false); // 상태 초기화
   }, []);
+
+  const handleFinishStudy = async () => {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/trend-quiz/update-status?trend=${true}`,
+        {},
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+      const resSeed = await axios.patch(
+        `${BASE_URL}/seed/update`,
+        {
+          seed_earned: 5,
+          seed_used: 0,
+        },
+        { headers: { Authorization: token } }
+      );
+      console.log("시드 patch", resSeed.data.status);
+      if (!trendState) {
+        setTrendState(true);
+        setAttendanceState((prev) => prev + 1); // attendance state에 1을 더해주어 알맞게 상태 관리
+        // 중복 처리되어서는 안됨!!
+      }
+      console.log(res.data);
+      navigation.navigate("BottomTab");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (isModalVisible) {
+      handleFinishStudy();
+    }
+  }, [isModalVisible])
 
   return (
     <ViewContainer>

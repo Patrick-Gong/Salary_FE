@@ -26,6 +26,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Toast from "../common/Toast";
 import { useRecoilValue } from "recoil";
 import { authToken } from "../Recoil/authToken";
+import { nicknameState } from "../Recoil/nicknameState";
 
 const GreenContainer = styled.View`
   background-color: ${colors.Secondary_100};
@@ -178,7 +179,6 @@ const ListTextContainer = styled.View`
 
 function MyPageScreen() {
   // const nickname = AsyncStorage.getItem("Nickname");
-  const nickname = "들기름";
   const [totalSeed, setTotalSeed] = useState(0);
   const [attendanceLogs, setAttendanceLogs] = useState([]);
 
@@ -187,6 +187,7 @@ function MyPageScreen() {
   const navigation = useNavigation();
 
   const token = useRecoilValue(authToken);
+  const nickname = useRecoilValue(nicknameState);
 
   // 토스트 관리
   const [modal, setModal] = useState(false);

@@ -4,6 +4,8 @@ import LottieView from "lottie-react-native";
 import styled from "styled-components";
 import fonts from "../../styles/fonts";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRecoilValue } from "recoil";
+import { nicknameState } from "../../Recoil/nicknameState";
 
 const Container = styled.View`
   display: flex;
@@ -35,7 +37,7 @@ const TextDescr = styled(fonts.H5)`
 `;
 
 const VocaReminder_Loader = () => {
-  const nickname = "나야들기름";
+  const nickname = useRecoilValue(nicknameState);
 
   return (
     <Container>
