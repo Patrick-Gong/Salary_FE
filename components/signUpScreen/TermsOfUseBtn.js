@@ -1,4 +1,5 @@
-import { Pressable } from "react-native";
+import { Pressable, StyleSheet, Image } from "react-native";
+import { memo } from "react";
 import styled from "styled-components/native";
 import CheckBtn_Off from "../../assets/img/signUpScreen/CheckBtn_Off.png";
 import CheckBtn_On from "../../assets/img/signUpScreen/CheckBtn_On.png";
@@ -20,7 +21,6 @@ const LeftView = styled.View`
 `;
 
 const CheckBtnImg = styled.Image`
-  resizemode: cover;
   width: 25px;
   height: 25px;
 `;
@@ -29,13 +29,15 @@ const BtnText = styled.Text`
   font-size: 14px;
 `;
 
-const GoToDetailImg = styled.Image`
-  resizemode: cover;
-  width: 5px;
-  height: 10px;
+const GoToDetailPressable = styled.Pressable`
+  padding: 5px 10px;
 `;
 
-function TermsOfUseBtn({ btnText, approved, onCheck }) {
+function TermsOfUseBtn({ btnText, approved, onCheck, setIndex }) {
+  const MemoizedImg = memo(({ uri, style }) => {
+    return <Image source={uri} style={style} />;
+  });
+
   return (
     <TermsOfUseBtnContainer>
       <LeftView>
@@ -44,9 +46,19 @@ function TermsOfUseBtn({ btnText, approved, onCheck }) {
         </Pressable>
         <BtnText>{btnText}</BtnText>
       </LeftView>
-      <GoToDetailImg source={ArrowBtn} />
+      <GoToDetailPressable onPress={setIndex}>
+        <MemoizedImg uri={ArrowBtn} style={styles.GoToDetailImg} />
+      </GoToDetailPressable>
     </TermsOfUseBtnContainer>
   );
 }
 
 export default TermsOfUseBtn;
+
+const styles = StyleSheet.create({
+  GoToDetailImg: {
+    width: 5,
+    height: 10,
+    resizeMode: "contain",
+  },
+});
