@@ -207,7 +207,7 @@ function SignInScreen({ onEnter, navigation }) {
   const pwRef = useRef();
   const [token, setToken] = useRecoilState(authToken);
 
-  console.log(token);
+  console.log("로그인 창에서 토큰값: ", token);
 
   const handleLogIn = async () => {
     try {

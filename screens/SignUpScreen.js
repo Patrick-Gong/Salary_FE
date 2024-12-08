@@ -239,7 +239,7 @@ const WelcomeText = styled.Text`
   text-align: center;
 `;
 
-function SignUpScreen({ onEnter, navigation }) {
+function SignUpScreen({ navigation }) {
   const InitializedTermsOfUseList = [
     { id: 0, approved: false, text: "(필수) 서비스 이용약관" },
     { id: 1, approved: false, text: "(필수) 개인정보수집 및 이용 동의" },
