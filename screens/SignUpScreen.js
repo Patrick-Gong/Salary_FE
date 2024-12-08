@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useReducer } from "react";
 import styled from "styled-components/native";
 import { StatusBar } from "expo-status-bar";
-import { Dimensions, Keyboard } from "react-native";
+import { Dimensions, Keyboard, StyleSheet } from "react-native";
 
 import TermsOfUseBtn from "../components/signUpScreen/TermsOfUseBtn";
 import CompleteBtn from "../components/signUpScreen/CompleteBtn";
@@ -16,6 +16,10 @@ import colors from "../styles/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useDebounce from "../hooks/useDebounce";
 import ConfirmingModal from "../components/signUpScreen/ConfirmingModal";
+import Confetti from "../assets/animations/Confetti.json";
+import LottieView from "lottie-react-native";
+import TermsOfUseDetail from "../components/signUpScreen/TermsOfUseDetail";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -197,7 +201,7 @@ const WelcomeContainer = styled.View`
 
 const ImgContainer = styled.View`
   position: relative;
-  height: 106px;
+  height: 146px;
   width: 202px;
 `;
 
@@ -207,16 +211,8 @@ const CharacterImg = styled.Image`
   height: 106px;
   position: absolute;
   left: 48px;
+  top: 40px;
 `;
-
-// const FireworksLeftImg = styled.Image`
-// resizemode: cover;
-// width: 78px;
-// height: 78px;
-// position: absolute;
-// top: 25%;
-// transform: scaleX(-1);
-// `;
 
 const FireworksRightImg = styled.Image`
   resizemode: cover;
@@ -245,10 +241,10 @@ const WelcomeText = styled.Text`
 
 function SignUpScreen({ onEnter, navigation }) {
   const InitializedTermsOfUseList = [
-    { id: "#1", approved: false, text: "(필수) 서비스 이용약관" },
-    { id: "#2", approved: false, text: "(필수) 개인정보수집 및 이용 동의" },
-    { id: "#3", approved: false, text: "(필수) 개인정보 제 3자 정보제공 동의" },
-    { id: "#4", approved: false, text: "(선택) 수신 알림 서비스 동의" },
+    { id: 0, approved: false, text: "(필수) 서비스 이용약관" },
+    { id: 1, approved: false, text: "(필수) 개인정보수집 및 이용 동의" },
+    { id: 2, approved: false, text: "(필수) 개인정보 제 3자 정보제공 동의" },
+    { id: 3, approved: false, text: "(선택) 수신 알림 서비스 동의" },
   ];
 
   const [termsOfUseList, setTermsOfUseList] = useState(
@@ -267,6 +263,8 @@ function SignUpScreen({ onEnter, navigation }) {
     nickname: "",
   });
   const [subPassword, setSubPassword] = useState("");
+  const [detailNeeded, setDetailNeeded] = useState(false);
+  const [indexOfDetail, setIndexOfDetail] = useState(0);
 
   // 인풋 검증 로직
 
@@ -409,6 +407,20 @@ function SignUpScreen({ onEnter, navigation }) {
     if (age > 0) dispatch({ type: "VALID_INPUT", item: "age" });
   };
 
+  const handleOpenDetail = (id) => {
+    setIndexOfDetail(id);
+    setDetailNeeded(true);
+  }
+
+  const handleCancelDetail = (approvedId) => {
+    const updatedList = termsOfUseList.map((item) =>
+      item.id === approvedId ? { ...item, approved: true } : item
+    );
+
+    setTermsOfUseList(updatedList);
+    setDetailNeeded(false);
+  }
+
   const isFirstCorrect =
     // +) 아이디가 중복이 안됐을때
     // state.loginId === "valid" &&
@@ -435,28 +447,37 @@ function SignUpScreen({ onEnter, navigation }) {
             <ModalBackdrop>
               <ModalView>
                 <BtnContainer>
-                  <AllTermsOfUseBtn onPress={handleAllCheck}>
-                    <CheckBtnImg
-                      source={!allApproved ? CheckBtn_Off : CheckBtn_On}
-                    />
-                    <BtnText>모든 약관에 동의할게요</BtnText>
-                  </AllTermsOfUseBtn>
-                  {termsOfUseList.map((item) => (
-                    <TermsOfUseBtn
-                      btnText={item.text}
-                      key={item.id}
-                      approved={item.approved}
-                      onCheck={() => handleSeparateCheck(item.id)}
-                    />
-                  ))}
-                  <GoToNextBtn
-                    allApproved={allApproved}
-                    onPress={allApproved ? goToDetail : null}
-                  >
-                    <GoToNextBtnText allApproved={allApproved}>
-                      다음 단계로 넘어갈게요
-                    </GoToNextBtnText>
-                  </GoToNextBtn>
+                  {!detailNeeded ? (
+                    <Animated.View key={"uniquekey_1"}
+                    entering={FadeIn.duration(500)}
+                    exiting={FadeOut.duration(500)}>
+                      <AllTermsOfUseBtn onPress={handleAllCheck}>
+                        <CheckBtnImg
+                          source={!allApproved ? CheckBtn_Off : CheckBtn_On}
+                        />
+                        <BtnText>모든 약관에 동의할게요</BtnText>
+                      </AllTermsOfUseBtn>
+                      {termsOfUseList.map((item, index) => (
+                        <TermsOfUseBtn
+                          btnText={item.text}
+                          key={item.id}
+                          approved={item.approved}
+                          onCheck={() => handleSeparateCheck(item.id)}
+                          setIndex={() => handleOpenDetail(index)}
+                        />
+                      ))}
+                      <GoToNextBtn
+                        allApproved={allApproved}
+                        onPress={allApproved ? goToDetail : null}
+                      >
+                        <GoToNextBtnText allApproved={allApproved}>
+                          다음 단계로 넘어갈게요
+                        </GoToNextBtnText>
+                      </GoToNextBtn>
+                    </Animated.View>
+                  ) : (
+                    <TermsOfUseDetail index={indexOfDetail} onBack={() => handleCancelDetail(indexOfDetail)} />
+                  )}
                 </BtnContainer>
               </ModalView>
             </ModalBackdrop>
@@ -516,7 +537,11 @@ function SignUpScreen({ onEnter, navigation }) {
             transparent={true}
             visible={secondModalVisible}
           >
-            <ConfirmingModal onHide={() => setSecondModalVisible(false)} onWelcome={handleSubmit} nickname={signUpData.nickname} />
+            <ConfirmingModal
+              onHide={() => setSecondModalVisible(false)}
+              onWelcome={handleSubmit}
+              nickname={signUpData.nickname}
+            />
           </Modal>
 
           <SignUpView>
@@ -579,7 +604,18 @@ function SignUpScreen({ onEnter, navigation }) {
         <WelcomeContainer>
           <ImgContainer>
             <CharacterImg source={Salary_Character} />
-            <FireworksRightImg source={Fireworks} />
+            <LottieView
+              style={{
+                width: 150,
+                height: 120,
+                position: "absolute",
+                left: 24,
+                top: 20,
+              }}
+              source={require("../assets/animations/Confetti.json")}
+              autoPlay
+              loop={false}
+            />
           </ImgContainer>
           <CompleteText>가입 완료!</CompleteText>
           <WelcomeText>
@@ -593,3 +629,5 @@ function SignUpScreen({ onEnter, navigation }) {
 }
 
 export default SignUpScreen;
+
+
