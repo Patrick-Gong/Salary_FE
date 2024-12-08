@@ -55,53 +55,9 @@ const tabScreensProps = [
     iconTitle: "bookmark",
     screen: VocaListScreen,
   },
-  {
-    screenName: "MyPage",
-    title: "마이페이지",
-    iconTitle: "person",
-    screen: MyPageScreen,
-  },
 ];
 
-function BottomTabNavigator() {
-  return (
-    <BottomTab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarStyle: {
-          backgroundColor: "#f3f4f6",
-          paddingTop: 5,
-        },
-      })}
-    >
-      {tabScreensProps.map((item) => (
-        <BottomTab.Screen
-          key={item.screenName}
-          name={item.screenName}
-          component={item.screen}
-          options={{
-            title: item.title,
-            headerShown: false,
-            tabBarLabelStyle: {
-              fontSize: 12,
-              fontWeight: "400",
-            },
-            tabBarIcon: ({ focused, color, size }) =>
-              focused ? (
-                <Ionicons name={item.iconTitle} color={color} size={size} />
-              ) : (
-                <Ionicons
-                  name={`${item.iconTitle}-outline`}
-                  color={color}
-                  size={size}
-                ></Ionicons>
-              ),
-            tabBarActiveTintColor: "#313131",
-          }}
-        />
-      ))}
-    </BottomTab.Navigator>
-  );
-}
+
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -131,6 +87,70 @@ export default function App() {
     console.log(authToken);
   }
 
+  function handleLogOut() {
+    setIsLoggedIn(false);
+    console.log("로그인창으로 돌아갑니다")
+  }
+
+  function BottomTabNavigator() {
+    return (
+      <BottomTab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarStyle: {
+            backgroundColor: "#f3f4f6",
+            paddingTop: 5,
+          },
+        })}
+      >
+        {tabScreensProps.map((item) => (
+          <BottomTab.Screen
+            key={item.screenName}
+            name={item.screenName}
+            component={item.screen}
+            options={{
+              title: item.title,
+              headerShown: false,
+              tabBarLabelStyle: {
+                fontSize: 12,
+                fontWeight: "400",
+              },
+              tabBarIcon: ({ focused, color, size }) =>
+                focused ? (
+                  <Ionicons name={item.iconTitle} color={color} size={size} />
+                ) : (
+                  <Ionicons
+                    name={`${item.iconTitle}-outline`}
+                    color={color}
+                    size={size}
+                  ></Ionicons>
+                ),
+              tabBarActiveTintColor: "#313131",
+            }}
+          />
+        ))}
+        <BottomTab.Screen name="MyPage" options={{
+              title: "마이페이지",
+              headerShown: false,
+              tabBarLabelStyle: {
+                fontSize: 12,
+                fontWeight: "400",
+              },
+              tabBarIcon: ({ focused, color, size }) =>
+                focused ? (
+                  <Ionicons name={"person"} color={color} size={size} />
+                ) : (
+                  <Ionicons
+                    name={`${"person"}-outline`}
+                    color={color}
+                    size={size}
+                  ></Ionicons>
+                ),
+              tabBarActiveTintColor: "#313131",
+            }}>{({navigation}) => <MyPageScreen navigation={navigation} onLogOut={handleLogOut}/>}</BottomTab.Screen>
+      </BottomTab.Navigator>
+    );
+  }
+
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
@@ -156,11 +176,8 @@ export default function App() {
                   <SignInScreen onEnter={handleLogIn} navigation={navigation} />
                 )}
               </Stack.Screen>
-              <Stack.Screen name="SignUp" options={{ headerShown: false }}>
-                {({ navigation }) => (
-                  <SignUpScreen onEnter={handleLogIn} navigation={navigation} />
-                )}
-              </Stack.Screen>
+              <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }}/>
+              
             </>
           ) : (
             <>

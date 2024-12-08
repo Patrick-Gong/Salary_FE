@@ -4,6 +4,7 @@ import {
   Platform,
   Text,
   View,
+  Modal,
   TouchableWithoutFeedback,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,6 +18,7 @@ import { BASE_URL } from "@env";
 import { useSetRecoilState, useRecoilValue } from "recoil";
 import { nicknameState } from "../Recoil/nicknameState";
 import { authToken } from "../Recoil/authToken";
+import Toast from "../common/Toast";
 
 const Container = styled.View`
   width: 100%;
@@ -72,11 +74,17 @@ function MyPageNicknameChangeScreen() {
   const [text, setText] = useState("");
   const setNickname = useSetRecoilState(nicknameState);
   const token = useRecoilValue(authToken);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     console.log(text);
   }, [text]);
   console.log(token);
+
+  const openModal = () => {
+    setModalVisible(true)
+    setTimeout(() => {setModalVisible(false)}, 2000)
+  }
 
   const handleNicknameChange = async () => {
     try {
@@ -88,6 +96,7 @@ function MyPageNicknameChangeScreen() {
       console.log("닉네임 수정 api 작동했는가: ", res);
 
       setNickname(text);
+      openModal();
       // axios 닉네임 변경 호출
     } catch (error) {
       console.log(error);
@@ -101,6 +110,14 @@ function MyPageNicknameChangeScreen() {
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <Container>
+          <Modal
+            visible={modalVisible}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={() => setModalVisible(false)}
+          >
+            <Toast text="닉네임 수정이 완료되었습니다." />
+          </Modal>
           <Title>닉네임 수정</Title>
           <View
             style={{
@@ -117,7 +134,6 @@ function MyPageNicknameChangeScreen() {
                 autoFocus={true}
                 onChangeText={(t) => setText(t)}
                 placeholder="서비스에서 사용할 닉네임을 입력해주세요."
-                onSubmitEditing={text.length !== 0 && handleNicknameChange}
               ></Input>
             </InputContainer>
             <PrimaryBtn

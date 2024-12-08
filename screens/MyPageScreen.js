@@ -24,7 +24,7 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import arrow from "../assets/img/homeScreen/articleArrow.png";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "../common/Toast";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { authToken } from "../Recoil/authToken";
 import { nicknameState } from "../Recoil/nicknameState";
 
@@ -177,16 +177,14 @@ const ListTextContainer = styled.View`
   gap: 16px;
 `;
 
-function MyPageScreen() {
+function MyPageScreen({ navigation, onLogOut }) {
   // const nickname = AsyncStorage.getItem("Nickname");
   const [totalSeed, setTotalSeed] = useState(0);
   const [attendanceLogs, setAttendanceLogs] = useState([]);
 
   const isFocused = useIsFocused();
 
-  const navigation = useNavigation();
-
-  const token = useRecoilValue(authToken);
+  const [token, setToken] = useRecoilState(authToken);
   const nickname = useRecoilValue(nicknameState);
 
   // 토스트 관리
@@ -228,7 +226,8 @@ function MyPageScreen() {
   }
 
   function handleLogout() {
-    console.log("로그아웃 버튼 클릭");
+    setToken();
+    onLogOut();
   }
 
   useEffect(() => {

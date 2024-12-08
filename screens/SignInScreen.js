@@ -207,7 +207,7 @@ function SignInScreen({ onEnter, navigation }) {
   const pwRef = useRef();
   const [token, setToken] = useRecoilState(authToken);
 
-  console.log(token);
+  console.log("로그인 창에서 토큰값: ", token);
 
   const handleLogIn = async () => {
     try {
@@ -236,7 +236,7 @@ function SignInScreen({ onEnter, navigation }) {
         console.log("등록되지 않은 회원정보입니다.");
       } else {
         console.log(error);
-        console.log(
+        alert(
           "알 수 없는 오류가 발생했습니다. 샐러리 고객센터(1234-0000)로 문의해주세요."
         );
       }
