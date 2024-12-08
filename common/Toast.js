@@ -5,25 +5,22 @@ import colors from "../styles/colors";
 const ModalContainer = styled.View`
   width: 100%;
   position: absolute;
-  bottom: 40px;
+  bottom: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
 const ModalContent = styled.View`
-  width: 200px;
-  padding: 10px;
+  padding: 0px 14px;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
-
-  border-radius: 10px;
-
-  border: 2px solid ${colors.Grayscale_20};
+  background-color: rgba(18, 18, 18, 0.70);
+  height: 34px;
+  border-radius: 30px;
 `;
 const ModalText = styled(fonts.Body2R)`
-  color: black;
+  color: ${colors.Grayscale_white};
 `;
 
 function Toast({ text }) {

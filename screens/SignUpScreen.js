@@ -410,7 +410,7 @@ function SignUpScreen({ onEnter, navigation }) {
   const handleOpenDetail = (id) => {
     setIndexOfDetail(id);
     setDetailNeeded(true);
-  }
+  };
 
   const handleCancelDetail = (approvedId) => {
     const updatedList = termsOfUseList.map((item) =>
@@ -419,7 +419,7 @@ function SignUpScreen({ onEnter, navigation }) {
 
     setTermsOfUseList(updatedList);
     setDetailNeeded(false);
-  }
+  };
 
   const isFirstCorrect =
     // +) 아이디가 중복이 안됐을때
@@ -448,9 +448,10 @@ function SignUpScreen({ onEnter, navigation }) {
               <ModalView>
                 <BtnContainer>
                   {!detailNeeded ? (
-                    <Animated.View key={"uniquekey_1"}
-                    entering={FadeIn.duration(500)}
-                    exiting={FadeOut.duration(500)}>
+                    <Animated.View
+                      key={"uniquekey_1"}
+                      entering={FadeIn.duration(500)}
+                    >
                       <AllTermsOfUseBtn onPress={handleAllCheck}>
                         <CheckBtnImg
                           source={!allApproved ? CheckBtn_Off : CheckBtn_On}
@@ -476,7 +477,10 @@ function SignUpScreen({ onEnter, navigation }) {
                       </GoToNextBtn>
                     </Animated.View>
                   ) : (
-                    <TermsOfUseDetail index={indexOfDetail} onBack={() => handleCancelDetail(indexOfDetail)} />
+                    <TermsOfUseDetail
+                      index={indexOfDetail}
+                      onBack={() => handleCancelDetail(indexOfDetail)}
+                    />
                   )}
                 </BtnContainer>
               </ModalView>
@@ -629,5 +633,3 @@ function SignUpScreen({ onEnter, navigation }) {
 }
 
 export default SignUpScreen;
-
-
